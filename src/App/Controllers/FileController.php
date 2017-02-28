@@ -1,5 +1,6 @@
 <?php namespace Crip\Filesys\App\Controllers;
 
+use Crip\Filesys\Services\FilesystemManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -9,6 +10,21 @@ use Illuminate\Http\Request;
  */
 class FileController extends BaseController
 {
+    /**
+     * @var FilesystemManager
+     */
+    private $manager;
+
+    /**
+     * FileController constructor.
+     * @param FilesystemManager $filesystemManager
+     */
+    public function __construct(FilesystemManager $filesystemManager)
+    {
+        parent::__construct();
+        $this->manager = $filesystemManager;
+    }
+
     /**
      * Upload file to server
      * @param Request $request
@@ -25,6 +41,7 @@ class FileController extends BaseController
      */
     public function show($file)
     {
+        $this->manager->parsePath($file);
         return $this->json($file);
     }
 

@@ -1,0 +1,20 @@
+{
+  "parser": "babel-eslint",
+  "plugins": [
+    "html"
+  ],
+  "env": {
+    "browser": true
+  },
+  "globals": {
+    "$": true,
+    "Laravel": true,
+    "CKEDITOR": true
+  },
+  "extends": "standard",
+  "rules": {
+    "no-unused-vars": "warn",
+    "no-self-compare": "off",
+    "no-extend-native": "off"
+  }
+}

@@ -10,7 +10,7 @@
         data-public-url="{{ config('cripfilesys.public_url') }}"
         data-base-url="{{ config('cripfilesys.base_url') }}"/>
   <title>CRIP Filesys</title>
-  <link href="{{ config('cripfilesys.public_url') }}/css/styles.css" rel="stylesheet">
+  <link href="{{ config('cripfilesys.public_url') }}/styles.css" rel="stylesheet">
   <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
   <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -22,8 +22,8 @@
 
 <div id="app">Loading...</div>
 
-<script src="<?php echo config('cripfilesys.public_url') ?>/js/vendor.bundle.js"></script>
-<script src="<?php echo config('cripfilesys.public_url') ?>/js/app.bundle.js"></script>
+<script src="<?php echo config('cripfilesys.public_url') ?>/vendor.bundle.js"></script>
+<script src="<?php echo config('cripfilesys.public_url') ?>/app.bundle.js"></script>
 
 </body>
 

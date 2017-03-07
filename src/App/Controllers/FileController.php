@@ -11,37 +11,35 @@ use Illuminate\Http\Request;
 class FileController extends BaseController
 {
     /**
-     * @var FilesystemManager
-     */
-    private $manager;
-
-    /**
-     * FileController constructor.
-     * @param FilesystemManager $filesystemManager
-     */
-    public function __construct(FilesystemManager $filesystemManager)
-    {
-        parent::__construct();
-        $this->manager = $filesystemManager;
-    }
-
-    /**
      * Upload file to server
      * @param Request $request
+     * @return JsonResponse
      */
     public function store(Request $request)
     {
+        if ($request->hasFile('file')) {
+            $this->manager->parsePath($request->path);
 
+            $file = $this->manager->upload($request->file('file'));
+
+            dd($this->manager, $file, $request->file('file'));
+
+            return $this->json($request->all());
+        }
+
+        return $this->json(['File required to upload'], 422);
     }
 
     /**
      * Get file
-     * @param string $file
+     * @param Request $request
+     * @param string $file Path to the requested file
      * @return JsonResponse
      */
-    public function show($file)
+    public function show(Request $request, $file)
     {
-        $this->manager->parsePath($file);
+        $this->manager->parsePath($file, $request->all());
+
         return $this->json($file);
     }
 

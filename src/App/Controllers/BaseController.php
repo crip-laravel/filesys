@@ -1,6 +1,7 @@
 <?php namespace Crip\Filesys\App\Controllers;
 
 use Crip\Core\Support\PackageBase;
+use Crip\Filesys\Services\FilesystemManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 
@@ -16,11 +17,17 @@ class BaseController extends Controller
     protected $package;
 
     /**
+     * @var FilesystemManager
+     */
+    protected $manager;
+
+    /**
      * BaseController constructor.
      */
     public function __construct()
     {
         $this->package = new PackageBase('cripfilesys', __DIR__ . '/../..');
+        $this->manager = new FilesystemManager($this->package);
     }
 
     /**

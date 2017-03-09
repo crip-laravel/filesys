@@ -1,10 +1,11 @@
 <?php
+
 use Crip\Filesys\App\Controllers\FileController;
 use Crip\Filesys\App\Controllers\FolderController;
 
 return [
     'base_url' => '/packages/filemanager',
-    'public_url' => '/vendor/crip/cripfilesys',
+    'public_url' => '/vendor/crip/filesys',
     'target_dir' => 'storage/uploads',
     'thumbs_dir' => 'thumbs',
     'thumbs' => [
@@ -15,7 +16,7 @@ return [
         'lg' => [1024, 2000, 'width',],
     ],
     'icons' => [
-        'url' => '/vendor/crip/cripfilesys/images/',
+        'url' => '/vendor/crip/filesys/images/',
         'files' => [
             'js' => 'js.png',
             'dir' => 'dir.png',

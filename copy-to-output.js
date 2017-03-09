@@ -1,7 +1,7 @@
 const fs = require('fs-extra')
 
 let copy = {
-  './src/public': './../../public/vendor/crip/cripfilesys'
+  './src/public': './../../public/vendor/crip/filesys'
 }
 
 Object.keys(copy).forEach(from => {

@@ -21,7 +21,7 @@ module.exports = {
     vendor: ['babel-polyfill', 'vue', 'vue-router', 'vuex', 'vue-resource']
   },
   output: {
-    path: './../../public/vendor/crip/cripfilesys', // './src/public',
+    path: './../../public/vendor/crip/filesys', // './src/public',
     filename: '[name].bundle.js'
   },
   module: {

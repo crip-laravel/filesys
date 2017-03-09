@@ -159,8 +159,17 @@ class FilesystemManager implements ICripObject
      */
     public function rename(FileManager $file, $newName)
     {
-
         return $this->fs->move($file->sysPath(), $file->rename($newName)->sysPath());
+    }
+
+    /**
+     * Delete file/folder from the system
+     * @param FileManager $fileInfo
+     * @return bool
+     */
+    public function delete(FileManager $fileInfo)
+    {
+        return $this->fs->delete($fileInfo->sysPath());
     }
 
     /**

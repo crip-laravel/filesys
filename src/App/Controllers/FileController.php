@@ -81,9 +81,18 @@ class FileController extends BaseController
     /**
      * Delete file
      * @param string $file
+     * @return JsonResponse
      */
     public function destroy($file)
     {
+        $fileInfo = $this->manager->parsePath($file);
 
+        if (!$this->manager->exists($fileInfo)) {
+            return $this->json('File not found.', 401);
+        }
+
+        $isRemoved = $this->manager->delete($fileInfo);
+
+        return $this->json($isRemoved, $isRemoved ? 200 : 500);
     }
 }

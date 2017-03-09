@@ -1,6 +1,7 @@
 <?php namespace Crip\Filesys\Services;
 
 use Crip\Core\Contracts\ICripObject;
+use Crip\Core\Helpers\Slug;
 use Crip\Core\Support\PackageBase;
 use Crip\Filesys\App\File;
 use Crip\Filesys\App\Folder;
@@ -82,7 +83,7 @@ class FilesystemManager implements ICripObject
         $blob->folder->mk();
 
         $ext = $upload->getClientOriginalExtension();
-        $name = pathinfo($upload->getClientOriginalName(), PATHINFO_FILENAME);
+        $name = Slug::make(pathinfo($upload->getClientOriginalName(), PATHINFO_FILENAME));
         // To get full path, join dir and its name
 
         $dir = $blob->systemPath();
@@ -141,6 +142,7 @@ class FilesystemManager implements ICripObject
      */
     public function rename(Blob $blob, $newName)
     {
+        $newName = Slug::make($newName);
         $curr = $blob->systemPath();
         if ($blob->file->isDefined()) {
             list($name, $ext) = $blob->file->setName($newName);
@@ -168,6 +170,21 @@ class FilesystemManager implements ICripObject
     public function delete(Blob $blob)
     {
         return $this->fs->delete($blob->systemPath());
+    }
+
+    /**
+     * @param Blob $blob
+     * @param $name
+     * @return string
+     */
+    public function mkdir(Blob $blob, $name)
+    {
+        $name = Slug::make($name);
+        $newName = $this->getUniqueFileName($blob->folder->getDir(), $name);
+        $blob->folder->setSubfolder($newName);
+        $blob->folder->mk();
+
+        return $newName;
     }
 
     /**

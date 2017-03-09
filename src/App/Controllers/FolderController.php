@@ -21,11 +21,23 @@ class FolderController extends BaseController
     /**
      * Create new sub folder
      * @param Request $request
-     * @param string $folder
+     * @return JsonResponse
      */
-    public function store(Request $request, $folder)
+    public function store(Request $request)
     {
+        $blob = $this->manager->parsePath($request->folder);
 
+        if (!$this->manager->exists($blob)) {
+            return $this->json('Folder not found.', 401);
+        }
+
+        if (empty($request->name)) {
+            return $this->json('Name property is required.', 422);
+        }
+
+        $folder = $this->manager->mkdir($blob, $request->name);
+
+        return $this->json($folder);
     }
 
     /**
@@ -53,7 +65,7 @@ class FolderController extends BaseController
      */
     public function update(Request $request, $folder)
     {
-
+        throw new \Exception('Not implemented');
     }
 
     /**
@@ -62,6 +74,6 @@ class FolderController extends BaseController
      */
     public function destroy($folder)
     {
-
+        throw new \Exception('Not implemented');
     }
 }

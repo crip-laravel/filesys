@@ -78,9 +78,15 @@ class FolderInfo
         $pathParts[] = $newName;
         $newPath = join('/', $pathParts);
 
-        $this->setPath($newPath);
-
         return $newPath;
+    }
+
+    /**
+     * @param $name
+     */
+    public function setSubfolder($name)
+    {
+        $this->setPath($this->path . '/' . $name);
     }
 
     /**

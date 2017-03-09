@@ -2,6 +2,8 @@
 
 use Crip\Core\Contracts\ICripObject;
 use Crip\Core\Support\PackageBase;
+use Crip\Filesys\App\File;
+use Crip\Filesys\App\Folder;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\UploadedFile;
 
@@ -11,21 +13,6 @@ use Illuminate\Http\UploadedFile;
  */
 class FilesystemManager implements ICripObject
 {
-    /**
-     * @var string
-     */
-    private $path;
-
-    /**
-     * @var array
-     */
-    private $pathinfo;
-
-    /**
-     * @var string
-     */
-    private $dir = '';
-
     /**
      * @var array
      */
@@ -55,56 +42,56 @@ class FilesystemManager implements ICripObject
      * Parse path to file/folder
      * @param string $path
      * @param array $params
-     * @return FileManager
+     * @return FileInfo
      */
     public function parsePath($path = '', array $params = [])
     {
         $this->params = $params;
 
-        return new FileManager($this->package, $path);
+        return new FileInfo($this->package, $path);
     }
 
     /**
      * Determine if a file or directory exists
-     * @param FileManager $file
+     * @param FileInfo $file
      * @return bool
      */
-    public function exists(FileManager $file)
+    public function exists(FileInfo $file)
     {
         return $this->fs->exists($file->sysPath());
     }
 
     /**
      * Determines is presented path for image
-     * @param FileManager $file
+     * @param FileInfo $file
      * @return bool
      */
-    public function isImage(FileManager $file)
+    public function isImage(FileInfo $file)
     {
         return substr($this->fs->mimeType($file->sysPath()), 0, 5) === 'image';
     }
 
     /**
      * Get public url for a file
-     * @param $file FileManager
+     * @param $file FileInfo
      * @return string File public url
      */
-    public function publicUrl(FileManager $file)
+    public function publicUrl(FileInfo $file)
     {
-        $filePathParts = explode(DIRECTORY_SEPARATOR, $file->sysPath());
-        $filePublicPath = DIRECTORY_SEPARATOR . $file->dir . DIRECTORY_SEPARATOR . array_pop($filePathParts);
-        $filePublicPath = str_replace(DIRECTORY_SEPARATOR, '/', $filePublicPath);
+        $filePathParts = explode('/', $file->sysPath());
+        $filePublicPath = '/' . $file->getDir() . '/' . array_pop($filePathParts);
+        $filePublicPath = str_replace('\\', '/', $filePublicPath);
 
         return action('\\' . $this->package->config('actions.file') . '@show', '', false) . $filePublicPath;
     }
 
     /**
      * Upload file in to package configured folder
-     * @param FileManager $file File info holder
+     * @param FileInfo $file File info holder
      * @param UploadedFile $upload Uploading file
      * @return string Location where file were uploaded
      */
-    public function upload(FileManager $file, UploadedFile $upload)
+    public function upload(FileInfo $file, UploadedFile $upload)
     {
         $this->mkdirIfNotExists($file);
         $ext = $upload->getClientOriginalExtension();
@@ -112,7 +99,7 @@ class FilesystemManager implements ICripObject
         $name = mb_substr($clientOriginalName, 0, mb_strlen($clientOriginalName) - mb_strlen($ext));
         $name = rtrim($name, '.');
         // To get full path, join dir and its name
-        $file->dir .= DIRECTORY_SEPARATOR . $file->getName();
+        $file->appendNameToDir();
         $dir = $file->sysDir();
         $targetFileName = $this->getUniqueFileName($dir, $name, $ext);
 
@@ -122,61 +109,75 @@ class FilesystemManager implements ICripObject
         $file->setExt($ext);
         $file->setName($targetFileName);
 
-        return join(DIRECTORY_SEPARATOR, [$dir, $targetFileName . '.' . $ext]);
+        return join('/', [$dir, $targetFileName . '.' . $ext]);
     }
 
-    public function resizeImage(FileManager $file)
+    public function resizeImage(FileInfo $file)
     {
         // TODO: resize image to fit all configurations
     }
 
     /**
      * Get the contents of a file
-     * @param FileManager $file
+     * @param FileInfo $file
      * @return string
      */
-    public function fileContent(FileManager $file)
+    public function fileContent(FileInfo $file)
     {
         // TODO: Path should be to the thumb if required key in $this->params array exists
         return $this->fs->get($file->sysPath());
     }
 
+    public function folderContent(FileInfo $info)
+    {
+        $result = [];
+        $list = $this->fs->glob($info->sysDir(true) . '/' . '*');
+        foreach ($list as $glob) {
+            $globInfo = new FileInfo($this->package, $glob);
+            $result[] = $globInfo->isFile() ?
+                new File($this, $globInfo) :
+                new Folder($this, $globInfo);
+        }
+
+        return $result;
+    }
+
     /**
      * Get file mime type
-     * @param FileManager $file
+     * @param FileInfo $file
      * @return false|string
      */
-    public function fileMimeType(FileManager $file)
+    public function fileMimeType(FileInfo $file)
     {
         return $this->fs->mimeType($file->sysPath());
     }
 
     /**
      * Rename current file or folder
-     * @param FileManager $file
+     * @param FileInfo $file
      * @param $newName string
      * @return bool
      */
-    public function rename(FileManager $file, $newName)
+    public function rename(FileInfo $file, $newName)
     {
         return $this->fs->move($file->sysPath(), $file->rename($newName)->sysPath());
     }
 
     /**
      * Delete file/folder from the system
-     * @param FileManager $fileInfo
+     * @param FileInfo $fileInfo
      * @return bool
      */
-    public function delete(FileManager $fileInfo)
+    public function delete(FileInfo $fileInfo)
     {
         return $this->fs->delete($fileInfo->sysPath());
     }
 
     /**
      * Make dir in system if it does not exists
-     * @param FileManager $file
+     * @param FileInfo $file
      */
-    private function mkdirIfNotExists(FileManager $file)
+    private function mkdirIfNotExists(FileInfo $file)
     {
         $this->fs->makeDirectory($file->sysDir(), 0777, true, true);
     }

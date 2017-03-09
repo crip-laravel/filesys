@@ -7,7 +7,7 @@ use Crip\Core\Support\PackageBase;
  * Class FileManager
  * @package Crip\Filesys\Services
  */
-class FileManager implements ICripObject
+class FileInfo implements ICripObject
 {
     /**
      * @var string
@@ -15,14 +15,14 @@ class FileManager implements ICripObject
     public $path = '';
 
     /**
-     * @var string
-     */
-    public $dir = '';
-
-    /**
      * @var PackageBase
      */
     private $package;
+
+    /**
+     * @var string
+     */
+    private $dir = '';
 
     /**
      * @var string
@@ -46,22 +46,14 @@ class FileManager implements ICripObject
      */
     public function __construct(PackageBase $package, $path = '')
     {
-        // make sure we are using DIRECTORY_SEPARATOR in path variable
-        $path = str_replace('\\', DIRECTORY_SEPARATOR, $path);
-        $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
-
-        // make sure that user cant go up in directory '../..'
-        while (str_contains($path, '..')) {
-            $path = str_replace('..', '.', $path);
-        }
-
+        $path = $this->normalizePath($path);
         $this->path = $path;
         $this->package = $package;
         $this->pathinfo = pathinfo($path);
 
         // in case of empty folder avoid dirname property read
         if ($this->pathinfo['basename'] !== '') {
-            $this->dir = $this->pathinfo['dirname'];
+            $this->setDir($this->pathinfo['dirname']);
             if ($this->isFile()) {
                 $this->name = $this->pathinfo['filename'];
                 $this->ext = $this->pathinfo['extension'];
@@ -69,9 +61,9 @@ class FileManager implements ICripObject
         }
 
         if (!$this->isFile()) {
-            $explodedDir = explode(DIRECTORY_SEPARATOR, $this->path);
+            $explodedDir = explode('/', $this->path);
             $this->name = array_pop($explodedDir);
-            $this->dir = join(DIRECTORY_SEPARATOR, $explodedDir);
+            $this->setDir(join('/', $explodedDir));
         }
     }
 
@@ -86,11 +78,18 @@ class FileManager implements ICripObject
 
     /**
      * Get system dir
+     * @param bool $includeName
      * @return string
      */
-    public function sysDir()
+    public function sysDir($includeName = false)
     {
-        return base_path($this->package->config('target_dir') . '/' . trim($this->dir, '/\/'));
+        $result = base_path(trim($this->package->config('target_dir'), '/\\') . '/' . $this->getDir());
+
+        if ($includeName && $this->name !== 'NULL') {
+            $result .= '/' . $this->name;
+        }
+
+        return $this->normalizePath($result);
     }
 
     /**
@@ -100,7 +99,7 @@ class FileManager implements ICripObject
     public function sysPath()
     {
         if ($this->isFile()) {
-            return $this->sysDir() . DIRECTORY_SEPARATOR . $this->name . '.' . $this->ext;
+            return $this->sysDir() . '/' . $this->name . '.' . $this->ext;
         }
 
         return $this->sysDir();
@@ -117,14 +116,19 @@ class FileManager implements ICripObject
             $this->name = $newName;
         } else {
             // replace last item in dir with new name
-            $explodedDir = explode(DIRECTORY_SEPARATOR, $this->dir);
+            $explodedDir = explode('/', $this->dir);
             array_pop($explodedDir);
             $explodedDir[] = $newName;
 
-            $this->dir = join(DIRECTORY_SEPARATOR, $explodedDir);
+            $this->dir = join('/', $explodedDir);
         }
 
         return $this;
+    }
+
+    public function appendNameToDir()
+    {
+        $this->dir = $this->getDir() . '/' . $this->getName();
     }
 
     /**
@@ -157,5 +161,43 @@ class FileManager implements ICripObject
     public function setExt($ext)
     {
         $this->ext = $ext;
+    }
+
+    /**
+     * @param $dir string
+     */
+    private function setDir($dir)
+    {
+        $dir = $this->normalizePath($dir);
+        $this->dir = $dir;
+        $configDir = $this->normalizePath(base_path($this->package->config('target_dir')));
+
+        if (str_contains($dir, $configDir)) {
+            $this->dir = str_replace($configDir, '', $dir);
+        }
+
+        $this->dir = trim($this->dir, '/\\');
+    }
+
+    /**
+     * @return string
+     */
+    public function getDir()
+    {
+        return $this->dir;
+    }
+
+
+    private function normalizePath($path)
+    {
+        // make sure we are using '/' in path variable
+        $path = str_replace('\\', '/', $path);
+
+        // make sure that user cant go up in directory '../..'
+        while (str_contains($path, '..')) {
+            $path = str_replace('..', '.', $path);
+        }
+
+        return $path;
     }
 }

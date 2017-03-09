@@ -1,5 +1,6 @@
 <?php namespace Crip\Filesys\App\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 /**
@@ -21,10 +22,19 @@ class FolderController extends BaseController
     /**
      * List folder content
      * @param string $folder
+     * @return JsonResponse
      */
     public function show($folder)
     {
+        $info = $this->manager->parsePath($folder);
 
+        if (!$this->manager->exists($info)) {
+            return $this->json('File not found.', 401);
+        }
+
+        $list = $this->manager->folderContent($info);
+
+        return $this->json($list);
     }
 
     /**

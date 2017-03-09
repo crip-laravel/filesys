@@ -1,6 +1,7 @@
 <?php namespace Crip\Filesys\App;
 
 use Crip\Core\Contracts\ICripObject;
+use Crip\Filesys\Services\Blob;
 use Crip\Filesys\Services\FileInfo;
 use Crip\Filesys\Services\FilesystemManager;
 use Illuminate\Contracts\Support\Arrayable;
@@ -21,17 +22,17 @@ class Folder extends FileSystemObject implements ICripObject, Arrayable
     public $url = '';
     public $thumb = '';
 
-    public function __construct(FilesystemManager $manager = null, FileInfo $file = null)
+    public function __construct(Blob $blob)
     {
         /** @var Filesystem $fs */
         $fs = app(Filesystem::class);
 
-        if ($file !== null && $manager !== null) {
-            $this->name = $file->getName();
-            $this->dir = $file->getDir();
-            $this->full_name = $file->getDir() . '/' . $file->getName();
-            $this->updated_at = $fs->lastModified($file->sysPath());
-            $this->url = $manager->publicUrl($file);
+        if ($blob !== null) {
+            $this->name = $blob->folder->getCurrPath();
+            $this->dir = $blob->folder->getParentPath();
+            $this->full_name = $blob->folder->getPath();
+            $this->updated_at = $fs->lastModified($blob->systemPath());
+            $this->url = $blob->folder->getUrl();
             // $this->thumb = resolve from config url icon path
         }
     }

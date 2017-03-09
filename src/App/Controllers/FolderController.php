@@ -26,13 +26,13 @@ class FolderController extends BaseController
      */
     public function show($folder)
     {
-        $info = $this->manager->parsePath($folder);
+        $blob = $this->manager->parsePath($folder);
 
-        if (!$this->manager->exists($info)) {
+        if (!$this->manager->exists($blob)) {
             return $this->json('File not found.', 401);
         }
 
-        $list = $this->manager->folderContent($info);
+        $list = $this->manager->folderContent($blob);
 
         return $this->json($list);
     }

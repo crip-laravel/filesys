@@ -39,147 +39,135 @@ class FilesystemManager implements ICripObject
     }
 
     /**
-     * Parse path to file/folder
+     * Parse path to file/folder.
      * @param string $path
      * @param array $params
-     * @return FileInfo
+     * @return Blob
      */
     public function parsePath($path = '', array $params = [])
     {
         $this->params = $params;
 
-        return new FileInfo($this->package, $path);
+        return new Blob($this->package, $path);
     }
 
     /**
-     * Determine if a file or directory exists
-     * @param FileInfo $file
+     * Determine if a file or directory exists.
+     * @param Blob $blob
      * @return bool
      */
-    public function exists(FileInfo $file)
+    public function exists(Blob $blob)
     {
-        return $this->fs->exists($file->sysPath());
+        return $this->fs->exists($blob->systemPath());
     }
 
     /**
-     * Determines is presented path for image
-     * @param FileInfo $file
+     * Determines is presented path for image.
+     * @param Blob $blob
      * @return bool
      */
-    public function isImage(FileInfo $file)
+    public function isImage(Blob $blob)
     {
-        return substr($this->fs->mimeType($file->sysPath()), 0, 5) === 'image';
+        return substr($blob->file->getMimeType(), 0, 5) === 'image';
     }
 
     /**
-     * Get public url for a file
-     * @param $file FileInfo
-     * @return string File public url
-     */
-    public function publicUrl(FileInfo $file)
-    {
-        $filePathParts = explode('/', $file->sysPath());
-        $filePublicPath = '/' . $file->getDir() . '/' . array_pop($filePathParts);
-        $filePublicPath = str_replace('\\', '/', $filePublicPath);
-
-        return action('\\' . $this->package->config('actions.file') . '@show', '', false) . $filePublicPath;
-    }
-
-    /**
-     * Upload file in to package configured folder
-     * @param FileInfo $file File info holder
+     * Upload file in to package configured folder.
+     * @param Blob $blob
      * @param UploadedFile $upload Uploading file
      * @return string Location where file were uploaded
      */
-    public function upload(FileInfo $file, UploadedFile $upload)
+    public function upload(Blob $blob, UploadedFile $upload)
     {
-        $this->mkdirIfNotExists($file);
+        $blob->folder->mk();
+
         $ext = $upload->getClientOriginalExtension();
-        $clientOriginalName = $upload->getClientOriginalName();
-        $name = mb_substr($clientOriginalName, 0, mb_strlen($clientOriginalName) - mb_strlen($ext));
-        $name = rtrim($name, '.');
+        $name = pathinfo($upload->getClientOriginalName(), PATHINFO_FILENAME);
         // To get full path, join dir and its name
-        $file->appendNameToDir();
-        $dir = $file->sysDir();
+
+        $dir = $blob->systemPath();
         $targetFileName = $this->getUniqueFileName($dir, $name, $ext);
 
         $upload->move($dir, $targetFileName . '.' . $ext);
 
-        // Updating file info details after it is successfully uploaded to server
-        $file->setExt($ext);
-        $file->setName($targetFileName);
+        // Update file info details after it is successfully uploaded to server
+        $blob->setFile($targetFileName, $ext);
 
         return join('/', [$dir, $targetFileName . '.' . $ext]);
     }
 
-    public function resizeImage(FileInfo $file)
+    public function resizeImage(Blob $blob)
     {
         // TODO: resize image to fit all configurations
     }
 
     /**
-     * Get the contents of a file
-     * @param FileInfo $file
+     * Get the contents of a file.
+     * @param Blob $blob
      * @return string
      */
-    public function fileContent(FileInfo $file)
+    public function fileContent(Blob $blob)
     {
         // TODO: Path should be to the thumb if required key in $this->params array exists
-        return $this->fs->get($file->sysPath());
+        return $this->fs->get($blob->systemPath());
     }
 
-    public function folderContent(FileInfo $info)
+    /**
+     * List folder content.
+     * @param Blob $blob
+     * @return array
+     */
+    public function folderContent(Blob $blob)
     {
         $result = [];
-        $list = $this->fs->glob($info->sysDir(true) . '/' . '*');
+        $list = $this->fs->glob($blob->systemPath() . '/*');
         foreach ($list as $glob) {
-            $globInfo = new FileInfo($this->package, $glob);
-            $result[] = $globInfo->isFile() ?
-                new File($this, $globInfo) :
-                new Folder($this, $globInfo);
+            $blobInfo = new Blob($this->package, $glob);
+            $result[] = $blobInfo->file->isDefined() ?
+                new File($blobInfo) :
+                new Folder($blobInfo);
         }
 
         return $result;
     }
 
     /**
-     * Get file mime type
-     * @param FileInfo $file
-     * @return false|string
-     */
-    public function fileMimeType(FileInfo $file)
-    {
-        return $this->fs->mimeType($file->sysPath());
-    }
-
-    /**
      * Rename current file or folder
-     * @param FileInfo $file
+     * @param Blob $blob
      * @param $newName string
-     * @return bool
+     * @return Blob
+     *
+     * @throws \Exception
      */
-    public function rename(FileInfo $file, $newName)
+    public function rename(Blob $blob, $newName)
     {
-        return $this->fs->move($file->sysPath(), $file->rename($newName)->sysPath());
+        $curr = $blob->systemPath();
+        if ($blob->file->isDefined()) {
+            list($name, $ext) = $blob->file->setName($newName);
+            $targetName = $this->getUniqueFileName($blob->folder->getDir(), $name, $ext);
+            if ($name !== $targetName) {
+                $blob->file->setName($targetName);
+            }
+        } else {
+            $newName = $this->getUniqueFileName($blob->folder->getParentDir(), $newName);
+            $blob->folder->setName($newName);
+        }
+
+        if (!$this->fs->move($curr, $blob->systemPath())) {
+            throw new \Exception('Could not rename.');
+        }
+
+        return $blob;
     }
 
     /**
      * Delete file/folder from the system
-     * @param FileInfo $fileInfo
+     * @param Blob $blob
      * @return bool
      */
-    public function delete(FileInfo $fileInfo)
+    public function delete(Blob $blob)
     {
-        return $this->fs->delete($fileInfo->sysPath());
-    }
-
-    /**
-     * Make dir in system if it does not exists
-     * @param FileInfo $file
-     */
-    private function mkdirIfNotExists(FileInfo $file)
-    {
-        $this->fs->makeDirectory($file->sysDir(), 0777, true, true);
+        return $this->fs->delete($blob->systemPath());
     }
 
     /**
@@ -195,20 +183,9 @@ class FilesystemManager implements ICripObject
         $i = 0;
 
         do {
-            $fullPath = $this->fullPath($sysPath, $name, $ext);
+            $fullPath = $sysPath . '/' . $name . ($ext ? '.' . $ext : '');
         } while ($this->fs->exists($fullPath) && $name = $originalName . '-' . ++$i);
 
         return $name;
-    }
-
-    /**
-     * @param $sysPath string System full path
-     * @param $name string File/Folder name
-     * @param null $ext string File extension
-     * @return string Joined path
-     */
-    private function fullPath($sysPath, $name, $ext = null)
-    {
-        return $sysPath . '/' . $name . ($ext ? '.' . $ext : '');
     }
 }

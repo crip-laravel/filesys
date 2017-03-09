@@ -48,9 +48,19 @@ class FilesystemManager implements ICripObject
      * Parse path to file/folder
      * @param string $path
      * @param array $params
+     * @return string
      */
     public function parsePath($path = '', array $params = [])
     {
+        // make sure we are using DIRECTORY_SEPARATOR in path variable
+        $path = str_replace('\\', DIRECTORY_SEPARATOR, $path);
+        $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
+
+        // make sure that user cant go up in directory '../..'
+        while (str_contains($path, '..')) {
+            $path = str_replace('..', '.', $path);
+        }
+
         $this->path = $path;
         $this->params = $params;
 
@@ -64,6 +74,8 @@ class FilesystemManager implements ICripObject
         if (!$this->isFile()) {
             $this->dir = $this->path ?: '';
         }
+
+        return $this->dir;
     }
 
     /**
@@ -73,6 +85,29 @@ class FilesystemManager implements ICripObject
     public function isFile()
     {
         return array_key_exists('extension', $this->pathinfo);
+    }
+
+    /**
+     * Determines is presented path for image
+     * @param $path string File system full path
+     * @return bool
+     */
+    public function isImage($path)
+    {
+        return substr(app(Filesystem::class)->mimeType($path), 0, 5) === 'image';
+    }
+
+    /**
+     * Get public url for a file
+     * @param $path string File system full path to the file
+     * @return string File public url
+     */
+    public function publicUrl($path)
+    {
+        $filePathParts = explode(DIRECTORY_SEPARATOR, $path);
+        $filePublicPath = $this->dir . DIRECTORY_SEPARATOR . array_pop($filePathParts);
+
+        return action('\\' . $this->package->config('actions.file') . '@show', $filePublicPath, false);
     }
 
     /**
@@ -96,13 +131,18 @@ class FilesystemManager implements ICripObject
         $ext = $file->getClientOriginalExtension();
         $nameLen = mb_strlen($file->getClientOriginalName()) - mb_strlen($ext);
         $name = trim(substr($file->getClientOriginalName(), 0, $nameLen), '.');
-        $targetFileName = $this->getUniqueFileName($sysPath, $name, $ext);
+        $targetFileName = $this->getUniqueFileName($sysPath, $name, $ext) . '.' . $ext;
 
         // dd(compact('sysPath', 'ext', 'name', 'targetFileName'));
 
-        $file->move($sysPath, $targetFileName . '.' . $ext);
+        $file->move($sysPath, $targetFileName);
 
-        return $file;
+        return join(DIRECTORY_SEPARATOR, [$sysPath, $targetFileName]);
+    }
+
+    public function resizeImage($file)
+    {
+        // TODO: resize image to fit all configurations
     }
 
     /**

@@ -92,7 +92,7 @@ class FilesystemManager implements ICripObject
      */
     public function upload(UploadedFile $file)
     {
-        $sysPath = $this->createPathIfNotExists($this->dir);
+        $sysPath = $this->mkdirIfNotExists($this->dir);
         $ext = $file->getClientOriginalExtension();
         $nameLen = mb_strlen($file->getClientOriginalName()) - mb_strlen($ext);
         $name = trim(substr($file->getClientOriginalName(), 0, $nameLen), '.');
@@ -105,7 +105,12 @@ class FilesystemManager implements ICripObject
         return $file;
     }
 
-    private function createPathIfNotExists($dir)
+    /**
+     * Make directory if it does not exists and get system path as a response
+     * @param $dir string Relative path to the dir
+     * @return string System full path
+     */
+    private function mkdirIfNotExists($dir)
     {
         $sysPath = base_path($this->package->config('target_dir') . '/' . trim($dir, '/\/'));
         app('files')->makeDirectory($sysPath, 0777, true, true);
@@ -113,6 +118,13 @@ class FilesystemManager implements ICripObject
         return $sysPath;
     }
 
+    /**
+     * Get unique name for a file/folder in system path
+     * @param $sysPath string System full path
+     * @param $name string File/Folder name
+     * @param null $ext File extension
+     * @return string Unique name
+     */
     private function getUniqueFileName($sysPath, $name, $ext = null)
     {
         $filesystem = app(Filesystem::class);
@@ -126,6 +138,12 @@ class FilesystemManager implements ICripObject
         return $name;
     }
 
+    /**
+     * @param $sysPath string System full path
+     * @param $name string File/Folder name
+     * @param null $ext string File extension
+     * @return string Joined path
+     */
     private function fullPath($sysPath, $name, $ext = null)
     {
         return $sysPath . '/' . $name . ($ext ? '.' . $ext : '');

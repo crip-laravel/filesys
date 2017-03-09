@@ -148,7 +148,8 @@ class FileInfo implements ICripObject
 
     private function updateUrl()
     {
-        $this->url = action('\\' . $this->package->config('actions.file') . '@show', '', false)
-            . '/' . $this->getPath();
+        $ctrl = '\\' . $this->package->config('actions.file') . '@show';
+        $this->url = action($ctrl, '', false) . '/' . $this->getPath();
+        $this->url = str_replace('//', '/', $this->url);
     }
 }

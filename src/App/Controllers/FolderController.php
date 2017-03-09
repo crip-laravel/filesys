@@ -10,6 +10,15 @@ use Illuminate\Http\Request;
 class FolderController extends BaseController
 {
     /**
+     * List root folder content
+     * @return JsonResponse
+     */
+    public function index()
+    {
+        return $this->show('');
+    }
+
+    /**
      * Create new sub folder
      * @param Request $request
      * @param string $folder

@@ -150,7 +150,8 @@ class FolderInfo
         $this->currDir = array_pop($dirParts);
         $this->parentDir = join('/', $dirParts);
 
-        $this->url = $this->url = action('\\' . $this->package->config('actions.folder') . '@show', '', false)
-            . '/' . $this->getPath();
+        $ctrl = '\\' . $this->package->config('actions.folder') . '@show';
+        $this->url = $this->url = action($ctrl, '', false) . '/' . $this->getPath();
+        $this->url = str_replace('//', '/', $this->url);
     }
 }

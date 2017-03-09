@@ -105,9 +105,10 @@ class FilesystemManager implements ICripObject
     public function publicUrl($path)
     {
         $filePathParts = explode(DIRECTORY_SEPARATOR, $path);
-        $filePublicPath = $this->dir . DIRECTORY_SEPARATOR . array_pop($filePathParts);
+        $filePublicPath = DIRECTORY_SEPARATOR . $this->dir . DIRECTORY_SEPARATOR . array_pop($filePathParts);
+        $filePublicPath = str_replace(DIRECTORY_SEPARATOR, '/', $filePublicPath);
 
-        return action('\\' . $this->package->config('actions.file') . '@show', $filePublicPath, false);
+        return action('\\' . $this->package->config('actions.file') . '@show', '', false) . $filePublicPath;
     }
 
     /**

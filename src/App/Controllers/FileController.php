@@ -1,7 +1,5 @@
 <?php namespace Crip\Filesys\App\Controllers;
 
-use Crip\Filesys\Services\FilesystemManager;
-use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -20,7 +18,7 @@ class FileController extends BaseController
     {
         if ($request->hasFile('file')) {
             // Configure manager path where file should be uploaded
-            // and make sure that directory exists
+            // and make sure that directory exists in file system
             $this->manager->parsePath($request->path);
 
             // Upload file to the server
@@ -31,7 +29,7 @@ class FileController extends BaseController
                 $this->manager->resizeImage($file);
             }
 
-            // return file public path to the file
+            // Return file public url to the uploaded file
             return $this->json($this->manager->publicUrl($file));
         }
 

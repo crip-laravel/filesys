@@ -2,6 +2,8 @@ import { contentLoaded } from './../index'
 
 const state = {
   isInitialized: false,
+  breadcrumb: [],
+  path: '',
   items: []
 }
 

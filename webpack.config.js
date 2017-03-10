@@ -1,4 +1,3 @@
-const path = require('path')
 const webpack = require('webpack')
 // const WebpackShellPlugin = require('webpack-shell-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')

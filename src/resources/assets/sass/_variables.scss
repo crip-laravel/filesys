@@ -13,7 +13,6 @@ $panel-inner-border: $laravel-border-color;
 $main-color: #35366a;
 $second-color: #585ba9;
 $grad-1-color: #424383;
-$link-color: #eeeeee;
 $hover-color: #0d8ff3;
 $footer-text-color: #c6c8fd;
 
@@ -46,7 +45,7 @@ $input-color-placeholder: lighten($text-color, 30%);
 $panel-default-heading-bg: #fff;
 
 // Links
-$link-color: $second-color;
+$link-color: #eeeeee;
 $link-hover-color: $hover-color;
 
 $icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";

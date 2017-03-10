@@ -1,40 +1,10 @@
-import { path, loading, blobs, selectedBlob, display } from './../getters'
 import {
   contentLoaded, contentLoading, addItem, selectItem, deselect, setGridView, setListView,
   enableEdit, updateBlob, changeDir
-} from './../mutations'
-import { loadContent, changePath } from '../actions'
-import folderApi from '../../api/folder'
-import Blob from '../../models/Blob'
+} from '../../mutations'
+import Blob from '../../../models/Blob'
 
-const state = {
-  loading: true,
-  breadcrumb: [],
-  path: '',
-  pathUp: '',
-  items: [],
-  selectedItem: false,
-  display: 'grid'
-}
-
-const actions = {
-  [loadContent] ({commit, getters}) {
-    commit(deselect)
-    commit(contentLoading)
-    folderApi.content(getters.path)
-      .then(items => { commit(contentLoaded, {items, path: getters.path}) })
-  },
-
-  [changePath] ({commit, getters}, path) {
-    commit(deselect)
-    commit(contentLoading)
-    commit(changeDir, path)
-    folderApi.content(getters.path)
-      .then(items => { commit(contentLoaded, {items, path: getters.path}) })
-  }
-}
-
-const mutations = {
+export default {
   [contentLoaded] (state, payload) {
     state.loading = false
     state.items = payload.items
@@ -115,14 +85,6 @@ const mutations = {
   }
 }
 
-const getters = {
-  [path]: (store, getters) => store.path,
-  [loading]: (store, getters) => store.loading,
-  [blobs]: (store) => store.items,
-  [selectedBlob]: (store) => store.selectedItem,
-  [display]: (store) => store.display
-}
-
 /** Helper methods to avoid code duplicates */
 
 function deselectItems (state) {
@@ -133,5 +95,3 @@ function deselectItems (state) {
 
   state.selectedItem = false
 }
-
-export default {state, mutations, getters, actions}

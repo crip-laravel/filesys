@@ -34,7 +34,8 @@
       ...mapMutations([
         mutations.selectItem,
         mutations.enableEdit,
-        mutations.updateBlob
+        mutations.updateBlob,
+        mutations.deselect
       ]),
 
       save () {
@@ -44,6 +45,8 @@
               id: this.blob.$id,
               blob: newBlob
             })
+
+            this.deselect()
           })
       }
     }

@@ -1,4 +1,5 @@
 import folderApi from '../api/folder'
+import fileApi from '../api/file'
 
 export default class Blob {
   constructor (data) {
@@ -29,13 +30,11 @@ export default class Blob {
    * @returns {Promise.<Blob>}
    */
   update () {
+    let api = this.isDir ? folderApi : fileApi
+
     return new Promise((resolve, reject) => {
-      if (this.isDir) {
-        folderApi.update(this, this.newName)
-          .then(blob => resolve(blob))
-      } else {
-        // TODO: implement file API
-      }
+      api.update(this, this.newName)
+        .then(blob => resolve(blob), reject)
     })
   }
 }

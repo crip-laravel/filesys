@@ -19,8 +19,20 @@
     computed: {
       ...mapGetters([getters.path, getters.blobs, getters.display]),
       content () {
-        // TODO: implement blob sort functionality
-        return this.blobs
+        return this.blobs.sort((a, b) => {
+          if ((a.isDir && b.isDir) || (!a.isDir && !b.isDir)) {
+            return a.name > b.name
+          }
+
+          // if types are different, make sure that dir always is first
+          if (a.isDir && !b.isDir) {
+            return -1
+          }
+
+          if (!a.isDir && b.isDir) {
+            return 1
+          }
+        })
       }
     },
 

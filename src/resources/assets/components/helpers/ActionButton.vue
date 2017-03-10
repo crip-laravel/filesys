@@ -19,10 +19,6 @@
       size: {type: String, default: () => 'md'}
     },
 
-    mounted () {
-      console.log(`${this._name} mounted`, {title: this.title, size: this.size})
-    },
-
     computed: {
       ...mapGetters([getters.loading]),
       enabled () { return !this.loading && !this.disabled },
@@ -53,20 +49,23 @@
 
     a {
       border: 1px solid transparent;
-      color: $main-color;
+      color: lighten($main-color, 30%);
       display: block;
       height: 100%;
       padding: 10px;
       text-decoration: none;
       width: 100%;
 
-      &.enabled:hover {
-        background-color: darken($footer-text-color, 20%);
-        border-color: $second-color;
-        color: $link-color;
-        cursor: pointer;
+      &.enabled {
+        color: $main-color;
+
+        &:hover {
+          background-color: darken($footer-text-color, 20%);
+          border-color: $second-color;
+          color: $link-color;
+          cursor: pointer;
+        }
       }
     }
   }
-
 </style>

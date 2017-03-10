@@ -1,19 +1,19 @@
 <template>
-  <div class="blob" :class="classes" @click="select(blob)">
+  <div class="blob" :class="classes" @click="selectItem(blob)">
     <div class="thumb">
       <img class="thumbnail" :src="blob.thumb">
     </div>
     <div v-if="blob.$edit">
       <form @submit.prevent="save">
-        <input name="name" v-model="blob.newName">
+        <input name="name" :id="blob.$id" v-model="blob.newName">
       </form>
     </div>
-    <div v-else class="blob-description" @dbclick="enableEdit()">{{blob.full_name}}</div>
+    <div v-else class="blob-description" @dblclick="enableEdit()">{{blob.full_name}}</div>
   </div>
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
+  import { mapGetters, mapMutations } from 'vuex'
   import Blob from '../../models/Blob'
   import * as getters from '../../store/getters'
   import * as mutations from '../../store/mutations'
@@ -31,18 +31,20 @@
     },
 
     methods: {
-      select (blob) {
-        this.$store.commit(mutations.selectItem, {item: blob})
-      },
+      ...mapMutations([
+        mutations.selectItem,
+        mutations.enableEdit,
+        mutations.updateBlob
+      ]),
 
       save () {
-        this.blob.$edit = false
-        console.log('save-blob', this.blob)
-      },
-
-      enableEdit () {
-        this.blob.$edit = true
-        console.log(this.$el)
+        this.blob.update()
+          .then(newBlob => {
+            this.updateBlob({
+              id: this.blob.$id,
+              blob: newBlob
+            })
+          })
       }
     }
   }

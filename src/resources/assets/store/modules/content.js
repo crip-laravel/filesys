@@ -1,5 +1,8 @@
 import { path, loading, blobs, selectedBlob, display } from './../getters'
-import { contentLoaded, addItem, selectItem, deselect, setGridView, setListView } from './../mutations'
+import {
+  contentLoaded, addItem, selectItem, deselect, setGridView, setListView,
+  enableEdit, updateBlob
+} from './../mutations'
 import { loadContent } from '../actions'
 import folderApi from '../../api/folder'
 
@@ -27,30 +30,31 @@ const mutations = {
     state.items = payload.items
   },
 
-  [addItem] (state, payload) {
-    state.items.push(payload.item)
+  [addItem] (state, blob) {
+    state.items.push(blob)
   },
 
-  [selectItem] (state, payload, a) {
+  [selectItem] (state, blob) {
     // deselect all items in current dir before select
     // required one
-    state.items.forEach(item => {
-      item.$isSelected = false
-    })
+    deselectItems(state)
 
     // make sure that item has a flag about selected
-    payload.item.$isSelected = true
+    blob.$isSelected = true
 
     // modify state and make item selected
-    state.selectedItem = payload.item
+    state.selectedItem = blob
+  },
+
+  [enableEdit] (state) {
+    if (state.selectedItem) {
+      state.selectedItem.$edit = true
+      setTimeout(() => document.getElementById(state.selectedItem.$id).focus(), 1)
+    }
   },
 
   [deselect] (state) {
-    state.items.forEach(item => {
-      item.$isSelected = false
-    })
-
-    state.selectedItem = false
+    deselectItems(state)
   },
 
   [setGridView] (state) {
@@ -59,6 +63,12 @@ const mutations = {
 
   [setListView] (state) {
     state.display = 'list'
+  },
+
+  [updateBlob] (state, {id, blob}) {
+    let toUpdate = state.items.filter(b => b.$id === id)[0]
+    state.items.splice(state.items.indexOf(toUpdate), 1)
+    state.items.push(blob)
   }
 }
 
@@ -68,6 +78,17 @@ const getters = {
   [blobs]: (store) => store.items,
   [selectedBlob]: (store) => store.selectedItem,
   [display]: (store) => store.display
+}
+
+/** Helper methods to avoid code duplicates */
+
+function deselectItems (state) {
+  state.items.forEach(item => {
+    item.$isSelected = false
+    item.$edit = false
+  })
+
+  state.selectedItem = false
 }
 
 export default {state, mutations, getters, actions}

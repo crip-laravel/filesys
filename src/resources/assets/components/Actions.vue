@@ -17,7 +17,10 @@
       </div>
       <div class="group">
         <div class="col">
-          <btn title="Edit" size="lg" :on-click="enableEditSelectedBlob" :disabled="!selectedBlob"></btn>
+          <btn title="Edit" size="lg"
+               :active="isEditEnabled"
+               :on-click="enableEdit"
+               :disabled="!selectedBlob"></btn>
         </div>
       </div>
     </div>
@@ -25,7 +28,7 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
+  import { mapGetters, mapMutations } from 'vuex'
   import btn from './helpers/ActionButton.vue'
   import folderApi from '../api/folder'
   import * as getters from '../store/getters'
@@ -34,17 +37,21 @@
   export default {
     name: 'actions',
 
-    mounted () {
-      console.log(`${this._name} mounted`)
-    },
-
     computed: {
       ...mapGetters([getters.loading, getters.path, getters.display, getters.selectedBlob]),
       isGridView () { return this.display === 'grid' },
-      isListView () { return this.display === 'list' }
+      isListView () { return this.display === 'list' },
+      isEditEnabled () { return this.selectedBlob && this.selectedBlob.$edit }
     },
 
     methods: {
+      ...mapMutations([
+        mutations.setGridView,
+        mutations.setListView,
+        mutations.enableEdit,
+        mutations.addItem
+      ]),
+
       createFolderDialog () {
         console.log('createFolderDialog()')
       },
@@ -52,27 +59,11 @@
       createFolder (name) {
         console.log('createFolder()', {folder: this.path, name})
         folderApi.create(this.path, name)
-          .then(({data}) => {
-            this.$store.commit(mutations.addItem, {item: data})
-          })
+          .then(({data}) => { this.addItem(data) })
       },
 
       openUploadFileDialog () {
         console.log('openUploadFileDialog()')
-      },
-
-      setGridView () {
-        this.$store.commit(mutations.setGridView)
-      },
-
-      setListView () {
-        this.$store.commit(mutations.setListView)
-      },
-
-      enableEditSelectedBlob () {
-        if (this.selectedBlob) {
-          this.selectedBlob.$edit = true
-        }
       }
     },
 
@@ -98,5 +89,4 @@
       float: left;
     }
   }
-
 </style>

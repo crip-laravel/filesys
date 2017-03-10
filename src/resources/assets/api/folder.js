@@ -20,13 +20,26 @@ export default {
 
   /**
    * Create new folder.
-   * @param {string} folder
+   * @param {Blob} blob
    * @param {string} name
    * @returns {Promise.<Object>}
    */
-  create (folder, name) {
+  create (blob, name) {
     return new Promise((resolve, reject) => {
-      vue.http.post(settings.foldersUrl, {folder, name})
+      vue.http.post(settings.foldersUrl, {folder: blob.full_name, name})
+        .then(({data}) => { resolve(new Blob(data)) }, reject)
+    })
+  },
+
+  /**
+   * Rename folder.
+   * @param {Blob} blob
+   * @param {string} name
+   * @returns {Promise.<Blob>}
+   */
+  update (blob, name) {
+    return new Promise((resolve, reject) => {
+      vue.http.patch(`${settings.foldersUrl}/${blob.full_name}`, {name})
         .then(({data}) => { resolve(new Blob(data)) }, reject)
     })
   }

@@ -77,6 +77,7 @@ class FolderInfo
         array_pop($pathParts);
         $pathParts[] = $newName;
         $newPath = join('/', $pathParts);
+        $this->setPath($newPath);
 
         return $newPath;
     }

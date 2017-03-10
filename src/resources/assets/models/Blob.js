@@ -1,3 +1,5 @@
+import folderApi from '../api/folder'
+
 export default class Blob {
   constructor (data) {
     this.name = data.name
@@ -17,7 +19,23 @@ export default class Blob {
     this.$isSelected = false
     this.$edit = false
     this.newName = data.name
+    this.$id = `blob-${data.full_name}`
   }
 
   get isDir () { return this.type === 'dir' }
+
+  /**
+   * Update name of current blob.
+   * @returns {Promise.<Blob>}
+   */
+  update () {
+    return new Promise((resolve, reject) => {
+      if (this.isDir) {
+        folderApi.update(this, this.newName)
+          .then(blob => resolve(blob))
+      } else {
+        // TODO: implement file API
+      }
+    })
+  }
 }

@@ -16,10 +16,6 @@
   export default {
     name: 'blobs',
 
-    mounted () {
-      console.log(`${this._name} mounted`, {blobs: this.blobs, path: this.path})
-    },
-
     computed: {
       ...mapGetters([getters.path, getters.blobs, getters.display]),
       content () {

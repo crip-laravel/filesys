@@ -1,5 +1,6 @@
 <?php namespace Crip\Filesys\App\Controllers;
 
+use Crip\Filesys\App\Folder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -62,10 +63,23 @@ class FolderController extends BaseController
      * Rename folder name
      * @param Request $request
      * @param string $folder
+     * @return JsonResponse
      */
     public function update(Request $request, $folder)
     {
-        throw new \Exception('Not implemented');
+        if (empty($request->name)) {
+            return $this->json('Name property is required.', 422);
+        }
+
+        $blob = $this->manager->parsePath($folder);
+
+        if (!$this->manager->exists($blob)) {
+            return $this->json('Folder not found.', 401);
+        }
+
+        $this->manager->rename($blob, $request->name);
+
+        return $this->json(new Folder($blob));
     }
 
     /**

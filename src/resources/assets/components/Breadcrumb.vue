@@ -9,10 +9,6 @@
   export default {
     name: 'breadcrumb',
 
-    mounted () {
-      console.log(`${this._name} mounted`, {path: this.path})
-    },
-
     computed: {
       ...mapGetters([getters.path])
     }

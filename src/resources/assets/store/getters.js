@@ -1,2 +1,5 @@
 export const path = 'path'
 export const loading = 'loading'
+export const blobs = 'blobs'
+export const selectedBlob = 'selectedBlob'
+export const display = 'display'

@@ -3,8 +3,8 @@
     <actions class="row"></actions>
     <breadcrumb class="row"></breadcrumb>
     <div class="row">
-      <tree class="col-md-4"></tree>
-      <files class="col-md-8"></files>
+      <tree class="col-sm-4 col-md-3"></tree>
+      <blobs class="col-sm-8 col-md-9"></blobs>
     </div>
   </div>
 </template>
@@ -13,7 +13,7 @@
   import actions from './components/Actions.vue'
   import breadcrumb from './components/Breadcrumb.vue'
   import tree from './components/Tree.vue'
-  import files from './components/Files.vue'
+  import blobs from './components/Blobs.vue'
 
   import { loadContent } from './store/actions'
 
@@ -25,6 +25,6 @@
       this.$store.dispatch(loadContent)
     },
 
-    components: {actions, breadcrumb, tree, files}
+    components: {actions, breadcrumb, tree, blobs}
   }
 </script>

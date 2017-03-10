@@ -1,7 +1,7 @@
 <template>
-  <span class="action-btn" :class="'action-btn-' + size">
+  <div :class="classes">
     <a @click="onClick" :class="{enabled}">{{title}}</a>
-  </span>
+  </div>
 </template>
 
 <script>
@@ -14,6 +14,7 @@
     props: {
       title: {type: String},
       onClick: {type: Function},
+      active: {type: Boolean, default: () => false},
       disabled: {type: Boolean, default: () => false},
       size: {type: String, default: () => 'md'}
     },
@@ -24,9 +25,8 @@
 
     computed: {
       ...mapGetters([getters.loading]),
-      enabled () {
-        return !this.loading && !this.disabled
-      }
+      enabled () { return !this.loading && !this.disabled },
+      classes () { return {'action-btn': true, [`action-btn-${this.size}`]: true, 'active': this.active} }
     }
   }
 </script>
@@ -35,10 +35,20 @@
   @import "../../sass/variables";
 
   .action-btn {
-    display: block;
-
     &.action-btn-lg {
       height: 100px;
+    }
+
+    &.action-btn-sm a {
+      height: auto;
+      padding: 0 10px;
+      margin-bottom: 2px;
+    }
+
+    &.active a {
+      background-color: darken($footer-text-color, 10%);
+      border-color: $second-color;
+      color: $link-color;
     }
 
     a {

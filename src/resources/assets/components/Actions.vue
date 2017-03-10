@@ -1,12 +1,18 @@
 <template>
   <div class="row">
-    <div class="manager-actions">
+    <div class="manager-actions clearfix">
       <div class="group">
         <div class="col">
           <btn title="Upload" size="lg" :on-click="openUploadFileDialog"></btn>
         </div>
         <div class="col">
-          <btn title="Create Folder" size="lg" :on-click="createFolder"></btn>
+          <btn title="Create Folder" size="lg" :on-click="createFolderDialog"></btn>
+        </div>
+      </div>
+      <div class="group">
+        <div class="col">
+          <btn title="Grid view" size="sm" :on-click="setGridView" :active="isGridView"></btn>
+          <btn title="List view" size="sm" :on-click="setListView" :active="isListView"></btn>
         </div>
       </div>
     </div>
@@ -16,7 +22,9 @@
 <script>
   import { mapGetters } from 'vuex'
   import btn from './helpers/ActionButton.vue'
+  import folderApi from '../api/folder'
   import * as getters from '../store/getters'
+  import * as mutations from '../store/mutations'
 
   export default {
     name: 'actions',
@@ -26,16 +34,34 @@
     },
 
     computed: {
-      ...mapGetters([getters.loading])
+      ...mapGetters([getters.loading, getters.path, getters.display]),
+      isGridView () { return this.display === 'grid' },
+      isListView () { return this.display === 'list' }
     },
 
     methods: {
-      createFolder () {
-        console.log('createFolder()')
+      createFolderDialog () {
+        console.log('createFolderDialog()')
+      },
+
+      createFolder (name) {
+        console.log('createFolder()', {folder: this.path, name})
+        folderApi.create(this.path, name)
+          .then(({data}) => {
+            this.$store.commit(mutations.addItem, {item: data})
+          })
       },
 
       openUploadFileDialog () {
         console.log('openUploadFileDialog()')
+      },
+
+      setGridView () {
+        this.$store.commit(mutations.setGridView)
+      },
+
+      setListView () {
+        this.$store.commit(mutations.setListView)
       }
     },
 
@@ -57,7 +83,8 @@
     }
 
     .col, .group {
-      display: inline-block;
+      height: 100px;
+      float: left;
     }
   }
 

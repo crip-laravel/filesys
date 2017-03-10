@@ -1,2 +1,7 @@
 export const treeLoaded = 'treeLoaded'
 export const contentLoaded = 'contentLoaded'
+export const addItem = 'addItem'
+export const selectItem = 'selectItem'
+export const deselect = 'deselect'
+export const setGridView = 'setGridView'
+export const setListView = 'setListView'

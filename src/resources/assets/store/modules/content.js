@@ -1,5 +1,5 @@
-import { path, loading } from './../getters'
-import { contentLoaded } from './../mutations'
+import { path, loading, blobs, selectedBlob, display } from './../getters'
+import { contentLoaded, addItem, selectItem, deselect, setGridView, setListView } from './../mutations'
 import { loadContent } from '../actions'
 import folderApi from '../../api/folder'
 
@@ -8,7 +8,9 @@ const state = {
   loading: true,
   breadcrumb: [],
   path: '',
-  items: []
+  items: [],
+  selectedItem: {},
+  display: 'grid'
 }
 
 const actions = {
@@ -23,12 +25,47 @@ const mutations = {
     state.isInitialized = true
     state.loading = false
     state.items = payload.items
+  },
+
+  [addItem] (state, payload) {
+    state.items.push(payload.item)
+  },
+
+  [selectItem] (state, payload) {
+    // deselect all items in current dir before select
+    // required one
+    state.commit(deselect)
+
+    // make sure that item has a flag about selected
+    payload.item.$isSelected = true
+
+    // modify state and make item selected
+    state.selectedItem = payload.item
+  },
+
+  [deselect] (state) {
+    state.items.forEach(item => {
+      item.$isSelected = false
+    })
+
+    state.selectedItem = {}
+  },
+
+  [setGridView] (state) {
+    state.display = 'grid'
+  },
+
+  [setListView] (state) {
+    state.display = 'list'
   }
 }
 
 const getters = {
   [path]: (store, getters) => store.path,
-  [loading]: (store, getters) => store.loading
+  [loading]: (store, getters) => store.loading,
+  [blobs]: (store) => store.items,
+  [selectedBlob]: (store) => store.selectedItem,
+  [display]: (store) => store.display
 }
 
 export default {state, mutations, getters, actions}

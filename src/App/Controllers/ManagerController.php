@@ -17,6 +17,8 @@ class ManagerController extends BaseController
     public function __invoke(Request $request)
     {
         $input = $request->all();
-        return $this->package->view('master', compact('input'));
+        $filesUrl = action('\\' . config('cripfilesys.actions.file') . '@show', '');
+        $foldersUrl = action('\\' . config('cripfilesys.actions.folder') . '@show','');
+        return $this->package->view('master', compact('input', 'filesUrl', 'foldersUrl'));
     }
 }

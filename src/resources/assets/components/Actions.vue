@@ -14,7 +14,9 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
   import btn from './helpers/ActionButton.vue'
+  import * as getters from '../store/getters'
 
   export default {
     name: 'actions',
@@ -22,6 +24,11 @@
     mounted () {
       console.log(`${this._name} mounted`)
     },
+
+    computed: {
+      ...mapGetters([getters.loading])
+    },
+
     methods: {
       createFolder () {
         console.log('createFolder()')
@@ -31,6 +38,7 @@
         console.log('openUploadFileDialog()')
       }
     },
+
     components: {btn}
   }
 </script>

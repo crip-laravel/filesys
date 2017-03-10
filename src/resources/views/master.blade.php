@@ -8,7 +8,8 @@
         data-sizes="{!! str_replace('"', '\'', json_encode(config('cripfilesys.thumbs'))) !!}"
         data-params="{!! str_replace('"', '\'', json_encode($input)) !!}"
         data-public-url="{{ config('cripfilesys.public_url') }}"
-        data-base-url="{{ config('cripfilesys.base_url') }}"/>
+        data-files-url="{{ $filesUrl }}"
+        data-folders-url="{{ $foldersUrl }}"/>
   <title>CRIP Filesys</title>
   <link href="{{ config('cripfilesys.public_url') }}/styles.css" rel="stylesheet">
   <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->

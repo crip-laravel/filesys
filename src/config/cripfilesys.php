@@ -4,7 +4,6 @@ use Crip\Filesys\App\Controllers\FileController;
 use Crip\Filesys\App\Controllers\FolderController;
 
 return [
-    'base_url' => '/packages/filemanager',
     'public_url' => '/vendor/crip/filesys',
     'target_dir' => 'storage/uploads',
     'thumbs_dir' => 'thumbs',

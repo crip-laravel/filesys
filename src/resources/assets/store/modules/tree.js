@@ -1,4 +1,4 @@
-import { treeLoaded } from './../index'
+import { treeLoaded } from './../mutations'
 
 const state = {
   isInitialized: false,

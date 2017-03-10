@@ -1,19 +1,32 @@
 <template>
-  <span class="action-btn" :class="'action-btn-' + size"><a @click="onClick">{{title}}</a></span>
+  <span class="action-btn" :class="'action-btn-' + size">
+    <a @click="onClick" :class="{enabled}">{{title}}</a>
+  </span>
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
+  import * as getters from '../../store/getters'
+
   export default {
     name: 'action-btn',
 
     props: {
       title: {type: String},
       onClick: {type: Function},
-      size: {type: String, default: _ => 'md'}
+      disabled: {type: Boolean, default: () => false},
+      size: {type: String, default: () => 'md'}
     },
 
     mounted () {
       console.log(`${this._name} mounted`, {title: this.title, size: this.size})
+    },
+
+    computed: {
+      ...mapGetters([getters.loading]),
+      enabled () {
+        return !this.loading && !this.disabled
+      }
     }
   }
 </script>
@@ -31,17 +44,17 @@
     a {
       border: 1px solid transparent;
       color: $main-color;
-      cursor: pointer;
       display: block;
       height: 100%;
       padding: 10px;
+      text-decoration: none;
       width: 100%;
 
-      &:hover {
+      &.enabled:hover {
         background-color: darken($footer-text-color, 20%);
         border-color: $second-color;
         color: $link-color;
-        text-decoration: none;
+        cursor: pointer;
       }
     }
   }

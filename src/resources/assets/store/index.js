@@ -8,6 +8,3 @@ Vue.use(Vuex)
 export const store = new Vuex.Store({
   modules: {tree, content}
 })
-
-export const treeLoaded = 'treeLoaded'
-export const contentLoaded = 'contentLoaded'

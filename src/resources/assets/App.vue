@@ -15,9 +15,14 @@
   import tree from './components/Tree.vue'
   import files from './components/Files.vue'
 
+  import { loadContent } from './store/actions'
+
   export default {
+    name: 'app',
+
     mounted () {
       console.log('app mounted')
+      this.$store.dispatch(loadContent)
     },
 
     components: {actions, breadcrumb, tree, files}

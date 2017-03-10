@@ -13,6 +13,10 @@ export default class Blob {
     this.url = data.url
     this.size = data.size
     this.thumbs = data.thumbs
+
+    this.$isSelected = false
+    this.$edit = false
+    this.newName = data.name
   }
 
   get isDir () { return this.type === 'dir' }

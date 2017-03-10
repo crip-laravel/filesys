@@ -9,7 +9,7 @@ const state = {
   breadcrumb: [],
   path: '',
   items: [],
-  selectedItem: {},
+  selectedItem: false,
   display: 'grid'
 }
 
@@ -31,10 +31,12 @@ const mutations = {
     state.items.push(payload.item)
   },
 
-  [selectItem] (state, payload) {
+  [selectItem] (state, payload, a) {
     // deselect all items in current dir before select
     // required one
-    state.commit(deselect)
+    state.items.forEach(item => {
+      item.$isSelected = false
+    })
 
     // make sure that item has a flag about selected
     payload.item.$isSelected = true
@@ -48,7 +50,7 @@ const mutations = {
       item.$isSelected = false
     })
 
-    state.selectedItem = {}
+    state.selectedItem = false
   },
 
   [setGridView] (state) {

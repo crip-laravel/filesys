@@ -15,6 +15,11 @@
           <btn title="List view" size="sm" :on-click="setListView" :active="isListView"></btn>
         </div>
       </div>
+      <div class="group">
+        <div class="col">
+          <btn title="Edit" size="lg" :on-click="enableEditSelectedBlob" :disabled="!selectedBlob"></btn>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -34,7 +39,7 @@
     },
 
     computed: {
-      ...mapGetters([getters.loading, getters.path, getters.display]),
+      ...mapGetters([getters.loading, getters.path, getters.display, getters.selectedBlob]),
       isGridView () { return this.display === 'grid' },
       isListView () { return this.display === 'list' }
     },
@@ -62,6 +67,12 @@
 
       setListView () {
         this.$store.commit(mutations.setListView)
+      },
+
+      enableEditSelectedBlob () {
+        if (this.selectedBlob) {
+          this.selectedBlob.$edit = true
+        }
       }
     },
 

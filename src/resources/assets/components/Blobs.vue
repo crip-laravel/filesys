@@ -1,6 +1,6 @@
 <template>
   <div id="blobs">
-    <div class="row" :class="[display]">
+    <div class="row clearfix" :class="[display]">
       <div v-for="blob in content" class="blob-container">
         <blob :blob="blob"></blob>
       </div>
@@ -34,9 +34,9 @@
 
 <style rel="stylesheet/scss" lang="sass">
   .grid .blob-container {
-    display: inline-block;
+    float: left;
     width: 205px;
-    height: 160px;
+    height: 134px;
     margin: 3px;
   }
 </style>

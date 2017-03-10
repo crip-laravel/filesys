@@ -1,6 +1,6 @@
 <template>
   <div class="blob" :class="classes" @click="selectItem(blob)">
-    <div class="thumb">
+    <div class="thumb" @dblclick="openItem(blob)">
       <img class="thumbnail" :src="blob.thumb">
     </div>
     <div v-if="blob.$edit">
@@ -8,15 +8,18 @@
         <input name="name" :id="blob.$id" v-model="blob.newName">
       </form>
     </div>
-    <div v-else class="blob-description" @dblclick="enableEdit()">{{blob.full_name}}</div>
+    <div v-else class="blob-description" @dblclick="enableEdit()">
+      {{blob.isDir ? blob.name : blob.full_name}}
+    </div>
   </div>
 </template>
 
 <script>
   import { mapGetters, mapMutations } from 'vuex'
-  import Blob from '../../models/Blob'
-  import * as getters from '../../store/getters'
-  import * as mutations from '../../store/mutations'
+  import Blob from '../models/Blob'
+  import * as getters from '../store/getters'
+  import * as mutations from '../store/mutations'
+  import { changePath } from '../store/actions'
 
   export default {
     name: 'blob',
@@ -48,13 +51,24 @@
 
             this.deselect()
           })
+      },
+
+      /**
+       * Open folder or file
+       * @param {Blob} blob
+       */
+      openItem (blob) {
+        if (blob.isDir) {
+          return this.$store.dispatch(changePath, blob.full_name)
+        }
+        // TODO: implement file select for ckeditor or litebox
       }
     }
   }
 </script>
 
 <style rel="stylesheet/scss" lang="sass">
-  @import "../../sass/variables";
+  @import "../sass/_variables";
 
   .blob {
     overflow: hidden;
@@ -84,6 +98,7 @@
     }
 
     .blob-description {
+      margin: 0 4px;
       height: 28px;
     }
   }
@@ -92,8 +107,8 @@
     border-bottom: 1px solid $second-color;
 
     .thumb {
-      width: 50px;
       float: left;
+      width: 50px;
 
       img {
         height: 25px;
@@ -101,9 +116,15 @@
       }
     }
 
-    .blob-description {
-      margin: 5px 0 0 10px;
+    .blob-description, form {
       float: left;
+      margin: 5px 0 0 10px;
+    }
+
+    form {
+      margin-top: 3px;
+      min-width: 218px;
+      width: 50%;
     }
   }
 </style>

@@ -1,16 +1,17 @@
 import { path, loading, blobs, selectedBlob, display } from './../getters'
 import {
-  contentLoaded, addItem, selectItem, deselect, setGridView, setListView,
-  enableEdit, updateBlob
+  contentLoaded, contentLoading, addItem, selectItem, deselect, setGridView, setListView,
+  enableEdit, updateBlob, changeDir
 } from './../mutations'
-import { loadContent } from '../actions'
+import { loadContent, changePath } from '../actions'
 import folderApi from '../../api/folder'
+import Blob from '../../models/Blob'
 
 const state = {
-  isInitialized: false,
   loading: true,
   breadcrumb: [],
   path: '',
+  pathUp: '',
   items: [],
   selectedItem: false,
   display: 'grid'
@@ -18,16 +19,38 @@ const state = {
 
 const actions = {
   [loadContent] ({commit, getters}) {
+    commit(deselect)
+    commit(contentLoading)
     folderApi.content(getters.path)
-      .then(items => { commit(contentLoaded, {items}) })
+      .then(items => { commit(contentLoaded, {items, path: getters.path}) })
+  },
+
+  [changePath] ({commit, getters}, path) {
+    commit(deselect)
+    commit(contentLoading)
+    commit(changeDir, path)
+    folderApi.content(getters.path)
+      .then(items => { commit(contentLoaded, {items, path: getters.path}) })
   }
 }
 
 const mutations = {
   [contentLoaded] (state, payload) {
-    state.isInitialized = true
     state.loading = false
     state.items = payload.items
+
+    if (payload.path !== '') {
+      state.items.push(new Blob({
+        name: '..',
+        type: 'dir',
+        full_name: state.pathUp,
+        $isSystem: true
+      }))
+    }
+  },
+
+  [contentLoading] (state) {
+    state.loading = true
   },
 
   [addItem] (state, blob) {
@@ -35,15 +58,17 @@ const mutations = {
   },
 
   [selectItem] (state, blob) {
-    // deselect all items in current dir before select
-    // required one
-    deselectItems(state)
+    if (blob.$id !== state.selectedItem.$id && !blob.$isSystem) {
+      // deselect all items in current dir before select
+      // required one
+      deselectItems(state)
 
-    // make sure that item has a flag about selected
-    blob.$isSelected = true
+      // make sure that item has a flag about selected
+      blob.$isSelected = true
 
-    // modify state and make item selected
-    state.selectedItem = blob
+      // modify state and make item selected
+      state.selectedItem = blob
+    }
   },
 
   [enableEdit] (state) {
@@ -69,6 +94,24 @@ const mutations = {
     let toUpdate = state.items.filter(b => b.$id === id)[0]
     state.items.splice(state.items.indexOf(toUpdate), 1)
     state.items.push(blob)
+  },
+
+  [changeDir] (state, path) {
+    state.path = path
+    state.breadcrumb = path.split('/')
+
+    let parts = path.split('/')
+    if (parts.length < 3) {
+      if (parts.length < 2) {
+        state.pathUp = ''
+      } else {
+        state.pathUp = parts[0]
+      }
+
+      return
+    }
+
+    state.pathUp = path.split('/').splice(-1, 2).join('/')
   }
 }
 

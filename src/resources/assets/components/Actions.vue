@@ -29,7 +29,7 @@
 
 <script>
   import { mapGetters, mapMutations } from 'vuex'
-  import btn from './helpers/ActionButton.vue'
+  import btn from './ActionButton.vue'
   import folderApi from '../api/folder'
   import * as getters from '../store/getters'
   import * as mutations from '../store/mutations'

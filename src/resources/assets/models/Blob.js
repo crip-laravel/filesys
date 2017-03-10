@@ -21,6 +21,7 @@ export default class Blob {
     this.$edit = false
     this.newName = data.name
     this.$id = `blob-${data.full_name}`
+    this.$isSystem = !!data.$isSystem
   }
 
   get isDir () { return this.type === 'dir' }

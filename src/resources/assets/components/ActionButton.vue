@@ -6,7 +6,7 @@
 
 <script>
   import { mapGetters } from 'vuex'
-  import * as getters from '../../store/getters'
+  import * as getters from '../store/getters'
 
   export default {
     name: 'action-btn',
@@ -28,7 +28,7 @@
 </script>
 
 <style rel="stylesheet/scss" lang="sass">
-  @import "../../sass/variables";
+  @import "../sass/_variables";
 
   .action-btn {
     &.action-btn-lg {

@@ -10,7 +10,7 @@
 
 <script>
   import { mapGetters } from 'vuex'
-  import blob from './helpers/Blob.vue'
+  import blob from './Blob.vue'
   import * as getters from '../store/getters'
 
   export default {

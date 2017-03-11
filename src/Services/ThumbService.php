@@ -161,7 +161,7 @@ class ThumbService
      * @param $thumbSizeIdentifier
      * @return array ['path', 'filename']
      */
-    private function getThumbPath($originalFilePath, $thumbSizeIdentifier)
+    public function getThumbPath($originalFilePath, $thumbSizeIdentifier)
     {
         $baseDir = trim(str_replace('\\', '/', base_path($this->package->config('target_dir'))), '/');
         $relativePath = str_replace($baseDir, '', $originalFilePath);

@@ -119,8 +119,13 @@ class FilesystemManager implements ICripObject
      */
     public function fileContent(Blob $blob)
     {
-        // TODO: Path should be to the thumb if required key in $this->params array exists
-        return $this->fs->get($blob->systemPath());
+        $path = $blob->systemPath();
+
+        if (array_key_exists('s', $this->params)) {
+            $path = join('/', $this->thumb->getThumbPath($path, $this->params['s']));
+        }
+
+        return $this->fs->get($path);
     }
 
     /**

@@ -163,6 +163,9 @@ class FilesystemManager implements ICripObject
             list($name, $ext) = $blob->file->setName($newName);
             $targetName = $this->getUniqueFileName($blob->folder->getDir(), $name, $ext);
             if ($name !== $targetName) {
+                if ($this->isImage($blob)) {
+                    $this->thumb->rename($curr, $targetName . '.' . $ext);
+                }
                 $blob->file->setName($targetName);
             }
         } else {
@@ -172,6 +175,10 @@ class FilesystemManager implements ICripObject
 
         if (!$this->fs->move($curr, $blob->systemPath())) {
             throw new \Exception('Could not rename.');
+        }
+
+        if ($blob->file->isDefined()) {
+            $blob->file->update();
         }
 
         return $blob;
@@ -184,6 +191,10 @@ class FilesystemManager implements ICripObject
      */
     public function delete(Blob $blob)
     {
+        if ($this->isImage($blob)) {
+            $this->thumb->delete($blob->systemPath());
+        }
+
         return $this->fs->delete($blob->systemPath());
     }
 

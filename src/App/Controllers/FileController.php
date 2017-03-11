@@ -29,6 +29,8 @@ class FileController extends BaseController
             // If file is image, create all configured sizer for it
             if ($this->manager->isImage($blob)) {
                 $this->manager->resizeImage($blob);
+                // Update file details after creating thumbs
+                $blob->file->update();
             }
 
             // Return file public url to the uploaded file

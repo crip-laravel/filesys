@@ -68,15 +68,11 @@ class FileInfo implements ICripObject
         $this->folder = $folder;
 
         if ($file) {
-            /** @var Filesystem $fs */
-            $fs = app(Filesystem::class);
             $this->fullName = $file;
             $this->ext = pathinfo($file, PATHINFO_EXTENSION);
-            $this->mimeType = $fs->mimeType($this->getSystemPath());
-            $this->updateUrl();
+            $this->update();
             if (substr($this->mimeType, 0, 5) === 'image') {
                 $this->size = getimagesize($this->getSystemPath());
-                $this->thumbs = (new ThumbService($this->package))->details($this->getSystemPath());
             }
         }
     }
@@ -98,8 +94,7 @@ class FileInfo implements ICripObject
     public function setName($newName)
     {
         $this->name = $newName;
-        $this->fullName = $newName . '.' . $this->ext;
-        $this->updateUrl();
+        $this->update();
 
         return [$newName, $this->ext];
     }
@@ -176,11 +171,18 @@ class FileInfo implements ICripObject
         return $this->thumbs;
     }
 
-    private function updateUrl()
+    /**
+     * Update info of current file
+     */
+    public function update()
     {
+        /** @var Filesystem $fs */
+        $fs = app(Filesystem::class);
         $url = new UrlService($this->package);
-        $this->url = $url->file($this->getPath());
 
-        return $this->url;
+        $this->url = $url->file($this->getPath());
+        $this->thumbs = (new ThumbService($this->package))->details($this->getSystemPath());
+        $this->mimeType = $fs->mimeType($this->getSystemPath());
+        $this->fullName = $this->name . '.' . $this->ext;
     }
 }

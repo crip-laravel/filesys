@@ -14,11 +14,8 @@ class ThumbService
      * @var array
      */
     private $sizes = [
-        'thumb' => [
-            205,
-            100,
-            'resize',
-        ]
+        'thumb' => [205, 100, 'resize',],
+        'xs' => [50, 25, 'resize']
     ];
 
     /**
@@ -125,14 +122,38 @@ class ThumbService
         return $thumbs->all();
     }
 
+    /**
+     * Rename thumbs for a image.
+     * @param string $pathToImage
+     * @param string $newName
+     */
     public function rename($pathToImage, $newName)
     {
-        // TODO: rename thumbs if they exists
+        collect(array_keys($this->sizes))
+            ->each(function ($size) use ($pathToImage, $newName) {
+                $existing = $this->createThumbPath($pathToImage, $size);
+                list($path, $oldName) = $this->getThumbPath($pathToImage, $size);
+
+                if ($this->fs->exists($existing)) {
+                    rename($existing, $path . '/' . $newName);
+                }
+            });
     }
 
+    /**
+     * Delete all thumbs of an image.
+     * @param string $pathToImage
+     */
     public function delete($pathToImage)
     {
-        // TODO: delete thumbs if they exists
+        collect(array_keys($this->sizes))
+            ->each(function ($size) use ($pathToImage) {
+                list($path, $name) = $this->createThumbPath($pathToImage, $size);
+                $file = $path . '/' . $name;
+                if ($this->fs->exists($file)) {
+                    $this->fs->delete($file);
+                }
+            });
     }
 
     /**
@@ -148,6 +169,6 @@ class ThumbService
         $fileName = array_pop($parts);
         $result = $baseDir . '/--thumbs--/' . $thumbSizeIdentifier . '/' . trim(join('/', $parts), '/\\');
 
-        return [$result, $fileName];
+        return [trim($result, '/'), $fileName];
     }
 }

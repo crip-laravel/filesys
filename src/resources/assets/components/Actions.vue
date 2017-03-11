@@ -86,6 +86,7 @@
   @import "../sass/variables";
 
   .manager-actions {
+    background-color: $navbar-default-bg;
     border-bottom: 1px solid $second-color;
     width: 100%;
 

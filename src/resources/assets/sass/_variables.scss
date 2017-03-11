@@ -30,7 +30,7 @@ $line-height-base: 1.6;
 $text-color: #4d4d4d;
 
 // Navbar
-$navbar-default-bg: #fff;
+$navbar-default-bg: #eeeeee;
 $navbar-inverse-bg: $main-color;
 
 // Buttons
@@ -45,7 +45,7 @@ $input-color-placeholder: lighten($text-color, 30%);
 $panel-default-heading-bg: #fff;
 
 // Links
-$link-color: #eeeeee;
+$link-color: $main-color;
 $link-hover-color: $hover-color;
 
 $icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";

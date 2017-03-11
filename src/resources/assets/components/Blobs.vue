@@ -41,10 +41,17 @@
 </script>
 
 <style rel="stylesheet/scss" lang="sass">
+  @import "../sass/variables";
+
   .grid .blob-container {
     float: left;
     width: 205px;
-    height: 134px;
+    height: 139px;
     margin: 3px;
+  }
+
+  #blobs {
+    background-color: $navbar-default-bg;
+    border-top: 1px solid $second-color;
   }
 </style>

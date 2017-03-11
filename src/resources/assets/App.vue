@@ -1,10 +1,10 @@
 <template>
-  <div class="container-fluid">
+  <div class="container-fluid full-height">
     <actions class="row"></actions>
     <breadcrumb class="row"></breadcrumb>
-    <div class="row">
-      <tree class="col-sm-4 col-md-3"></tree>
-      <blobs class="col-sm-8 col-md-9"></blobs>
+    <div class="row full-height">
+      <tree class="col-sm-4 col-md-3 full-height"></tree>
+      <blobs class="col-sm-8 col-md-9 full-height"></blobs>
     </div>
   </div>
 </template>

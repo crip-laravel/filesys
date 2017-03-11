@@ -5,3 +5,8 @@
 
 // Bootstrap
 @import "~bootstrap-sass/assets/stylesheets/bootstrap";
+
+html, body, .full-height {
+  min-height: 100% !important;
+  height: 100%;
+}

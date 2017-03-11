@@ -45,8 +45,12 @@ export default {
 
   [enableEdit] (state) {
     if (state.selectedItem) {
-      state.selectedItem.$edit = true
-      setTimeout(() => document.getElementById(state.selectedItem.$id).focus(), 1)
+      state.selectedItem.$edit = !state.selectedItem.$edit
+      if (state.selectedItem.$edit) {
+        setTimeout(() => {
+          document.getElementById(state.selectedItem.$id).focus()
+        }, 1)
+      }
     }
   },
 

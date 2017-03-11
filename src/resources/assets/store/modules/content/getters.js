@@ -1,9 +1,10 @@
-import { path, loading, blobs, selectedBlob, display } from '../../getters'
+import { path, loading, blobs, selectedBlob, display, breadcrumb } from '../../getters'
 
 export default {
   [path]: (store, getters) => store.path,
   [loading]: (store, getters) => store.loading,
   [blobs]: (store) => store.items,
   [selectedBlob]: (store) => store.selectedItem,
-  [display]: (store) => store.display
+  [display]: (store) => store.display,
+  [breadcrumb]: (store) => store.breadcrumb
 }

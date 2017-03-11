@@ -89,6 +89,7 @@
     .thumb {
       height: 105px;
       overflow: hidden;
+      margin-bottom: 8px;
 
       img {
         margin-bottom: 6px;

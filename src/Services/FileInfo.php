@@ -87,16 +87,26 @@ class FileInfo implements ICripObject
     }
 
     /**
+     * Determines is file info details for image.
+     * @return bool
+     */
+    public function isImage()
+    {
+        return substr($this->getMimeType(), 0, 5) === 'image';
+    }
+
+    /**
      * Update current file name
      * @param $newName
-     * @return array [name, extension]
+     * @return array [name, extension, oldName]
      */
     public function setName($newName)
     {
+        $oldName = $this->name;
         $this->name = $newName;
         $this->update();
 
-        return [$newName, $this->ext];
+        return [$newName, $this->ext, $oldName];
     }
 
     /**

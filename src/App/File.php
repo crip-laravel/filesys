@@ -40,7 +40,7 @@ class File extends FileSystemObject implements ICripObject, Arrayable
             $this->mime = $blob->getMime();
             $this->bytes = $fs->size($blob->systemPath());
             $this->updated_at = $fs->lastModified($blob->systemPath());
-            // $this->thumb = resolve default thumb from a type or image for images
+            $this->thumb = $blob->getThumb();
             $this->dir = $blob->folder->getPath();
             $this->full_name = $blob->file->getFullName();
             $this->url = $blob->file->getUrl();

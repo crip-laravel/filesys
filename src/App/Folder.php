@@ -33,7 +33,7 @@ class Folder extends FileSystemObject implements ICripObject, Arrayable
             $this->full_name = $blob->folder->getPath();
             $this->updated_at = $fs->lastModified($blob->systemPath());
             $this->url = $blob->folder->getUrl();
-            // $this->thumb = resolve from config url icon path
+            $this->thumb = $blob->getThumb();
         }
     }
 }

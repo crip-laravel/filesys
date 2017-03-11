@@ -148,7 +148,7 @@ class ThumbService
     {
         collect(array_keys($this->sizes))
             ->each(function ($size) use ($pathToImage) {
-                list($path, $name) = $this->createThumbPath($pathToImage, $size);
+                list($path, $name) = $this->getThumbPath($pathToImage, $size);
                 $file = $path . '/' . $name;
                 if ($this->fs->exists($file)) {
                     $this->fs->delete($file);

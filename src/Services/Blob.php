@@ -104,6 +104,34 @@ class Blob implements ICripObject
         return 'file';
     }
 
+    public function getThumb()
+    {
+        $url = $this->package->config('icons.url');
+        $icons = $this->package->config('icons.files');
+
+        if (!$this->file->isDefined()) {
+            return $url . $icons['dir'];
+        }
+
+        if ($this->file->isImage()) {
+            $thumbs = $this->file->getThumbs();
+
+            if (!array_key_exists('thumb', $thumbs)) {
+                return $url . $icons['img'];
+            }
+
+            return $thumbs['thumb']['url'];
+        }
+
+        $mime = $this->getMime();
+        if (!array_key_exists($mime, $icons)) {
+            $message = sprintf('Configuration file is missing for `%s` file type in `icons.files` array', $mime);
+            throw new \Exception($message);
+        }
+
+        return $url . $icons[$mime];
+    }
+
     private function normalizePath($path)
     {
         $path = str_replace('\\', '/', $path);

@@ -69,16 +69,6 @@ class FilesystemManager implements ICripObject
     }
 
     /**
-     * Determines is presented path for image.
-     * @param Blob $blob
-     * @return bool
-     */
-    public function isImage(Blob $blob)
-    {
-        return substr($blob->file->getMimeType(), 0, 5) === 'image';
-    }
-
-    /**
      * Upload file in to package configured folder.
      * @param Blob $blob
      * @param UploadedFile $upload Uploading file
@@ -164,14 +154,17 @@ class FilesystemManager implements ICripObject
     {
         $newName = Slug::make($newName);
         $curr = $blob->systemPath();
+
         if ($blob->file->isDefined()) {
-            list($name, $ext) = $blob->file->setName($newName);
+            list($name, $ext, $oldName) = $blob->file->setName($newName);
             $targetName = $this->getUniqueFileName($blob->folder->getDir(), $name, $ext);
+
             if ($name !== $targetName) {
-                if ($this->isImage($blob)) {
-                    $this->thumb->rename($curr, $targetName . '.' . $ext);
-                }
                 $blob->file->setName($targetName);
+            }
+
+            if ($blob->file->isImage()) {
+                $this->thumb->rename($curr, $targetName . '.' . $ext);
             }
         } else {
             $newName = $this->getUniqueFileName($blob->folder->getParentDir(), $newName);
@@ -196,7 +189,7 @@ class FilesystemManager implements ICripObject
      */
     public function delete(Blob $blob)
     {
-        if ($this->isImage($blob)) {
+        if ($blob->file->isImage()) {
             $this->thumb->delete($blob->systemPath());
         }
 

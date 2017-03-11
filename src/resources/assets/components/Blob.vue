@@ -91,19 +91,22 @@
       overflow: hidden;
 
       img {
-        max-height: 100px;
         margin-bottom: 6px;
+        max-height: 100px;
       }
     }
 
     input {
-      width: 100%;
       color: $brand-primary;
+      width: 100%;
+      padding: 0 5px;
+      outline: none;
     }
 
     .blob-description {
-      margin: 0 4px;
       height: 28px;
+      margin: 0 4px;
+      text-align: center;
     }
   }
 
@@ -112,11 +115,16 @@
 
     .thumb {
       float: left;
+      height: auto;
+      margin: 4px 0 4px 4px;
+      padding: 0;
+      text-align: center;
       width: 50px;
+      border: none;
 
       img {
         height: 25px;
-        margin: 4px;
+        margin: 0 auto;
       }
     }
 

@@ -19,7 +19,8 @@ class ManagerController extends BaseController
         $input = $request->all();
         $filesUrl = action('\\' . config('cripfilesys.actions.file') . '@show', '');
         $foldersUrl = action('\\' . config('cripfilesys.actions.folder') . '@show','');
-        $dirIconUrl = config('cripfilesys.icons.url') . config('cripfilesys.icons.files.dir');
-        return $this->package->view('master', compact('input', 'filesUrl', 'foldersUrl', 'dirIconUrl'));
+        $iconDir = config('cripfilesys.icons.url');
+        $dirIconUrl = $iconDir . config('cripfilesys.icons.files.dir');
+        return $this->package->view('master', compact('input', 'filesUrl', 'foldersUrl', 'dirIconUrl', 'iconDir'));
     }
 }

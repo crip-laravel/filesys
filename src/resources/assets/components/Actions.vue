@@ -3,10 +3,10 @@
     <div class="manager-actions clearfix">
       <div class="group">
         <div class="col">
-          <btn title="Upload" size="lg" :on-click="openUploadFileDialog"></btn>
+          <btn title="Upload" size="lg" icon="upload" :on-click="openUploadFileDialog"></btn>
         </div>
         <div class="col">
-          <btn title="Create Folder" size="lg" :on-click="createFolderDialog"></btn>
+          <btn title="Create Folder" size="lg" icon="add-folder" :on-click="createFolderDialog"></btn>
         </div>
       </div>
       <div class="group">
@@ -17,10 +17,11 @@
       </div>
       <div class="group">
         <div class="col">
-          <btn title="Edit" size="lg" :active="isEditEnabled" :on-click="enableEdit" :disabled="!selectedBlob"></btn>
+          <btn title="Rename" size="lg" icon="rename" :active="isEditEnabled" :on-click="enableEdit"
+               :disabled="!selectedBlob"></btn>
         </div>
         <div class="col">
-          <btn title="Delete" size="lg" :on-click="deleteBlob" :disabled="!selectedBlob"></btn>
+          <btn title="Delete" size="lg" icon="delete" :on-click="deleteBlob" :disabled="!selectedBlob"></btn>
         </div>
       </div>
     </div>

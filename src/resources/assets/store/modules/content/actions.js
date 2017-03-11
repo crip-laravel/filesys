@@ -21,6 +21,9 @@ export default {
 
   [deleteBlob] ({commit, getters}) {
     let selected = getters[selectedBlob]
-    selected.delete().then(() => commit(removeBlob, selected.$id))
+    selected.delete().then(() => {
+      commit(removeBlob, selected.$id)
+      commit(deselect)
+    })
   }
 }

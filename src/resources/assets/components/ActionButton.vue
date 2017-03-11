@@ -1,19 +1,24 @@
 <template>
   <div :class="classes">
-    <a @click="onClick" :class="{enabled}">{{title}}</a>
+    <a @click="onClick" :class="{enabled}">
+      <img :src="iconUrl" v-if="hasIcon" class="action-icon">
+      <div class="action-text">{{title}}</div>
+    </a>
   </div>
 </template>
 
 <script>
   import { mapGetters } from 'vuex'
   import * as getters from '../store/getters'
+  import settings from '../settings'
 
   export default {
     name: 'action-btn',
 
     props: {
-      title: {type: String},
-      onClick: {type: Function},
+      title: {type: String, required: true},
+      onClick: {type: Function, required: true},
+      icon: {type: String},
       active: {type: Boolean, default: () => false},
       disabled: {type: Boolean, default: () => false},
       size: {type: String, default: () => 'md'}
@@ -23,6 +28,13 @@
       ...mapGetters([getters.loading]),
       enabled () { return !this.loading && !this.disabled },
       classes () { return {'action-btn': true, [`action-btn-${this.size}`]: true, 'active': this.active} }
+    },
+
+    data () {
+      return {
+        iconUrl: settings.icon(this.icon),
+        hasIcon: !!this.icon
+      }
     }
   }
 </script>
@@ -56,8 +68,24 @@
       text-decoration: none;
       width: 100%;
 
+      .action-icon {
+        display: block;
+        margin: 0 auto;
+        max-height: 56px;
+        max-width: 56px;
+        opacity: 0.5;
+      }
+
+      .action-text {
+        text-align: center;
+      }
+
       &.enabled {
         color: $main-color;
+
+        .action-icon {
+          opacity: 1;
+        }
 
         &:hover {
           background-color: darken($footer-text-color, 20%);

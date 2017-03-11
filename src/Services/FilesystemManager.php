@@ -169,6 +169,7 @@ class FilesystemManager implements ICripObject
         } else {
             $newName = $this->getUniqueFileName($blob->folder->getParentDir(), $newName);
             $blob->folder->setName($newName);
+            $this->thumb->rename($curr, $newName);
         }
 
         if (!$this->fs->move($curr, $blob->systemPath())) {

@@ -190,11 +190,15 @@ class FilesystemManager implements ICripObject
      */
     public function delete(Blob $blob)
     {
-        if ($blob->file->isImage()) {
-            $this->thumb->delete($blob->systemPath());
+        $isFile = $blob->file->isDefined();
+
+        $this->thumb->delete($blob->systemPath(), $isFile);
+
+        if ($isFile) {
+            return $this->fs->delete($blob->systemPath());
         }
 
-        return $this->fs->delete($blob->systemPath());
+        return $this->fs->deleteDirectory($blob->systemPath());
     }
 
     /**

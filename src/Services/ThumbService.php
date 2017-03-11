@@ -143,15 +143,20 @@ class ThumbService
     /**
      * Delete all thumbs of an image.
      * @param string $pathToImage
+     * @param bool $isFile
      */
-    public function delete($pathToImage)
+    public function delete($pathToImage, $isFile)
     {
         collect(array_keys($this->sizes))
-            ->each(function ($size) use ($pathToImage) {
+            ->each(function ($size) use ($pathToImage, $isFile) {
                 list($path, $name) = $this->getThumbPath($pathToImage, $size);
                 $file = $path . '/' . $name;
                 if ($this->fs->exists($file)) {
-                    $this->fs->delete($file);
+                    if ($isFile) {
+                        $this->fs->delete($file);
+                    } else {
+                        $this->fs->deleteDirectory($file);
+                    }
                 }
             });
     }

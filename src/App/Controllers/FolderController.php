@@ -85,9 +85,18 @@ class FolderController extends BaseController
     /**
      * Delete folder
      * @param string $folder
+     * @return JsonResponse
      */
     public function destroy($folder)
     {
-        throw new \Exception('Not implemented');
+        $blob = $this->manager->parsePath($folder);
+
+        if (!$this->manager->exists($blob)) {
+            return $this->json('Folder not found.', 401);
+        }
+
+        $isRemoved = $this->manager->delete($blob);
+
+        return $this->json($isRemoved, $isRemoved ? 200 : 500);
     }
 }

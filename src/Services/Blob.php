@@ -60,7 +60,7 @@ class Blob implements ICripObject
     public function setFolder($folder)
     {
         $confDir = base_path(trim($this->package->config('target_dir'), '/\\'));
-        if(str_contains($folder, $this->normalizePath($confDir))) {
+        if (str_contains($folder, $this->normalizePath($confDir))) {
             $folder = str_replace($this->normalizePath($confDir), '', $folder);
         }
 
@@ -83,6 +83,25 @@ class Blob implements ICripObject
         }
 
         return $this->folder->getDir();
+    }
+
+    public function getMime()
+    {
+        if (!$this->file->isDefined()) {
+            return 'dir';
+        }
+
+        foreach ($this->package->config('mime.types') as $mime => $mimeValues) {
+            $key = collect($mimeValues)->search(function ($mimeValue) {
+                return preg_match($mimeValue, $this->file->getMimeType());
+            });
+
+            if ($key !== false) {
+                return $mime;
+            }
+        }
+
+        return 'file';
     }
 
     private function normalizePath($path)

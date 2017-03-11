@@ -32,7 +32,7 @@ class FileController extends BaseController
             }
 
             // Return file public url to the uploaded file
-            return $this->json($blob->file->getUrl());
+            return $this->json(new File($blob));
         }
 
         return $this->json(['File not presented for upload.'], 422);

@@ -46,6 +46,16 @@ class FileInfo implements ICripObject
     private $package;
 
     /**
+     * @var array
+     */
+    private $size = [];
+
+    /**
+     * @var array
+     */
+    private $thumbs = [];
+
+    /**
      * FileInfo constructor.
      * @param PackageBase $package
      * @param FolderInfo $folder
@@ -64,6 +74,10 @@ class FileInfo implements ICripObject
             $this->ext = pathinfo($file, PATHINFO_EXTENSION);
             $this->mimeType = $fs->mimeType($this->getSystemPath());
             $this->updateUrl();
+            if (substr($this->mimeType, 0, 5) === 'image') {
+                $this->size = getimagesize($this->getSystemPath());
+                $this->thumbs = (new ThumbService($this->package))->details($this->getSystemPath());
+            }
         }
     }
 
@@ -146,10 +160,27 @@ class FileInfo implements ICripObject
         return $this->url;
     }
 
+    /**
+     * @return array
+     */
+    public function getSize()
+    {
+        return $this->size;
+    }
+
+    /**
+     * @return array
+     */
+    public function getThumbs()
+    {
+        return $this->thumbs;
+    }
+
     private function updateUrl()
     {
-        $ctrl = '\\' . $this->package->config('actions.file') . '@show';
-        $this->url = action($ctrl, '', false) . '/' . $this->getPath();
-        $this->url = str_replace('//', '/', $this->url);
+        $url = new UrlService($this->package);
+        $this->url = $url->file($this->getPath());
+
+        return $this->url;
     }
 }

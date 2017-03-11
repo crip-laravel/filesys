@@ -30,6 +30,11 @@ class FilesystemManager implements ICripObject
     private $fs;
 
     /**
+     * @var ThumbService
+     */
+    private $thumb;
+
+    /**
      * FilesystemManager constructor.
      * @param PackageBase $package
      */
@@ -37,6 +42,7 @@ class FilesystemManager implements ICripObject
     {
         $this->package = $package;
         $this->fs = app(Filesystem::class);
+        $this->thumb = new ThumbService($this->package);
     }
 
     /**
@@ -97,9 +103,13 @@ class FilesystemManager implements ICripObject
         return join('/', [$dir, $targetFileName . '.' . $ext]);
     }
 
+    /**
+     * Resize blob.
+     * @param Blob $blob
+     */
     public function resizeImage(Blob $blob)
     {
-        // TODO: resize image to fit all configurations
+        $this->thumb->resize($blob->file->getSystemPath());
     }
 
     /**
@@ -123,6 +133,11 @@ class FilesystemManager implements ICripObject
         $result = [];
         $list = $this->fs->glob($blob->systemPath() . '/*');
         foreach ($list as $glob) {
+            if (str_contains($glob, '--thumbs--')) {
+                // skip thumbs dir and do not show it for users
+                continue;
+            }
+
             $blobInfo = new Blob($this->package, $glob);
             $result[] = $blobInfo->file->isDefined() ?
                 new File($blobInfo) :

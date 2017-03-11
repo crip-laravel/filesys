@@ -1,6 +1,6 @@
 import {
   contentLoaded, contentLoading, addItem, selectItem, deselect, setGridView, setListView,
-  enableEdit, updateBlob, changeDir
+  enableEdit, updateBlob, changeDir, removeBlob
 } from '../../mutations'
 import settings from '../../../settings'
 import Blob from '../../../models/Blob'
@@ -80,6 +80,11 @@ export default {
 
     parts.splice(-1, 1)
     state.pathUp = parts.join('/')
+  },
+
+  [removeBlob] (state, blobId) {
+    let toRemove = state.items.filter(b => b.$id === blobId)[0]
+    state.items.splice(state.items.indexOf(toRemove), 1)
   }
 }
 

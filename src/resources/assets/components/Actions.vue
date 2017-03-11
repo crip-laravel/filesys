@@ -17,10 +17,10 @@
       </div>
       <div class="group">
         <div class="col">
-          <btn title="Edit" size="lg"
-               :active="isEditEnabled"
-               :on-click="enableEdit"
-               :disabled="!selectedBlob"></btn>
+          <btn title="Edit" size="lg" :active="isEditEnabled" :on-click="enableEdit" :disabled="!selectedBlob"></btn>
+        </div>
+        <div class="col">
+          <btn title="Delete" size="lg" :on-click="deleteBlob" :disabled="!selectedBlob"></btn>
         </div>
       </div>
     </div>
@@ -28,17 +28,23 @@
 </template>
 
 <script>
-  import { mapGetters, mapMutations } from 'vuex'
+  import { mapGetters, mapMutations, mapActions } from 'vuex'
   import btn from './ActionButton.vue'
   import folderApi from '../api/folder'
   import * as getters from '../store/getters'
+  import * as actions from '../store/actions'
   import * as mutations from '../store/mutations'
 
   export default {
     name: 'actions',
 
     computed: {
-      ...mapGetters([getters.loading, getters.path, getters.display, getters.selectedBlob]),
+      ...mapGetters([
+        getters.loading,
+        getters.path,
+        getters.display,
+        getters.selectedBlob
+      ]),
       isGridView () { return this.display === 'grid' },
       isListView () { return this.display === 'list' },
       isEditEnabled () { return this.selectedBlob && this.selectedBlob.$edit }
@@ -50,6 +56,10 @@
         mutations.setListView,
         mutations.enableEdit,
         mutations.addItem
+      ]),
+
+      ...mapActions([
+        actions.deleteBlob
       ]),
 
       createFolderDialog () {

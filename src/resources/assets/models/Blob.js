@@ -26,16 +26,27 @@ export default class Blob {
 
   get isDir () { return this.type === 'dir' }
 
+  get api () { return this.isDir ? folderApi : fileApi }
+
   /**
    * Update name of current blob.
    * @returns {Promise.<Blob>}
    */
   update () {
-    let api = this.isDir ? folderApi : fileApi
-
     return new Promise((resolve, reject) => {
-      api.update(this, this.newName)
+      this.api.update(this, this.newName)
         .then(blob => resolve(blob), reject)
+    })
+  }
+
+  /**
+   * Delete current blob.
+   * @returns {Promise.<Boolean>}
+   */
+  delete () {
+    return new Promise((resolve, reject) => {
+      this.api.delete(this)
+        .then(state => resolve(state), reject)
     })
   }
 }

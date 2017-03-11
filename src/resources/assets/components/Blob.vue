@@ -1,7 +1,7 @@
 <template>
   <div class="blob" :class="classes" @click="selectItem(blob)">
-    <div class="thumb" @dblclick="openItem(blob)">
-      <img class="thumbnail" :src="blob.thumb">
+    <div class="thumb thumbnail" @dblclick="openItem(blob)">
+      <img :src="blob.thumb">
     </div>
     <div v-if="blob.$edit">
       <form @submit.prevent="save">
@@ -86,10 +86,14 @@
       cursor: pointer;
     }
 
-    .thumb img {
-      width: 100%;
-      height: 100px;
-      margin-bottom: 6px;
+    .thumb {
+      height: 105px;
+      overflow: hidden;
+
+      img {
+        max-height: 100px;
+        margin-bottom: 6px;
+      }
     }
 
     input {

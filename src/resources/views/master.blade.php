@@ -7,7 +7,7 @@
   <meta id="settings"
         data-sizes="{!! str_replace('"', '\'', json_encode(config('cripfilesys.thumbs'))) !!}"
         data-params="{!! str_replace('"', '\'', json_encode($input)) !!}"
-        data-public-url="{{ config('cripfilesys.public_url') }}"
+        data-dir-icon-url="{{ $dirIconUrl }}"
         data-files-url="{{ $filesUrl }}"
         data-folders-url="{{ $foldersUrl }}"/>
   <title>CRIP Filesys</title>

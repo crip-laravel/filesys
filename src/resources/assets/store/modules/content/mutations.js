@@ -2,6 +2,7 @@ import {
   contentLoaded, contentLoading, addItem, selectItem, deselect, setGridView, setListView,
   enableEdit, updateBlob, changeDir
 } from '../../mutations'
+import settings from '../../../settings'
 import Blob from '../../../models/Blob'
 
 export default {
@@ -14,6 +15,7 @@ export default {
         name: '..',
         type: 'dir',
         full_name: state.pathUp,
+        thumb: settings.dirIcon,
         $isSystem: true
       }))
     }
@@ -71,17 +73,13 @@ export default {
     state.breadcrumb = path.split('/')
 
     let parts = path.split('/')
-    if (parts.length < 3) {
-      if (parts.length < 2) {
-        state.pathUp = ''
-      } else {
-        state.pathUp = parts[0]
-      }
-
+    if (parts.length < 2) {
+      state.pathUp = ''
       return
     }
 
-    state.pathUp = path.split('/').splice(-1, 2).join('/')
+    parts.splice(-1, 1)
+    state.pathUp = parts.join('/')
   }
 }
 

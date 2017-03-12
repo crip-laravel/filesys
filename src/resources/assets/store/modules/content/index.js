@@ -6,7 +6,8 @@ const state = {
   items: [],
   selectedItem: false,
   creating: false,
-  display: 'grid'
+  display: 'grid',
+  tree: 0
 }
 
 import actions from './actions'

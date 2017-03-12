@@ -18,9 +18,12 @@ class ManagerController extends BaseController
     {
         $input = $request->all();
         $filesUrl = action('\\' . config('cripfilesys.actions.file') . '@show', '');
-        $foldersUrl = action('\\' . config('cripfilesys.actions.folder') . '@show','');
+        $foldersUrl = action('\\' . config('cripfilesys.actions.folder') . '@show', '');
+        $treeUrl = action('\\' . config('cripfilesys.actions.tree'));
         $iconDir = config('cripfilesys.icons.url');
         $dirIconUrl = $iconDir . config('cripfilesys.icons.files.dir');
-        return $this->package->view('master', compact('input', 'filesUrl', 'foldersUrl', 'dirIconUrl', 'iconDir'));
+
+        return $this->package->view('master',
+            compact('input', 'filesUrl', 'foldersUrl', 'treeUrl', 'dirIconUrl', 'iconDir'));
     }
 }

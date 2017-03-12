@@ -225,7 +225,7 @@ class FilesystemManager implements ICripObject
         $dir = Str::normalizePath(base_path($this->package->config('target_dir')));
 
         $this->readDirs($fs, $dir, $dirs, $dir, $dir);
-        dd($dir, $dirs);
+
         return $dirs;
     }
 
@@ -237,12 +237,13 @@ class FilesystemManager implements ICripObject
                 $dir = Str::normalizePath($dir);
                 $path = Str::normalizePath(str_replace($root, '', $dir));
                 $name = Str::normalizePath(str_replace($base, '', $dir));
-                $result[$name] = [
+                $index = count($result);
+                $result[$index] = [
                     'path' => $path,
                     'name' => $name,
                     'children' => []
                 ];
-                $this->readDirs($fs, $dir, $result[$name]['children'], $base . '/' . $name, $root);
+                $this->readDirs($fs, $dir, $result[$index]['children'], $base . '/' . $name, $root);
             }
         });
     }

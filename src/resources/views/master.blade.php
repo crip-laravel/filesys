@@ -9,6 +9,7 @@
         data-params="{!! str_replace('"', '\'', json_encode($input)) !!}"
         data-icon-dir="{{ $iconDir }}"
         data-dir-icon-url="{{ $dirIconUrl }}"
+        data-tree-url="{{ $treeUrl }}"
         data-files-url="{{ $filesUrl }}"
         data-folders-url="{{ $foldersUrl }}"/>
   <title>CRIP Filesys</title>

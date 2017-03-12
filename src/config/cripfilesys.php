@@ -2,6 +2,7 @@
 
 use Crip\Filesys\App\Controllers\FileController;
 use Crip\Filesys\App\Controllers\FolderController;
+use Crip\Filesys\App\Controllers\TreeController;
 
 return [
     'public_url' => '/vendor/crip/filesys',
@@ -77,6 +78,7 @@ return [
     ],
     'actions' => [
         'folder' => FolderController::class,
-        'file' => FileController::class
+        'file' => FileController::class,
+        'tree' => TreeController::class
     ]
 ];

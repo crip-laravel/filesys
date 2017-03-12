@@ -1,6 +1,6 @@
 import {
   contentLoaded, contentLoading, addItem, selectItem, deselect, setGridView, setListView,
-  enableEdit, updateBlob, changeDir, removeBlob, creatingEnabled
+  enableEdit, updateBlob, changeDir, removeBlob, creatingEnabled, reloadTree
 } from '../../mutations'
 import settings from '../../../settings'
 import Blob from '../../../models/Blob'
@@ -93,6 +93,10 @@ export default {
 
   [creatingEnabled] (state) {
     state.creating = true
+  },
+
+  [reloadTree] (state) {
+    state.tree++
   }
 }
 

@@ -15,11 +15,11 @@
 </template>
 
 <script>
-  import { mapGetters, mapMutations } from 'vuex'
-  import Blob from '../models/Blob'
   import * as getters from '../store/getters'
   import * as mutations from '../store/mutations'
-  import { changePath } from '../store/actions'
+  import Blob from '../models/Blob'
+  import { changePath, saveBlob } from '../store/actions'
+  import { mapGetters, mapMutations, mapActions } from 'vuex'
 
   export default {
     name: 'blob',
@@ -41,16 +41,13 @@
         mutations.deselect
       ]),
 
-      save () {
-        this.blob.save()
-          .then(newBlob => {
-            this.updateBlob({
-              id: this.blob.$id,
-              blob: newBlob
-            })
+      ...mapActions([
+        changePath,
+        saveBlob
+      ]),
 
-            this.deselect()
-          })
+      save () {
+        this.saveBlob(this.blob)
       },
 
       /**
@@ -59,7 +56,7 @@
        */
       openItem (blob) {
         if (blob.isDir) {
-          return this.$store.dispatch(changePath, blob.full_name)
+          return this[changePath](blob.full_name)
         }
         // TODO: implement file select for ckeditor or litebox
       }

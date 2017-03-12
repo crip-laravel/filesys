@@ -29,6 +29,10 @@ export default {
     selected.delete().then(() => {
       commit(removeBlob, selected.$id)
       commit(deselect)
+
+      if (selected.isDir) {
+        commit(reloadTree)
+      }
     })
   },
 

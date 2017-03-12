@@ -1,5 +1,5 @@
 <template>
-  <div class="blob" :class="classes" @click="selectItem(blob)">
+  <div class="blob" :class="classes" @click="selectItem(blob)" :title="title">
     <div class="thumb thumbnail" @dblclick="openItem(blob)">
       <img :src="blob.thumb">
     </div>
@@ -9,7 +9,7 @@
       </form>
     </div>
     <div v-else class="blob-description" @dblclick="enableEdit()">
-      {{blob.isDir ? blob.name : blob.full_name}}
+      {{title}}
     </div>
   </div>
 </template>
@@ -30,7 +30,8 @@
 
     computed: {
       ...mapGetters([getters.selectedBlob]),
-      classes () { return {active: this.selectedBlob === this.blob} }
+      classes () { return {active: this.selectedBlob === this.blob} },
+      title () { return this.blob.isDir ? this.blob.name : this.blob.full_name }
     },
 
     methods: {

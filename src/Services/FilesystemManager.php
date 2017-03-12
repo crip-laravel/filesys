@@ -2,6 +2,7 @@
 
 use Crip\Core\Contracts\ICripObject;
 use Crip\Core\Helpers\Slug;
+use Crip\Core\Helpers\Str;
 use Crip\Core\Support\PackageBase;
 use Crip\Filesys\App\File;
 use Crip\Filesys\App\Folder;
@@ -214,6 +215,36 @@ class FilesystemManager implements ICripObject
         $blob->folder->mk();
 
         return $newName;
+    }
+
+    public function getTree($recursive = true)
+    {
+        /** @var Filesystem $fs */
+        $fs = app(Filesystem::class);
+        $dirs = [];
+        $dir = Str::normalizePath(base_path($this->package->config('target_dir')));
+
+        $this->readDirs($fs, $dir, $dirs, $dir, $dir);
+        dd($dir, $dirs);
+        return $dirs;
+    }
+
+    private function readDirs(Filesystem $fs, $dir, &$result, $base, $root)
+    {
+        $dirs = $fs->directories($dir);
+        collect($dirs)->each(function ($dir) use ($fs, &$result, $base, $root) {
+            if (!str_contains($dir, '--thumbs--')) {
+                $dir = Str::normalizePath($dir);
+                $path = Str::normalizePath(str_replace($root, '', $dir));
+                $name = Str::normalizePath(str_replace($base, '', $dir));
+                $result[$name] = [
+                    'path' => $path,
+                    'name' => $name,
+                    'children' => []
+                ];
+                $this->readDirs($fs, $dir, $result[$name]['children'], $base . '/' . $name, $root);
+            }
+        });
     }
 
     /**

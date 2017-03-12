@@ -1,5 +1,6 @@
 <?php namespace Crip\Filesys\Services;
 
+use Crip\Core\Helpers\Str;
 use Crip\Core\Support\PackageBase;
 use Illuminate\Filesystem\Filesystem;
 
@@ -152,7 +153,7 @@ class FolderInfo
         $this->parentPath = join('/', $pathParts);
 
         $fullDir = trim($this->package->config('target_dir'), '/\\') . '/' . $path;
-        $this->dir = trim(str_replace('\\', '/', base_path($fullDir)), '/');
+        $this->dir = Str::normalizePath(base_path($fullDir));
         $dirParts = explode('/', $this->dir);
         $this->currDir = array_pop($dirParts);
         $this->parentDir = join('/', $dirParts);

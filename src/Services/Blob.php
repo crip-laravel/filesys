@@ -1,6 +1,7 @@
 <?php namespace Crip\Filesys\Services;
 
 use Crip\Core\Contracts\ICripObject;
+use Crip\Core\Helpers\Str;
 use Crip\Core\Support\PackageBase;
 
 /**
@@ -42,7 +43,7 @@ class Blob implements ICripObject
 
     public function setPath($path)
     {
-        $this->path = $this->normalizePath($path);
+        $this->path = Str::normalizePath($path);
 
         $folder = $this->path;
         $file = null;
@@ -59,9 +60,10 @@ class Blob implements ICripObject
 
     public function setFolder($folder)
     {
+        $folder = Str::normalizePath($folder);
         $confDir = base_path(trim($this->package->config('target_dir'), '/\\'));
-        if (str_contains($folder, $this->normalizePath($confDir))) {
-            $folder = str_replace($this->normalizePath($confDir), '', $folder);
+        if (str_contains($folder, Str::normalizePath($confDir))) {
+            $folder = str_replace(Str::normalizePath($confDir), '', $folder);
         }
 
         $this->folder = new FolderInfo($this->package, $folder);
@@ -130,17 +132,5 @@ class Blob implements ICripObject
         }
 
         return $url . $icons[$mime];
-    }
-
-    private function normalizePath($path)
-    {
-        $path = str_replace('\\', '/', $path);
-
-        // make sure that user cant go up in directory '../..'
-        while (str_contains($path, '..')) {
-            $path = str_replace('..', '.', $path);
-        }
-
-        return $path;
     }
 }

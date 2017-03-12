@@ -1,5 +1,6 @@
 <?php namespace Crip\Filesys\Services;
 
+use Crip\Core\Helpers\Str;
 use Crip\Core\Support\PackageBase;
 
 /**
@@ -52,16 +53,16 @@ class UrlService
 
         $path = trim($path, '\\/');
         $ctrl = '\\' . $this->package->config('actions.' . $for) . '@show';
-        $url = action($ctrl, '', false) . '/' . $path;
-        $url = str_replace('\\', '/', $url);
+        $url = '/' . Str::normalizePath(action($ctrl, '', false) . '/' . $path);
 
         return $url;
     }
 
     private function makeFromSysPath($for, $path)
     {
+        $path = Str::normalizePath($path);
         $postfix = '';
-        $baseDir = trim(str_replace('\\', '/', base_path($this->package->config('target_dir'))), '/');
+        $baseDir = Str::normalizePath(base_path($this->package->config('target_dir')));
         $relativePath = trim(str_replace($baseDir, '', $path), '/');
         $isThumb = substr_count($relativePath, '--thumbs--');
 

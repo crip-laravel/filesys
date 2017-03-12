@@ -1,5 +1,6 @@
 <?php namespace Crip\Filesys\Services;
 
+use Crip\Core\Helpers\Str;
 use Crip\Core\Support\PackageBase;
 use Illuminate\Filesystem\Filesystem;
 use Intervention\Image\ImageManager;
@@ -168,12 +169,12 @@ class ThumbService
      */
     public function getThumbPath($originalFilePath, $thumbSizeIdentifier)
     {
-        $baseDir = trim(str_replace('\\', '/', base_path($this->package->config('target_dir'))), '/');
+        $baseDir = Str::normalizePath(base_path($this->package->config('target_dir')));
         $relativePath = str_replace($baseDir, '', $originalFilePath);
         $parts = explode('/', $relativePath);
         $fileName = array_pop($parts);
-        $result = $baseDir . '/--thumbs--/' . $thumbSizeIdentifier . '/' . trim(join('/', $parts), '/\\');
+        $result = Str::normalizePath($baseDir . '/--thumbs--/' . $thumbSizeIdentifier . '/' . join('/', $parts));
 
-        return [trim($result, '/'), $fileName];
+        return [$result, $fileName];
     }
 }

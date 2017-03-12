@@ -6,7 +6,8 @@
           <btn title="Upload" size="lg" icon="upload" :on-click="openUploadFileDialog"></btn>
         </div>
         <div class="col">
-          <btn title="Create Folder" size="lg" icon="add-folder" :on-click="createFolderDialog"></btn>
+          <btn title="Create Folder" size="lg" icon="add-folder" :on-click="createFolderDialog"
+               :active="creating"></btn>
         </div>
       </div>
       <div class="group">
@@ -30,8 +31,8 @@
 
 <script>
   import { mapGetters, mapMutations, mapActions } from 'vuex'
+  import Blob from '../models/Blob'
   import btn from './ActionButton.vue'
-  import folderApi from '../api/folder'
   import * as getters from '../store/getters'
   import * as actions from '../store/actions'
   import * as mutations from '../store/mutations'
@@ -39,12 +40,19 @@
   export default {
     name: 'actions',
 
+    data () {
+      return {
+        isCreating: false
+      }
+    },
+
     computed: {
       ...mapGetters([
         getters.loading,
         getters.path,
         getters.display,
-        getters.selectedBlob
+        getters.selectedBlob,
+        getters.creating
       ]),
       isGridView () { return this.display === 'grid' },
       isListView () { return this.display === 'list' },
@@ -56,7 +64,9 @@
         mutations.setGridView,
         mutations.setListView,
         mutations.enableEdit,
-        mutations.addItem
+        mutations.addItem,
+        mutations.selectItem,
+        mutations.creatingEnabled
       ]),
 
       ...mapActions([
@@ -64,13 +74,20 @@
       ]),
 
       createFolderDialog () {
-        console.log('createFolderDialog()')
-      },
+        if (!this.creating) {
+          this.creatingEnabled()
+          let dirToCreate = new Blob({
+            $isSystem: true,
+            $temp: true,
+            full_name: this.path,
+            name: 'New-Name',
+            type: 'dir'
+          })
 
-      createFolder (name) {
-        console.log('createFolder()', {folder: this.path, name})
-        folderApi.create(this.path, name)
-          .then(({data}) => { this.addItem(data) })
+          this.selectItem(dirToCreate)
+          this.addItem(dirToCreate)
+          this.enableEdit()
+        }
       },
 
       openUploadFileDialog () {

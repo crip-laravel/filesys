@@ -5,6 +5,7 @@ const state = {
   pathUp: '',
   items: [],
   selectedItem: false,
+  creating: false,
   display: 'grid'
 }
 

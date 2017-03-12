@@ -17,11 +17,11 @@ export default class Blob {
     this.size = data.size
     this.thumbs = data.thumbs
 
-    this.$isSelected = false
     this.$edit = false
     this.newName = data.name
     this.$id = `blob-${data.full_name}`
     this.$isSystem = !!data.$isSystem
+    this.$temp = !!data.$temp
   }
 
   get isDir () { return this.type === 'dir' }
@@ -32,9 +32,14 @@ export default class Blob {
    * Update name of current blob.
    * @returns {Promise.<Blob>}
    */
-  update () {
+  save () {
+    let action = 'update'
+    if (this.$temp) {
+      action = 'create'
+    }
+
     return new Promise((resolve, reject) => {
-      this.api.update(this, this.newName)
+      this.api[action](this, this.newName)
         .then(blob => resolve(blob), reject)
     })
   }

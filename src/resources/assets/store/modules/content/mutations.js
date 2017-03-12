@@ -1,6 +1,6 @@
 import {
   contentLoaded, contentLoading, addItem, selectItem, deselect, setGridView, setListView,
-  enableEdit, updateBlob, changeDir, removeBlob
+  enableEdit, updateBlob, changeDir, removeBlob, creatingEnabled
 } from '../../mutations'
 import settings from '../../../settings'
 import Blob from '../../../models/Blob'
@@ -30,7 +30,7 @@ export default {
   },
 
   [selectItem] (state, blob) {
-    if (blob.$id !== state.selectedItem.$id && !blob.$isSystem) {
+    if (blob.$id !== state.selectedItem.$id) {
       // deselect all items in current dir before select
       // required one
       deselectItems(state)
@@ -44,7 +44,7 @@ export default {
   },
 
   [enableEdit] (state) {
-    if (state.selectedItem) {
+    if (state.selectedItem && state.selectedItem.name !== '..') {
       state.selectedItem.$edit = !state.selectedItem.$edit
       if (state.selectedItem.$edit) {
         setTimeout(() => {
@@ -89,16 +89,29 @@ export default {
   [removeBlob] (state, blobId) {
     let toRemove = state.items.filter(b => b.$id === blobId)[0]
     state.items.splice(state.items.indexOf(toRemove), 1)
+  },
+
+  [creatingEnabled] (state) {
+    state.creating = true
   }
 }
 
 /** Helper methods to avoid code duplicates */
 
 function deselectItems (state) {
-  state.items.forEach(item => {
+  let forRemove = -1
+  state.items.forEach((item, index) => {
     item.$isSelected = false
     item.$edit = false
+    if (item.$temp) {
+      forRemove = index
+    }
   })
 
+  if (~forRemove) {
+    state.items.splice(forRemove, 1)
+  }
+
+  state.creating = false
   state.selectedItem = false
 }

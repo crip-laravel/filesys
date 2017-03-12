@@ -55,7 +55,7 @@ class FileController extends BaseController
                 'Content-Type' => $blob->file->getMimeType()]);
         }
 
-        return $this->json('File not found.', 401);
+        return $this->json('File not found.', 404);
     }
 
     /**
@@ -73,7 +73,7 @@ class FileController extends BaseController
         $blob = $this->manager->parsePath($file);
 
         if (!$this->manager->exists($blob)) {
-            return $this->json('File not found.', 401);
+            return $this->json('File not found.', 404);
         }
 
         $this->manager->rename($blob, $request->name);
@@ -91,7 +91,7 @@ class FileController extends BaseController
         $blob = $this->manager->parsePath($file);
 
         if (!$this->manager->exists($blob)) {
-            return $this->json('File not found.', 401);
+            return $this->json('File not found.', 404);
         }
 
         $isRemoved = $this->manager->delete($blob);

@@ -29,16 +29,16 @@ class FolderController extends BaseController
         $blob = $this->manager->parsePath($request->folder);
 
         if (!$this->manager->exists($blob)) {
-            return $this->json('Folder not found.', 401);
+            return $this->json('Folder not found.', 404);
         }
 
         if (empty($request->name)) {
             return $this->json('Name property is required.', 422);
         }
 
-        $folder = $this->manager->mkdir($blob, $request->name);
+        $this->manager->mkdir($blob, $request->name);
 
-        return $this->json($folder);
+        return $this->json(new Folder($blob));
     }
 
     /**
@@ -51,7 +51,7 @@ class FolderController extends BaseController
         $blob = $this->manager->parsePath($folder);
 
         if (!$this->manager->exists($blob)) {
-            return $this->json('File not found.', 401);
+            return $this->json('File not found.', 404);
         }
 
         $list = $this->manager->folderContent($blob);
@@ -74,7 +74,7 @@ class FolderController extends BaseController
         $blob = $this->manager->parsePath($folder);
 
         if (!$this->manager->exists($blob)) {
-            return $this->json('Folder not found.', 401);
+            return $this->json('Folder not found.', 404);
         }
 
         $this->manager->rename($blob, $request->name);
@@ -92,7 +92,7 @@ class FolderController extends BaseController
         $blob = $this->manager->parsePath($folder);
 
         if (!$this->manager->exists($blob)) {
-            return $this->json('Folder not found.', 401);
+            return $this->json('Folder not found.', 404);
         }
 
         $isRemoved = $this->manager->delete($blob);

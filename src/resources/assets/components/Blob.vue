@@ -42,7 +42,7 @@
       ]),
 
       save () {
-        this.blob.update()
+        this.blob.save()
           .then(newBlob => {
             this.updateBlob({
               id: this.blob.$id,

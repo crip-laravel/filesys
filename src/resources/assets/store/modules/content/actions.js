@@ -1,5 +1,5 @@
 import { contentLoaded, contentLoading, deselect, changeDir, removeBlob } from './../../mutations'
-import { loadContent, changePath, deleteBlob } from '../../actions'
+import { loadContent, changePath, deleteBlob, refresh } from '../../actions'
 import { path, selectedBlob } from '../../getters'
 import folderApi from '../../../api/folder'
 
@@ -12,11 +12,13 @@ export default {
   },
 
   [changePath] ({commit, getters}, newPath) {
-    commit(deselect)
-    commit(contentLoading)
-    commit(changeDir, newPath)
-    folderApi.content(getters[path])
-      .then(items => { commit(contentLoaded, {items, path: getters[path]}) })
+    if (getters[path] !== newPath) {
+      commit(deselect)
+      commit(contentLoading)
+      commit(changeDir, newPath)
+      folderApi.content(getters[path])
+        .then(items => { commit(contentLoaded, {items, path: getters[path]}) })
+    }
   },
 
   [deleteBlob] ({commit, getters}) {
@@ -25,5 +27,13 @@ export default {
       commit(removeBlob, selected.$id)
       commit(deselect)
     })
+  },
+
+  [refresh] ({commit, getters}) {
+    commit(deselect)
+    commit(contentLoading)
+    commit(changeDir, getters[path])
+    folderApi.content(getters[path])
+      .then(items => { commit(contentLoaded, {items, path: getters[path]}) })
   }
 }

@@ -1,12 +1,12 @@
 // Fonts
 @import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);
-
 @import "variables";
-
 // Bootstrap
 @import "~bootstrap-sass/assets/stylesheets/bootstrap";
 
-html, body, .full-height {
-  min-height: 100% !important;
-  height: 100%;
+@media (min-width: $screen-sm-min) {
+  html, body, .full-height {
+    min-height: 100% !important;
+    height: 100%;
+  }
 }

@@ -1,11 +1,21 @@
 <template>
   <div id="breadcrumb">
-    <ol class="breadcrumb">
-      <li v-for="item in items" :class="{active: item.isActive()}">
-        <a v-if="!item.isActive()" href="#breadcrumb" @click="changePath(item.path)">{{item.text}}</a>
-        <span v-else="">{{item.text}}</span>
-      </li>
-    </ol>
+    <div class="col-xs-1" :class="{disabled: isUpDisabled}">
+      <a class="icon-wrapp" href="#" @click.prevent="changePath(up)">
+        <img class="icon" :src="iconUp">
+      </a>
+    </div>
+    <div class="col-xs-10">
+      <ol class="breadcrumb">
+        <li v-for="item in items" :class="{active: item.isActive()}">
+          <a v-if="!item.isActive()" href="#" @click="changePath(item.path)">{{item.text}}</a>
+          <span v-else="">{{item.text}}</span>
+        </li>
+      </ol>
+    </div>
+    <div class="col-xs-1 text-right">
+      <a class="icon-wrapp" href="#" @click="refresh()"><img class="icon" :src="iconRefresh"></a>
+    </div>
   </div>
 </template>
 
@@ -13,12 +23,20 @@
   import { mapGetters, mapActions } from 'vuex'
   import * as getters from '../store/getters'
   import * as actions from '../store/actions'
+  import settings from '../settings'
 
   export default {
     name: 'breadcrumb',
 
     mounted () {
       console.log(this.breadcrumb, this.path, this.items)
+    },
+
+    data () {
+      return {
+        iconUp: settings.icon('up'),
+        iconRefresh: settings.icon('refresh')
+      }
     },
 
     computed: {
@@ -38,12 +56,22 @@
         })
 
         return result
+      },
+
+      up () {
+        let parts = this.path.split('/')
+        return parts.splice(0, parts.length - 1).join('/')
+      },
+
+      isUpDisabled () {
+        return this.path === ''
       }
     },
 
     methods: {
       ...mapActions([
-        actions.changePath
+        actions.changePath,
+        actions.refresh
       ])
     }
   }
@@ -55,6 +83,19 @@
 
     .breadcrumb {
       margin-bottom: 0;
+    }
+
+    .icon {
+      max-height: 20px;
+    }
+
+    .disabled {
+      opacity: 0.5;
+    }
+
+    .icon-wrapp {
+      display: block;
+      padding: 8px 15px;
     }
   }
 </style>

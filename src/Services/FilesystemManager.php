@@ -229,6 +229,31 @@ class FilesystemManager implements ICripObject
         return $dirs;
     }
 
+    /**
+     * Determines is the file safe for upload.
+     * @param string $ext
+     * @param string $mime
+     * @return bool
+     */
+    public function isSafe($ext, $mime)
+    {
+        $unsafeExtensions = $this->package->config('block.extensions');
+        $unsafeMimes = $this->package->config('block.mimetypes');
+        $mimeSearch = function ($mimeValue) use ($mime) {
+            return preg_match($mimeValue, $mime);
+        };
+
+        if (in_array($ext, $unsafeExtensions)) {
+            return false;
+        }
+
+        if (collect($unsafeMimes)->search($mimeSearch)) {
+            return false;
+        }
+
+        return true;
+    }
+
     private function readDirs(Filesystem $fs, $dir, &$result, $base, $root)
     {
         $dirs = $fs->directories($dir);

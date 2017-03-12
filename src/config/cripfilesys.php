@@ -75,7 +75,11 @@ return [
             'image' => ['img'],
             'media' => ['audio', 'video'],
             'document' => ['excel', 'word', 'pwp', 'html', 'txt', 'js']
-        ]
+        ],
+    ],
+    'block' => [
+        'extensions' => ['php'],
+        'mimetypes' => ["/^text\/php/"]
     ],
     'actions' => [
         'folder' => FolderController::class,

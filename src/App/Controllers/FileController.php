@@ -22,6 +22,11 @@ class FileController extends BaseController
             // Configure manager path where file should be uploaded
             // and make sure that directory exists in file system
             $blob = $this->manager->parsePath($request->path);
+            $file = $request->file('file');
+
+            if (!$this->manager->isSafe($file->getClientOriginalExtension(), $file->getMimeType())) {
+                return $this->json(['Uploading file is not safe and could not be uploaded.'], 422);
+            }
 
             // Upload file to the server
             $this->manager->upload($blob, $request->file('file'));

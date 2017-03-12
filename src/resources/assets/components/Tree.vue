@@ -7,7 +7,6 @@
   @import "../sass/variables";
 
   #tree {
-    background-color: $navbar-default-bg;
     border-top: 1px solid $second-color;
   }
 </style>

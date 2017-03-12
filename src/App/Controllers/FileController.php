@@ -52,7 +52,9 @@ class FileController extends BaseController
 
         if ($blob->file->isDefined() && $this->manager->exists($blob)) {
             return new Response($this->manager->fileContent($blob), 200, [
-                'Content-Type' => $blob->file->getMimeType()]);
+                'Content-Type' => $blob->file->getMimeType(),
+                'Cache-Control' => 'private, max-age=31536000'
+            ]);
         }
 
         return $this->json('File not found.', 404);

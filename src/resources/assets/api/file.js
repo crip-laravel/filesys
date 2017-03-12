@@ -26,5 +26,16 @@ export default {
       vue.http.delete(`${settings.filesUrl}/${blob.dir}/${blob.full_name}`)
         .then(({data}) => { resolve(!!data) }, reject)
     })
+  },
+
+  upload (path, file) {
+    let formData = new FormData()
+    formData.append('file', file)
+    formData.append('path', path)
+
+    return new Promise((resolve, reject) => {
+      vue.http.post(`${settings.filesUrl}`, formData)
+        .then(({data}) => resolve(new Blob(data)), reject)
+    })
   }
 }

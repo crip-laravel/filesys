@@ -3,7 +3,13 @@
     <div class="manager-actions clearfix">
       <div class="group">
         <div class="col">
-          <btn title="Upload" size="lg" icon="upload" :on-click="openUploadFileDialog"></btn>
+          <label for="file-input">
+            <btn title="Add files" size="lg" icon="add" :on-click="none"></btn>
+          </label>
+          <input id="file-input" type="file" multiple @change="filesForUploadAdded"/>
+        </div>
+        <div class="col" v-if="filesForUploadCount">
+          <btn :title="`Upload ${filesForUploadCount} files`" size="lg" icon="upload" :on-click="startUpload"></btn>
         </div>
         <div class="col">
           <btn title="Create Folder" size="lg" icon="add-folder" :on-click="createFolderDialog"
@@ -36,13 +42,15 @@
   import * as getters from '../store/getters'
   import * as actions from '../store/actions'
   import * as mutations from '../store/mutations'
+  import fileApi from '../api/file'
 
   export default {
     name: 'actions',
 
     data () {
       return {
-        isCreating: false
+        isCreating: false,
+        filesForUpload: []
       }
     },
 
@@ -56,7 +64,8 @@
       ]),
       isGridView () { return this.display === 'grid' },
       isListView () { return this.display === 'list' },
-      isEditEnabled () { return this.selectedBlob && this.selectedBlob.$edit }
+      isEditEnabled () { return this.selectedBlob && this.selectedBlob.$edit },
+      filesForUploadCount () { return this.filesForUpload.length }
     },
 
     methods: {
@@ -72,6 +81,8 @@
       ...mapActions([
         actions.deleteBlob
       ]),
+
+      none: _ => _,
 
       createFolderDialog () {
         if (!this.creating) {
@@ -90,8 +101,27 @@
         }
       },
 
-      openUploadFileDialog () {
-        console.log('openUploadFileDialog()')
+      filesForUploadAdded (event) {
+        let files = event.target.files || event.dataTransfer.files
+        if (files.length < 1) {
+          return
+        }
+
+        for (let key in files) {
+          if (files.hasOwnProperty(key)) {
+            this.filesForUpload.push(files[key])
+          }
+        }
+      },
+
+      startUpload () {
+        this.filesForUpload.forEach(file => {
+          fileApi.upload(this.path, file)
+            .then(blob => {
+              this.filesForUpload.splice(this.filesForUpload.indexOf(file), 1)
+              this.addItem(blob)
+            })
+        })
       }
     },
 
@@ -103,7 +133,6 @@
   @import "../sass/variables";
 
   .manager-actions {
-    background-color: $navbar-default-bg;
     border-bottom: 1px solid $second-color;
     width: 100%;
 
@@ -116,6 +145,10 @@
     .col, .group {
       height: 100px;
       float: left;
+    }
+
+    #file-input {
+      display: none;
     }
   }
 </style>

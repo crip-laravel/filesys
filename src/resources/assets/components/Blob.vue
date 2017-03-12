@@ -37,9 +37,7 @@
     methods: {
       ...mapMutations([
         mutations.selectItem,
-        mutations.enableEdit,
-        mutations.updateBlob,
-        mutations.deselect
+        mutations.enableEdit
       ]),
 
       ...mapActions([

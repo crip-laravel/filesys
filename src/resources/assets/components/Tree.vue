@@ -63,8 +63,8 @@
     ul {
       border-left: 1px dotted gray;
       list-style-type: none;
-      margin-left: 3px;
-      padding-left: 18px;
+      margin-left: 9px;
+      padding-left: 19px;
     }
 
     > ul {

@@ -1,8 +1,11 @@
 <template>
   <div>
-    <a href="#" @click="changePath(item.path)" class="tree-link" :class="{disabled: loading}">{{item.name}}</a>
+    <div class="clearfix">
+      <a href="#" @click="toggle()" v-if="item.children.length" class="toggle">{{sign}}</a>
+      <a href="#" @click="changePath(item.path)" class="tree-link" :class="{disabled: loading}">{{item.name}}</a>
+    </div>
 
-    <ul v-if="item.children.length">
+    <ul v-if="item.children.length && isOpen">
       <li v-for="child in item.children">
         <tree-item :item="child"></tree-item>
       </li>
@@ -23,16 +26,28 @@
       item: {type: TreeItem, required: true}
     },
 
+    data () {
+      return {
+        isOpen: false
+      }
+    },
+
     computed: {
       ...mapGetters([
         loading
-      ])
+      ]),
+
+      sign () { return this.isOpen ? '+' : '-' }
     },
 
     methods: {
       ...mapActions([
         changePath
-      ])
+      ]),
+
+      toggle () {
+        this.isOpen = !this.isOpen
+      }
     }
   }
 </script>
@@ -44,5 +59,10 @@
     .disabled {
       opacity: 0.5;
     }
+  }
+
+  .toggle {
+    float: left;
+    padding: 0 7px;
   }
 </style>

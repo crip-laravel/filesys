@@ -9,6 +9,7 @@
   "globals": {
     "$": true,
     "Laravel": true,
+    "tinymce": true,
     "CKEDITOR": true
   },
   "extends": "standard",

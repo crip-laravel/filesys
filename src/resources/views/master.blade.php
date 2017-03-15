@@ -25,8 +25,8 @@
 
 <div id="app">Loading...</div>
 
-<script src="<?php echo config('cripfilesys.public_url') ?>/vendor.bundle.js"></script>
-<script src="<?php echo config('cripfilesys.public_url') ?>/app.bundle.js"></script>
+<script src="<?php echo config('cripfilesys.public_url') ?>/vendor.js"></script>
+<script src="<?php echo config('cripfilesys.public_url') ?>/app.js"></script>
 
 </body>
 

@@ -10,7 +10,8 @@
     "$": true,
     "Laravel": true,
     "tinymce": true,
-    "CKEDITOR": true
+    "CKEDITOR": true,
+    "cripFilesystemManager": true
   },
   "extends": "standard",
   "rules": {

@@ -9,9 +9,10 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
-  import blob from './Blob.vue'
   import * as getters from '../store/getters'
+  import blob from './Blob.vue'
+  import settings from './../settings'
+  import { mapGetters } from 'vuex'
 
   export default {
     name: 'blobs',
@@ -19,7 +20,16 @@
     computed: {
       ...mapGetters([getters.path, getters.blobs, getters.display]),
       content () {
-        return this.blobs.sort((a, b) => {
+        let filtered = this.blobs
+
+        if (settings.mediaType() !== settings.mediaTypes.file) {
+          const consistent = [settings.mediaTypes.dir, settings.mediaType()]
+          filtered = this.blobs.filter((blob) => {
+            return ~consistent.indexOf(blob.mediatype)
+          })
+        }
+
+        return filtered.sort((a, b) => {
           if ((a.isDir && b.isDir) || (!a.isDir && !b.isDir)) {
             return a.name > b.name
           }

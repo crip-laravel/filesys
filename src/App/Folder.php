@@ -13,15 +13,6 @@ use Illuminate\Filesystem\Filesystem;
  */
 class Folder extends FileSystemObject implements ICripObject, Arrayable
 {
-    public $name = '';
-    public $dir = '';
-    public $type = 'dir';
-    public $bytes = '';
-    public $full_name = '';
-    public $updated_at = '';
-    public $url = '';
-    public $thumb = '';
-
     public function __construct(Blob $blob)
     {
         /** @var Filesystem $fs */

@@ -9,6 +9,15 @@ use Illuminate\Contracts\Support\Arrayable;
  */
 class FileSystemObject implements ICripObject, Arrayable
 {
+    public $name = '';
+    public $full_name = '';
+    public $type = 'dir';
+    public $mediatype = 'dir';
+    public $bytes = 0;
+    public $thumb = '';
+    public $updated_at = '';
+    public $dir = '';
+    public $url = '';
     /**
      * Default permission set for filesystem object
      *

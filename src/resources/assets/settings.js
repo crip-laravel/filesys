@@ -1,7 +1,10 @@
 let settings = document.getElementById('settings')
 const mediaTypes = {
   file: 'file',
-  image: 'image'
+  dir: 'dir',
+  image: 'image',
+  media: 'media',
+  document: 'document'
 }
 
 export default {
@@ -24,6 +27,7 @@ export default {
     return 'input'
   },
 
+  mediaTypes,
   mediaType () {
     if (this.params && this.params.type && mediaTypes[this.params.type]) {
       return this.params.type

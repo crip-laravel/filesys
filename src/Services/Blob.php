@@ -133,4 +133,20 @@ class Blob implements ICripObject
 
         return $url . $icons[$mime];
     }
+
+    /**
+     * Get media type of current mime
+     * @return string
+     */
+    public function getMediatype()
+    {
+        $mime = $this->getMime();
+        foreach ($this->package->config('mime.media') as $mediatype => $mimes) {
+            if (in_array($mime, $mimes)) {
+                return $mediatype;
+            }
+        }
+
+        return 'dir';
+    }
 }

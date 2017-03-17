@@ -1,21 +1,26 @@
 import folderApi from '../api/folder'
 import fileApi from '../api/file'
 
+/**
+ * @property {array} thumbs
+ * @property {string} bytes
+ * @property {string} bytes
+ * @property {string} dir
+ * @property {string} extension
+ * @property {string} full_name
+ * @property {string} mediatype
+ * @property {string} mime
+ * @property {string} mimetype
+ * @property {string} name
+ * @property {string} size
+ * @property {string} thumb
+ * @property {string} type
+ * @property {string} updated_at
+ * @property {string} url
+ */
 export default class Blob {
   constructor (data) {
-    this.name = data.name
-    this.extension = data.extension
-    this.mime = data.mime
-    this.type = data.type
-    this.mimetype = data.mimetype
-    this.bytes = data.bytes
-    this.updated_at = data.updated_at
-    this.thumb = data.thumb
-    this.dir = data.dir
-    this.full_name = data.full_name
-    this.url = data.url
-    this.size = data.size
-    this.thumbs = data.thumbs
+    Object.assign(this, data)
 
     this.$edit = false
     this.newName = data.name

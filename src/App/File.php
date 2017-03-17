@@ -13,17 +13,9 @@ use Illuminate\Filesystem\Filesystem;
  */
 class File extends FileSystemObject implements ICripObject, Arrayable
 {
-    public $name = '';
     public $extension = '';
     public $mime = '';
-    public $type = '';
     public $mimetype = '';
-    public $bytes = '';
-    public $updated_at = '';
-    public $thumb = '';
-    public $dir = '';
-    public $full_name = '';
-    public $url = '';
     public $size = [];
     public $thumbs = [];
 
@@ -38,6 +30,7 @@ class File extends FileSystemObject implements ICripObject, Arrayable
             $this->type = $fs->type($blob->systemPath());
             $this->mimetype = $blob->file->getMimeType();
             $this->mime = $blob->getMime();
+            $this->mediatype = $blob->getMediatype();
             $this->bytes = $fs->size($blob->systemPath());
             $this->updated_at = $fs->lastModified($blob->systemPath());
             $this->thumb = $blob->getThumb();

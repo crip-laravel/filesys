@@ -1,6 +1,9 @@
+import settings from '../../settings'
 import Vue from 'vue'
 import { creating } from '../getters'
-import { deleteBlob, saveBlob, fetchTree } from '../actions'
+import {
+  deleteBlob, saveBlob, openBlob, fetchTree, changePath
+} from '../actions'
 import {
   setUpdatedBlob, setBlobEditMode, setCreateEnabled,
   removeBlob, removeSelectedBlob
@@ -48,6 +51,70 @@ const actions = {
           dispatch(fetchTree)
         }
       })
+  },
+
+  /**
+   * Select file or open dir.
+   * @param dispatch
+   * @param {Blob} blob
+   * @param {String} size
+   */
+  [openBlob]: ({dispatch}, {blob, size}) => {
+    console.log({blob, size})
+    if (blob.isDir) {
+      return dispatch(changePath, blob.full_name)
+    }
+
+    let action = 'selectForCallback'
+
+    if (settings.target() === 'tinymce') {
+      action = 'selectTinyMce'
+    }
+
+    return dispatch(action, blob.url)
+  },
+
+  /**
+   * Select file for tinyMCE
+   * @param state
+   * @param {String} url
+   */
+  selectTinyMce (state, url) {
+    if (!top.tinymce) {
+      throw new Error('tinyMCE is selected as target, but `window.top` does not contain it!')
+    }
+
+    let wManager = top.tinymce.activeEditor.windowManager
+
+    if (top.tinymce.majorVersion < 4) {
+      wManager.params.setUrl(url)
+      wManager.close(wManager.params.mce_window_id)
+    } else {
+      wManager.getParams().setUrl(url)
+      wManager.close()
+    }
+  },
+
+  /**
+   * Select url for user callback
+   * @param state
+   * @param {String} url
+   */
+  selectCallback (state, url) {
+    let userCallback = settings.callback()
+    let callback = _ => _
+
+    if (userCallback) {
+      callback = window[userCallback] || parent[userCallback] || top[userCallback]
+    } else {
+      callback = window.cripFilesystemManager || parent.cripFilesystemManager || top.cripFilesystemManager
+    }
+
+    if (typeof callback !== 'function') {
+      throw new Error('callback method for file select not found!')
+    }
+
+    callback(url, settings.params)
   }
 }
 

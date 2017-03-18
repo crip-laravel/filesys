@@ -1,10 +1,10 @@
 <template>
   <div class="blob" :class="classes" @click="setSelectedBlob(blob)" :title="title">
-    <div class="thumb thumbnail" @dblclick="openItem(blob)">
+    <div class="thumb thumbnail" @dblclick="openBlob({blob})">
       <img :src="blob.thumb">
     </div>
     <div v-if="blob.$edit">
-      <form @submit.prevent="save">
+      <form @submit.prevent="saveBlob(blob)">
         <input name="name" :id="blob.$id" v-model="blob.newName">
       </form>
     </div>
@@ -18,8 +18,7 @@
   import * as getters from '../store/getters'
   import * as mutations from '../store/mutations'
   import Blob from '../models/Blob'
-  import settings from './../settings'
-  import { changePath, saveBlob } from '../store/actions'
+  import { openBlob, saveBlob } from '../store/actions'
   import { mapGetters, mapMutations, mapActions } from 'vuex'
 
   export default {
@@ -42,80 +41,9 @@
       ]),
 
       ...mapActions([
-        changePath,
+        openBlob,
         saveBlob
-      ]),
-
-      save () {
-        this.saveBlob(this.blob)
-      },
-
-      /**
-       * TODO: move this method to store action
-       * Open folder or file
-       * @param {Blob} blob
-       */
-      openItem (blob) {
-        if (blob.isDir) {
-          return this[changePath](blob.full_name)
-        }
-
-        if (settings.target() === 'tinymce') {
-          return this.selectForTinyMce(blob)
-        }
-
-        return this.selectForCallback(blob)
-      },
-
-      /**
-       * Select file for tinyMCE
-       * @param {Blob} blob
-       */
-      selectForTinyMce (blob) {
-        if (!top.tinymce) {
-          throw new Error('tinyMCE is selected as target, but `window.top` does not contain it!')
-        }
-
-        let url = this.resolveUrl(blob)
-        let wManager = top.tinymce.activeEditor.windowManager
-
-        if (top.tinymce.majorVersion < 4) {
-          wManager.params.setUrl(url)
-          wManager.close(wManager.params.mce_window_id)
-        } else {
-          wManager.getParams().setUrl(url)
-          wManager.close()
-        }
-      },
-
-      /**
-       * Select url for user callback
-       * @param {Blob} blob
-       */
-      selectForCallback (blob) {
-        let userCallback = settings.callback()
-        let callback = _ => _
-
-        if (userCallback) {
-          callback = window[userCallback] || parent[userCallback] || top[userCallback]
-        } else {
-          callback = cripFilesystemManager || parent.cripFilesystemManager || top.cripFilesystemManager
-        }
-
-        if (typeof callback !== 'function') {
-          throw new Error('callback method for file select not found!')
-        }
-
-        callback(this.resolveUrl(blob), settings.params)
-      },
-
-      /**
-       * TODO: should be option to choose sized image
-       * @param {Blob} blob
-       */
-      resolveUrl (blob) {
-        return blob.url
-      }
+      ])
     }
   }
 </script>

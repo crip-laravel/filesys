@@ -1,12 +1,12 @@
 <template>
   <div id="blobs">
     <div class="row clearfix" :class="[displayType]">
-      <div v-for="blob in content" class="blob-container">
-        <div @contextmenu="openMenu" class="context-wrapp">
+      <div v-for="(blob, index) in content" class="blob-container">
+        <div @contextmenu.prevent="openMenu($event, index)" class="context-wrapp">
           <blob :blob="blob"></blob>
-          <ul class="context-menu" tabindex="-1" v-if="viewMenu" :style="{top:top, left:left}"
-              @blur="closeMenu">
-            <li><a href="#" @click="select(blob)">Select</a></li>
+          <ul class="context-menu" :id="contextMenuId(index)" tabindex="-1" v-if="isVisible(index)"
+              :style="{top:top, left:left}">
+            <li><a href="#" @click.prevent="openBlob({blob})">Select</a></li>
             <li>Second list item</li>
           </ul>
         </div>
@@ -17,10 +17,11 @@
 
 <script>
   import * as getters from '../store/getters'
+  import * as actions from '../store/actions'
   import blob from './Blob.vue'
   import settings from './../settings'
   import Vue from 'vue'
-  import { mapGetters } from 'vuex'
+  import { mapGetters, mapActions } from 'vuex'
 
   export default {
     name: 'blobs',
@@ -64,85 +65,78 @@
 
     data () {
       return {
-        viewMenu: false,
+        viewMenu: {},
         top: '0px',
         left: '0px'
       }
     },
 
     methods: {
+      ...mapActions([
+        actions.openBlob
+      ]),
+
+      isVisible (index) {
+        return !!this.viewMenu[index]
+      },
+
+      contextMenuId (index) {
+        return `context-menu-${index}`
+      },
+
       /**
        * @param {Number} top
        * @param {Number} left
        * @param el
+       * @param {Number} index
+       * @param {String} menuId
        */
-      setMenu (top, left, el) {
+      setMenu (top, left, el, index, menuId) {
         let largestHeight = window.innerHeight - el.offsetHeight - 25
         let largestWidth = window.innerWidth - el.offsetWidth - 25
 
         if (top > largestHeight) top = largestHeight
         if (left > largestWidth) left = largestWidth
 
-        this.top = top + 'px'
-        this.left = left + 'px'
+        this.top = `${top}px`
+        this.left = `${left}px`
+
+        let docClickListener = ({target}) => {
+          let targetEq = [target.id === menuId]
+          while ((target = target.parentElement)) {
+            targetEq.push(target.id === menuId)
+          }
+
+          if (targetEq.filter(eq => eq).length === 0) {
+            this.closeMenu(index)
+            document.removeEventListener('click', docClickListener)
+          }
+        }
+
+        document.addEventListener('click', docClickListener)
       },
 
       /**
        * Close menu
        */
-      closeMenu () {
-        this.viewMenu = false
+      closeMenu (index) {
+        Vue.set(this.viewMenu, index, false)
       },
 
       /**
        * @param {MouseEvent} e
+       * @param {Number} index
        */
-      openMenu (e) {
-        let wrapp = this.findAncestor(e.target, 'context-wrapp')
-        this.viewMenu = true
+      openMenu (e, index) {
+        Vue.set(this.viewMenu, index, true)
+        let menuId = this.contextMenuId(index)
 
-        // interact with element only when it is binded to dom
+        // interact with element only when it is already in dom
         Vue.nextTick(() => {
-          let el = this.findChild(wrapp, 'context-menu')
+          let el = document.getElementById(menuId)
           el.focus()
-          this.setMenu(e.y, e.x, el)
+          this.setMenu(e.y, e.x, el, index, menuId)
         })
-
-        e.preventDefault()
-      },
-
-      /**
-       * Select blob
-       * @param {Blob} blob
-       * @param {String} size ['default']
-       */
-      select (blob, size = 'default') {
-        // TODO: method should be in blob store actions
-      },
-
-      /**
-       * @param el
-       * @param {string} cls
-       * @returns {*}
-       */
-      findAncestor (el, cls) {
-        while ((el = el.parentElement) && !el.classList.contains(cls)) {}
-        return el
-      },
-
-      /**
-       * @param el
-       * @param {string} cls
-       * @returns {*}
-       */
-      findChild (el, cls) {
-        for (let i = 0; i < el.childNodes.length; i++) {
-          if (el.childNodes.hasOwnProperty(i) &&
-            el.childNodes[i].classList &&
-            el.childNodes[i].classList.contains(cls)) {
-            return el.childNodes[i]
-          }
-        }
       }
     },
 

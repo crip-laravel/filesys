@@ -15,6 +15,7 @@ export const isListView = 'isListView'
 export const breadcrumb = 'breadcrumb'
 export const isLoading = 'isLoading'
 export const path = 'path'
+export const pathUp = 'pathUp'
 
 // tree.js getters
 export const treeFolders = 'treeFolders'

@@ -2,7 +2,8 @@ import Blob from '../../models/Blob'
 import folderApi from '../../api/folder'
 import settings from '../../settings'
 import {
-  blobs, selectedBlob, displayType, isGridView, isListView
+  blobs, selectedBlob, displayType, isGridView, isListView, pathUp,
+  path
 } from '../getters'
 import { fetchContent, refreshContent } from '../actions'
 import {
@@ -23,12 +24,11 @@ const actions = {
    * @param getters
    */
   [fetchContent]: ({commit, getters}) => {
-    let path = getters.path
     commit(removeSelectedBlob)
     commit(setLoadingStarted)
-    folderApi.content(path)
+    folderApi.content(getters[path])
       .then(blobs => {
-        commit(setBlobs, {path, blobs})
+        commit(setBlobs, {path: getters[path], pathUp: getters[pathUp], blobs})
         commit(setLoadingCompleted)
       })
   },
@@ -38,7 +38,7 @@ const actions = {
    * @param dispatch
    */
   [refreshContent]: ({dispatch}) => {
-    dispatch('fetchContent')
+    dispatch(fetchContent)
   }
 }
 
@@ -67,13 +67,13 @@ const mutations = {
    * @param {String} path
    * @param {Array.<Blob>} blobs
    */
-  [setBlobs]: (state, {path, blobs}) => {
+  [setBlobs]: (state, {path, pathUp, blobs}, rootState) => {
     state.blobs = blobs
     if (path !== '') {
       state.blobs.push(new Blob({
         name: '..',
         type: 'dir',
-        full_name: state.pathUp,
+        full_name: pathUp,
         thumb: settings.dirIcon,
         $isSystem: true
       }))

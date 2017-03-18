@@ -1,5 +1,5 @@
 import folderApi from '../../api/folder'
-import { breadcrumb, isLoading, path } from '../getters'
+import { breadcrumb, isLoading, path, pathUp } from '../getters'
 import { changePath } from '../actions'
 import {
   setLoadingStarted, setLoadingCompleted, setPath,
@@ -23,11 +23,15 @@ const actions = {
    */
   [changePath]: ({commit, getters}, path) => {
     if (getters.path !== path && !getters.isLoading) {
+      let pathUp = path.split('/')
+      pathUp.splice(-1, 1)
+      pathUp = pathUp.join('/')
+
       commit(removeSelectedBlob)
       commit(setLoadingStarted)
       folderApi.content(path)
         .then(blobs => {
-          commit(setBlobs, {blobs, path})
+          commit(setBlobs, {blobs, path, pathUp})
           commit(setLoadingCompleted)
           commit(setPath, path)
         })
@@ -75,7 +79,8 @@ const mutations = {
 const getters = {
   [breadcrumb]: (store) => store.breadcrumb,
   [isLoading]: (store) => store.isLoading,
-  [path]: (store) => store.path
+  [path]: (store) => store.path,
+  [pathUp]: (store) => store.pathUp
 }
 
 export default {state, actions, mutations, getters}

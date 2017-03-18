@@ -2,7 +2,7 @@
   <div id="tree">
     <item :item="root"></item>
     <ul>
-      <li v-for="item in items">
+      <li v-for="item in treeFolders">
         <item :item="item"></item>
       </li>
     </ul>
@@ -10,43 +10,33 @@
 </template>
 
 <script>
+  import * as actions from '../store/actions'
+  import * as getters from '../store/getters'
   import item from './TreeItem.vue'
-  import treeApi from '../api/tree'
   import TreeItem from '../models/TreeItem'
-  import { mapGetters } from 'vuex'
-  import { treeCounter } from '../store/getters'
+  import { mapGetters, mapActions } from 'vuex'
 
   export default {
     mounted () {
-      this.fetchTree()
+      this[actions.fetchTree]()
     },
 
     computed: {
       ...mapGetters([
-        treeCounter
+        getters.treeFolders
       ])
     },
 
     data () {
       return {
-        items: [],
         root: new TreeItem({name: 'Home', path: ''})
       }
     },
 
     methods: {
-      fetchTree () {
-        treeApi.getAll()
-          .then(tree => {
-            this.items = tree.items
-          })
-      }
-    },
-
-    watch: {
-      [treeCounter] () {
-        this.fetchTree()
-      }
+      ...mapActions([
+        actions.fetchTree
+      ])
     },
 
     components: {item}

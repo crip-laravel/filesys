@@ -2,7 +2,7 @@
   <div>
     <div class="clearfix">
       <a href="#" @click="toggle()" v-if="item.children.length" class="toggle">{{sign}}</a>
-      <a href="#" @click="changePath(item.path)" class="tree-link" :class="{disabled: loading}">{{item.name}}</a>
+      <a href="#" @click="changePath(item.path)" class="tree-link" :class="{disabled: isLoading}">{{item.name}}</a>
     </div>
 
     <ul v-if="item.children.length && isOpen">
@@ -14,10 +14,10 @@
 </template>
 
 <script>
-  import { mapActions, mapGetters } from 'vuex'
   import TreeItem from '../models/TreeItem'
   import { changePath } from '../store/actions'
-  import { loading } from '../store/getters'
+  import { isLoading } from '../store/getters'
+  import { mapActions, mapGetters } from 'vuex'
 
   export default {
     name: 'tree-item',
@@ -34,7 +34,7 @@
 
     computed: {
       ...mapGetters([
-        loading
+        isLoading
       ]),
 
       sign () { return this.isOpen ? '+' : '-' }

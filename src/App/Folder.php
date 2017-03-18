@@ -25,6 +25,7 @@ class Folder extends FileSystemObject implements ICripObject, Arrayable
             $this->updated_at = $fs->lastModified($blob->systemPath());
             $this->url = $blob->folder->getUrl();
             $this->thumb = $blob->getThumb();
+            $this->bytes = $blob->getBytes();
         }
     }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="blob" :class="classes" @click="selectItem(blob)" :title="title">
+  <div class="blob" :class="classes" @click="setSelectedBlob(blob)" :title="title">
     <div class="thumb thumbnail" @dblclick="openItem(blob)">
       <img :src="blob.thumb">
     </div>
@@ -8,7 +8,7 @@
         <input name="name" :id="blob.$id" v-model="blob.newName">
       </form>
     </div>
-    <div v-else class="blob-description" @dblclick="enableEdit()">
+    <div v-else class="blob-description" @dblclick="setBlobEditMode">
       {{title}}
     </div>
   </div>
@@ -31,14 +31,14 @@
 
     computed: {
       ...mapGetters([getters.selectedBlob]),
-      classes () { return {active: this.selectedBlob === this.blob} },
+      classes () { return {active: this.selectedBlob.$id === this.blob.$id} },
       title () { return this.blob.isDir ? this.blob.name : this.blob.full_name }
     },
 
     methods: {
       ...mapMutations([
-        mutations.selectItem,
-        mutations.enableEdit
+        mutations.setSelectedBlob,
+        mutations.setBlobEditMode
       ]),
 
       ...mapActions([
@@ -51,6 +51,7 @@
       },
 
       /**
+       * TODO: move this method to store action
        * Open folder or file
        * @param {Blob} blob
        */

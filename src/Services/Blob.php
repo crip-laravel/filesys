@@ -1,6 +1,7 @@
 <?php namespace Crip\Filesys\Services;
 
 use Crip\Core\Contracts\ICripObject;
+use Crip\Core\Helpers\FileSystem;
 use Crip\Core\Helpers\Str;
 use Crip\Core\Support\PackageBase;
 
@@ -41,6 +42,10 @@ class Blob implements ICripObject
         $this->setPath($path);
     }
 
+    /**
+     * Set path for current blob.
+     * @param $path
+     */
     public function setPath($path)
     {
         $this->path = Str::normalizePath($path);
@@ -58,6 +63,10 @@ class Blob implements ICripObject
         $this->setFile($file);
     }
 
+    /**
+     * Set folder for blob.
+     * @param $folder
+     */
     public function setFolder($folder)
     {
         $folder = Str::normalizePath($folder);
@@ -69,6 +78,11 @@ class Blob implements ICripObject
         $this->folder = new FolderInfo($this->package, $folder);
     }
 
+    /**
+     * Set file for blob.
+     * @param $name
+     * @param null|string $extension
+     */
     public function setFile($name, $extension = null)
     {
         if ($extension != null) {
@@ -78,6 +92,10 @@ class Blob implements ICripObject
         $this->file = new FileInfo($this->package, $this->folder, $name);
     }
 
+    /**
+     * Get file/dir system path.
+     * @return string
+     */
     public function systemPath()
     {
         if ($this->file->isDefined()) {
@@ -87,6 +105,10 @@ class Blob implements ICripObject
         return $this->folder->getDir();
     }
 
+    /**
+     * Get file/dir mime name.
+     * @return string
+     */
     public function getMime()
     {
         if (!$this->file->isDefined()) {
@@ -106,6 +128,11 @@ class Blob implements ICripObject
         return 'file';
     }
 
+    /**
+     * Get file/dir thumb URL.
+     * @return string
+     * @throws \Exception
+     */
     public function getThumb()
     {
         $url = $this->package->config('icons.url');
@@ -148,5 +175,14 @@ class Blob implements ICripObject
         }
 
         return 'dir';
+    }
+
+    /**
+     * Get dir size in bytes
+     * @return int
+     */
+    public function getBytes()
+    {
+        return FileSystem::dirSize($this->systemPath());
     }
 }

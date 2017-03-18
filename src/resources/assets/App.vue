@@ -4,7 +4,7 @@
     <breadcrumb class="row"></breadcrumb>
     <div class="row">
       <tree class="col-sm-4 col-md-3"></tree>
-      <blobs class="col-sm-8 col-md-9"></blobs>
+      <blobs class="col-sm-8 col-md-9 display-default"></blobs>
     </div>
   </div>
 </template>
@@ -15,16 +15,21 @@
   import tree from './components/Tree.vue'
   import blobs from './components/Blobs.vue'
 
-  import { loadContent } from './store/actions'
+  import { fetchContent } from './store/actions'
 
   export default {
     name: 'app',
 
     mounted () {
-      console.log('app mounted')
-      this.$store.dispatch(loadContent)
+      this.$store.dispatch(fetchContent)
     },
 
     components: {actions, breadcrumb, tree, blobs}
   }
 </script>
+
+<style>
+  .display-default {
+    position: inherit;
+  }
+</style>

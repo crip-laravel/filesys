@@ -24,7 +24,7 @@
       </div>
       <div class="group">
         <div class="col">
-          <btn title="Rename" size="lg" icon="rename" :active="isEditEnabled" :on-click="enableEdit"
+          <btn title="Rename" size="lg" icon="rename" :active="isEditEnabled" :on-click="setBlobEditMode"
                :disabled="!selectedBlob"></btn>
         </div>
         <div class="col">
@@ -36,13 +36,13 @@
 </template>
 
 <script>
-  import { mapGetters, mapMutations, mapActions } from 'vuex'
+  import * as actions from '../store/actions'
+  import * as getters from '../store/getters'
+  import * as mutations from '../store/mutations'
   import Blob from '../models/Blob'
   import btn from './ActionButton.vue'
-  import * as getters from '../store/getters'
-  import * as actions from '../store/actions'
-  import * as mutations from '../store/mutations'
   import fileApi from '../api/file'
+  import { mapGetters, mapMutations, mapActions } from 'vuex'
 
   export default {
     name: 'actions',
@@ -56,26 +56,24 @@
 
     computed: {
       ...mapGetters([
-        getters.loading,
+        getters.creating,
+        getters.isEditEnabled,
+        getters.isGridView,
+        getters.isListView,
         getters.path,
-        getters.display,
-        getters.selectedBlob,
-        getters.creating
+        getters.selectedBlob
       ]),
-      isGridView () { return this.display === 'grid' },
-      isListView () { return this.display === 'list' },
-      isEditEnabled () { return this.selectedBlob && this.selectedBlob.$edit },
       filesForUploadCount () { return this.filesForUpload.length }
     },
 
     methods: {
       ...mapMutations([
+        mutations.setBlobEditMode,
+        mutations.setCreateEnabled,
         mutations.setGridView,
         mutations.setListView,
-        mutations.enableEdit,
-        mutations.addItem,
-        mutations.selectItem,
-        mutations.creatingEnabled
+        mutations.setNewBlob,
+        mutations.setSelectedBlob
       ]),
 
       ...mapActions([
@@ -86,7 +84,7 @@
 
       createFolderDialog () {
         if (!this.creating) {
-          this.creatingEnabled()
+          this.setCreateEnabled()
           let dirToCreate = new Blob({
             $isSystem: true,
             $temp: true,
@@ -95,9 +93,9 @@
             type: 'dir'
           })
 
-          this.selectItem(dirToCreate)
-          this.addItem(dirToCreate)
-          this.enableEdit()
+          this.setSelectedBlob(dirToCreate)
+          this.setNewBlob(dirToCreate)
+          this.setBlobEditMode()
         }
       },
 
@@ -119,7 +117,7 @@
           fileApi.upload(this.path, file)
             .then(blob => {
               this.filesForUpload.splice(this.filesForUpload.indexOf(file), 1)
-              this.addItem(blob)
+              this.setNewBlob(blob)
             })
         })
       }

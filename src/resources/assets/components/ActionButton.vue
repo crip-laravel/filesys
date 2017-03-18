@@ -8,9 +8,9 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
   import * as getters from '../store/getters'
   import settings from '../settings'
+  import { mapGetters } from 'vuex'
 
   export default {
     name: 'action-btn',
@@ -25,8 +25,10 @@
     },
 
     computed: {
-      ...mapGetters([getters.loading]),
-      enabled () { return !this.loading && !this.disabled },
+      ...mapGetters([
+        getters.isLoading
+      ]),
+      enabled () { return !this.isLoading && !this.disabled },
       classes () { return {'action-btn': true, [`action-btn-${this.size}`]: true, 'active': this.active} }
     },
 

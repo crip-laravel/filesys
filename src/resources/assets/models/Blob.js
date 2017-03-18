@@ -23,10 +23,9 @@ export default class Blob {
     Object.assign(this, data)
 
     this.$edit = false
-    this.newName = data.name
-    this.$id = `blob-${data.full_name}`
-    this.$isSystem = !!data.$isSystem
     this.$temp = !!data.$temp
+    this.$id = `blob-${data.full_name}`
+    this.newName = data.name
   }
 
   get isDir () { return this.type === 'dir' }
@@ -39,6 +38,7 @@ export default class Blob {
    */
   save () {
     let action = 'update'
+
     if (this.$temp) {
       action = 'create'
     }

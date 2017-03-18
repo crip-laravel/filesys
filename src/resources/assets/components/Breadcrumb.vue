@@ -14,23 +14,19 @@
       </ol>
     </div>
     <div class="col-xs-1 text-right">
-      <a class="icon-wrapp" href="#" @click="refresh()"><img class="icon" :src="iconRefresh"></a>
+      <a class="icon-wrapp" href="#" @click="refreshContent"><img class="icon" :src="iconRefresh"></a>
     </div>
   </div>
 </template>
 
 <script>
-  import { mapGetters, mapActions } from 'vuex'
-  import * as getters from '../store/getters'
   import * as actions from '../store/actions'
+  import * as getters from '../store/getters'
   import settings from '../settings'
+  import { mapGetters, mapActions } from 'vuex'
 
   export default {
     name: 'breadcrumb',
-
-    mounted () {
-      console.log(this.breadcrumb, this.path, this.items)
-    },
 
     data () {
       return {
@@ -44,6 +40,7 @@
         getters.path,
         getters.breadcrumb
       ]),
+
       items () {
         let result = []
         let fullPath = this.path
@@ -71,7 +68,7 @@
     methods: {
       ...mapActions([
         actions.changePath,
-        actions.refresh
+        actions.refreshContent
       ])
     }
   }

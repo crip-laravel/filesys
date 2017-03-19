@@ -59,9 +59,9 @@ const actions = {
    * Select file or open dir.
    * @param dispatch
    * @param {Blob} blob
-   * @param {String} size
+   * @param {String} url
    */
-  [openBlob]: ({dispatch}, {blob, size}) => {
+  [openBlob]: ({dispatch}, {blob, url}) => {
     if (blob.isDir) {
       return dispatch(changePath, blob.full_name)
     }
@@ -72,7 +72,7 @@ const actions = {
       action = 'selectTinyMce'
     }
 
-    return dispatch(action, blob.url)
+    return dispatch(action, url || blob.url)
   },
 
   /**

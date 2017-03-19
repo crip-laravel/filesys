@@ -22,6 +22,7 @@ export default class Blob {
   constructor (data) {
     Object.assign(this, data)
 
+    this.$date = data.updated_at ? data.updated_at.dateFromUnixTimestamp() : ''
     this.$edit = false
     this.$temp = !!data.$temp
     this.$id = `blob-${data.full_name}`

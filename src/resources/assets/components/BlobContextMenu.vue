@@ -3,14 +3,25 @@
       :style="{top: posTop, left: posLeft}">
 
     <li v-if="isDir">
-      <a href="#" @click.prevent="open(blob)">Open Folder {{blob.name}}</a>
+      <a class="content" href="#" @click.prevent="open(blob)">Open folder <i>{{blob.name}}</i></a>
+    </li>
+
+    <li v-if="!isDir && !blob.$isSystem">
+      <a href="#" class="content" @click.prevent="open(blob)">
+        Select <span v-if="blob.mime === 'img'">image <small>({{blob.size[0]}} x {{blob.size[1]}})</small></span>
+        <span v-else>file</span>
+      </a>
     </li>
 
     <li v-for="size in sizes">
-      <a href="#" @click.prevent="open({blob})">Select</a>
+      <a class="content" href="#" @click.prevent="open(blob, size.url)">
+        Select <i>{{size.name}}</i> image
+        <small>({{size.x}} x {{size.y}})</small>
+      </a>
     </li>
 
-    <li>Second list item {{index}}</li>
+    <li v-if="!blob.$isSystem"><span class="content">Modified: <strong>{{blob.$date}}</strong></span></li>
+    <li v-if="!blob.$isSystem"><span class="content">Size: <strong>{{size}}</strong></span></li>
   </ul>
 </template>
 
@@ -42,16 +53,53 @@
       largestWidth () { return this.left > this.maxWidth ? this.maxWidth : this.left },
       posLeft () { return `${this.largestWidth}px` },
 
-      sizes () {
-        return []
+      size () {
+        if (this.blob.bytes === 1) {
+          return this.blob.bytes + ' byte'
+        }
+
+        if (this.blob.bytes === 0) {
+          return '0 bytes'
+        }
+
+        let fileSizes = [
+          {val: 1, postfix: ' bytes'},
+          {val: 1024, postfix: ' kB'},
+          {val: 1048576, postfix: ' MB'},
+          {val: 1073741824, postfix: ' GB'}
+        ]
+
+        let result = ''
+        fileSizes.forEach(size => {
+          if (this.blob.bytes >= size.val) {
+            result = (this.blob.bytes / size.val).toFixed(2) + size.postfix
+          }
+        })
+
+        return result
       }
     },
 
     data () {
+      let sizes = []
+
+      if (this.blob.thumbs) {
+        Object.keys(this.blob.thumbs).forEach(size => {
+          let thumb = this.blob.thumbs[size]
+          sizes.push({
+            name: size,
+            x: thumb.size[0],
+            y: thumb.size[1],
+            url: thumb.url
+          })
+        })
+      }
+
       return {
         width: 0,
         height: 0,
-        isDir: this.blob.isDir
+        isDir: this.blob.isDir,
+        sizes
       }
     },
 
@@ -67,10 +115,10 @@
       /**
        * Open blob wrapper method to call hide on selecting blob.
        * @param {Blob} blob
-       * @param {String} size
+       * @param {String} url
        */
-      open (blob, size) {
-        this.openBlob({blob, size})
+      open (blob, url) {
+        this.openBlob({blob, url})
         this.hideMenu()
       },
 
@@ -138,15 +186,19 @@
     li {
       border-bottom: 1px solid $laravel-border-color;
       margin: 0;
-      padding: 5px 35px;
 
       &:last-child {
         border-bottom: none;
       }
 
-      &:hover {
+      a:hover {
         background: $brand-primary;
         color: $text-color;
+      }
+
+      .content {
+        display: block;
+        padding: 5px;
       }
     }
   }

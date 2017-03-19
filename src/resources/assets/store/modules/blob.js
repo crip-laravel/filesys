@@ -66,7 +66,7 @@ const actions = {
       return dispatch(changePath, blob.full_name)
     }
 
-    let action = 'selectForCallback'
+    let action = 'selectCallback'
 
     if (settings.target() === 'tinymce') {
       action = 'selectTinyMce'

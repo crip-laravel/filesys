@@ -4,11 +4,8 @@
       <div v-for="(blob, index) in content" class="blob-container">
         <div @contextmenu.prevent="openMenu($event, index)" class="context-wrapp">
           <blob :blob="blob"></blob>
-          <ul class="context-menu" :id="contextMenuId(index)" tabindex="-1" v-if="isVisible(index)"
-              :style="{top:top, left:left}">
-            <li><a href="#" @click.prevent="openBlob({blob})">Select</a></li>
-            <li>Second list item</li>
-          </ul>
+          <blob-context-menu :is-visible="isVisible(index)" :index="index" :blob="blob"
+                             :top="top" :left="left" @close="closeMenu"></blob-context-menu>
         </div>
       </div>
     </div>
@@ -17,11 +14,11 @@
 
 <script>
   import * as getters from '../store/getters'
-  import * as actions from '../store/actions'
   import blob from './Blob.vue'
+  import blobContextMenu from './BlobContextMenu.vue'
   import settings from './../settings'
   import Vue from 'vue'
-  import { mapGetters, mapActions } from 'vuex'
+  import { mapGetters } from 'vuex'
 
   export default {
     name: 'blobs',
@@ -66,54 +63,14 @@
     data () {
       return {
         viewMenu: {},
-        top: '0px',
-        left: '0px'
+        top: 0,
+        left: 0
       }
     },
 
     methods: {
-      ...mapActions([
-        actions.openBlob
-      ]),
-
       isVisible (index) {
         return !!this.viewMenu[index]
-      },
-
-      contextMenuId (index) {
-        return `context-menu-${index}`
-      },
-
-      /**
-       * @param {Number} top
-       * @param {Number} left
-       * @param el
-       * @param {Number} index
-       * @param {String} menuId
-       */
-      setMenu (top, left, el, index, menuId) {
-        let largestHeight = window.innerHeight - el.offsetHeight - 25
-        let largestWidth = window.innerWidth - el.offsetWidth - 25
-
-        if (top > largestHeight) top = largestHeight
-        if (left > largestWidth) left = largestWidth
-
-        this.top = `${top}px`
-        this.left = `${left}px`
-
-        let docClickListener = ({target}) => {
-          let targetEq = [target.id === menuId]
-          while ((target = target.parentElement)) {
-            targetEq.push(target.id === menuId)
-          }
-
-          if (targetEq.filter(eq => eq).length === 0) {
-            this.closeMenu(index)
-            document.removeEventListener('click', docClickListener)
-          }
-        }
-
-        document.addEventListener('click', docClickListener)
       },
 
       /**
@@ -128,19 +85,16 @@
        * @param {Number} index
        */
       openMenu (e, index) {
-        Vue.set(this.viewMenu, index, true)
-        let menuId = this.contextMenuId(index)
+        this.top = e.y
+        this.left = e.x
+        // before open, make sure all other are closed
+        Object.keys(this.viewMenu).forEach(key => Vue.set(this.viewMenu, key, false))
 
-        // interact with element only when it is already in dom
-        Vue.nextTick(() => {
-          let el = document.getElementById(menuId)
-          el.focus()
-          this.setMenu(e.y, e.x, el, index, menuId)
-        })
+        Vue.set(this.viewMenu, index, true)
       }
     },
 
-    components: {blob}
+    components: {blob, blobContextMenu}
   }
 </script>
 
@@ -156,33 +110,5 @@
 
   #blobs {
     border-top: 1px solid $second-color;
-  }
-
-  .context-menu {
-    background: #FAFAFA;
-    border: 1px solid $laravel-border-color;
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(0, 0, 0, .2), 0 1px 5px 0 rgba(0, 0, 0, .12);
-    display: block;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    position: absolute;
-    width: 250px;
-    z-index: 999999;
-
-    li {
-      border-bottom: 1px solid $laravel-border-color;
-      margin: 0;
-      padding: 5px 35px;
-
-      &:last-child {
-        border-bottom: none;
-      }
-
-      &:hover {
-        background: $brand-primary;
-        color: $text-color;
-      }
-    }
   }
 </style>

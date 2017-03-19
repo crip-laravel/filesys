@@ -29,8 +29,11 @@
     },
 
     computed: {
-      ...mapGetters([getters.selectedBlob]),
-      classes () { return {active: this.selectedBlob.$id === this.blob.$id} },
+      ...mapGetters([
+        getters.selectedBlob,
+        getters.isLoading
+      ]),
+      classes () { return {active: this.selectedBlob.$id === this.blob.$id, disabled: this.isLoading} },
       title () { return this.blob.isDir ? this.blob.name : this.blob.full_name }
     },
 
@@ -58,6 +61,10 @@
       background-color: darken($footer-text-color, 10%);
       border-color: $second-color;
       color: $link-color;
+    }
+
+    &.disabled {
+      opacity: 0.5;
     }
 
     &:hover {

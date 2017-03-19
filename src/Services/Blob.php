@@ -174,6 +174,10 @@ class Blob implements ICripObject
             }
         }
 
+        if ($mime == 'file') {
+            return $mime;
+        }
+
         return 'dir';
     }
 

@@ -78,6 +78,7 @@ const mutations = {
         type: 'dir',
         full_name: pathUp,
         thumb: settings.dirIcon,
+        mediatype: settings.mediaTypes.dir,
         $isSystem: true
       })
 

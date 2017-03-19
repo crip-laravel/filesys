@@ -10,12 +10,13 @@ import { fetchContent, refreshContent } from '../actions'
 import {
   removeSelectedBlob, removeBlob, setBlobs, setNewBlob, setSelectedBlob,
   setGridView, setListView, setLoadingStarted, setLoadingCompleted,
-  setBlobEditMode, setUpdatedBlob
+  setBlobEditMode, setUpdatedBlob, setCreateEnabled, setCreateDisabled
 } from '../mutations'
 
 const state = {
   blobs: [],
   selected: false,
+  creating: false,
   displayType: 'grid' // 'grid'|'list'
 }
 
@@ -69,16 +70,18 @@ const mutations = {
    * @param {String} path
    * @param {Array.<Blob>} blobs
    */
-  [setBlobs]: (state, {path, pathUp, blobs}, rootState) => {
+  [setBlobs]: (state, {path, pathUp, blobs}) => {
     state.blobs = blobs
     if (path !== '') {
-      state.blobs.push(new Blob({
+      let blobUp = new Blob({
         name: '..',
         type: 'dir',
         full_name: pathUp,
         thumb: settings.dirIcon,
         $isSystem: true
-      }))
+      })
+
+      state.blobs.push(blobUp)
     }
   },
 
@@ -141,6 +144,22 @@ const mutations = {
     let toUpdate = state.blobs.filter(b => b.$id === id)[0]
     state.blobs.splice(state.blobs.indexOf(toUpdate), 1)
     state.blobs.push(blob)
+  },
+
+  /**
+   * Mutate create state as enabled.
+   * @param state
+   */
+  [setCreateEnabled]: (state) => {
+    state.creating = true
+  },
+
+  /**
+   * Mutate create state as disabled.
+   * @param state
+   */
+  [setCreateDisabled]: (state) => {
+    state.creating = false
   }
 }
 
@@ -154,7 +173,7 @@ function deselectItems (state) {
   })
 
   if (~forRemove) {
-    state.items.splice(forRemove, 1)
+    state.blobs.splice(forRemove, 1)
   }
 
   state.creating = false

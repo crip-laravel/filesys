@@ -1,6 +1,7 @@
 // blob.js mutations
 export const setBlobEditMode = 'setBlobEditMode'
 export const setCreateEnabled = 'setCreateEnabled'
+export const setCreateDisabled = 'setCreateDisabled'
 export const setUpdatedBlob = 'setUpdatedBlob'
 
 // content.js mutations

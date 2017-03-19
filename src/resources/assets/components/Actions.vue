@@ -49,7 +49,6 @@
 
     data () {
       return {
-        isCreating: false,
         filesForUpload: []
       }
     },

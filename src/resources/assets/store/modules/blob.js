@@ -5,14 +5,11 @@ import {
   startEditBlob
 } from '../actions'
 import {
-  setUpdatedBlob, setBlobEditMode, setCreateEnabled,
-  removeBlob, removeSelectedBlob, setLoadingStarted,
-  setLoadingCompleted
+  setUpdatedBlob, setBlobEditMode, removeBlob, setLoadingStarted,
+  setLoadingCompleted, setSelectedBlob
 } from '../mutations'
 
-const state = {
-  creating: false
-}
+const state = {}
 
 const actions = {
   /**
@@ -49,7 +46,7 @@ const actions = {
           blob: newBlob
         })
 
-        commit(removeSelectedBlob)
+        commit(setSelectedBlob, newBlob)
         commit(setLoadingCompleted)
 
         if (blob.isDir) {
@@ -133,15 +130,7 @@ const actions = {
   }
 }
 
-const mutations = {
-  /**
-   * Mutate create state as enabled.
-   * @param state
-   */
-  [setCreateEnabled]: (state) => {
-    state.creating = true
-  }
-}
+const mutations = {}
 
 const getters = {
   [creating]: (store) => store.creating

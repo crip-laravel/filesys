@@ -10,7 +10,7 @@ import { fetchContent, refreshContent } from '../actions'
 import {
   removeSelectedBlob, removeBlob, setBlobs, setNewBlob, setSelectedBlob,
   setGridView, setListView, setLoadingStarted, setLoadingCompleted,
-  setBlobEditMode
+  setBlobEditMode, setUpdatedBlob
 } from '../mutations'
 
 const state = {
@@ -129,6 +129,18 @@ const mutations = {
     if (state.selected.$edit) {
       Vue.nextTick(() => document.getElementById(state.selected.$id).focus())
     }
+  },
+
+  /**
+   * Update blob details.
+   * @param state
+   * @param {String} id
+   * @param {Blob} blob
+   */
+  [setUpdatedBlob]: (state, {id, blob}) => {
+    let toUpdate = state.blobs.filter(b => b.$id === id)[0]
+    state.blobs.splice(state.blobs.indexOf(toUpdate), 1)
+    state.blobs.push(blob)
   }
 }
 

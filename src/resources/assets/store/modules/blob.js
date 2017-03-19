@@ -6,7 +6,8 @@ import {
 } from '../actions'
 import {
   setUpdatedBlob, setBlobEditMode, setCreateEnabled,
-  removeBlob, removeSelectedBlob
+  removeBlob, removeSelectedBlob, setLoadingStarted,
+  setLoadingCompleted
 } from '../mutations'
 
 const state = {
@@ -21,9 +22,11 @@ const actions = {
    * @param dispatch
    */
   [deleteBlob]: ({commit, getters, dispatch}) => {
+    commit(setLoadingStarted)
     let selected = getters.selectedBlob
     selected.delete().then(() => {
       commit(removeBlob, selected)
+      commit(setLoadingCompleted)
 
       if (selected.isDir) {
         dispatch(fetchTree)
@@ -38,6 +41,7 @@ const actions = {
    * @param {Blob} blob
    */
   [saveBlob]: ({commit, dispatch}, blob) => {
+    commit(setLoadingStarted)
     blob.save()
       .then(newBlob => {
         commit(setUpdatedBlob, {
@@ -46,6 +50,7 @@ const actions = {
         })
 
         commit(removeSelectedBlob)
+        commit(setLoadingCompleted)
 
         if (blob.isDir) {
           dispatch(fetchTree)
@@ -129,18 +134,6 @@ const actions = {
 }
 
 const mutations = {
-  /**
-   * Update blob details.
-   * @param state
-   * @param {String} id
-   * @param {Blob} blob
-   */
-  [setUpdatedBlob]: (state, {id, blob}) => {
-    let toUpdate = state.blobs.filter(b => b.$id === id)[0]
-    state.blobs.splice(state.items.indexOf(toUpdate), 1)
-    state.blobs.push(blob)
-  },
-
   /**
    * Mutate create state as enabled.
    * @param state

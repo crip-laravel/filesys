@@ -1,6 +1,7 @@
 import Blob from '../../models/Blob'
 import folderApi from '../../api/folder'
 import settings from '../../settings'
+import Vue from 'vue'
 import {
   blobs, selectedBlob, displayType, isGridView, isListView, pathUp,
   path
@@ -8,7 +9,8 @@ import {
 import { fetchContent, refreshContent } from '../actions'
 import {
   removeSelectedBlob, removeBlob, setBlobs, setNewBlob, setSelectedBlob,
-  setGridView, setListView, setLoadingStarted, setLoadingCompleted
+  setGridView, setListView, setLoadingStarted, setLoadingCompleted,
+  setBlobEditMode
 } from '../mutations'
 
 const state = {
@@ -116,6 +118,17 @@ const mutations = {
    */
   [setListView]: (state) => {
     state.displayType = 'list'
+  },
+
+  /**
+   * Mutate selected blob state to edit state.
+   * @param state
+   */
+  [setBlobEditMode]: (state) => {
+    Vue.set(state.selected, '$edit', !state.selected.$edit)
+    if (state.selected.$edit) {
+      Vue.nextTick(() => document.getElementById(state.selected.$id).focus())
+    }
   }
 }
 

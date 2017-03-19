@@ -24,7 +24,7 @@
       </div>
       <div class="group">
         <div class="col">
-          <btn title="Rename" size="lg" icon="rename" :active="isEditEnabled" :on-click="setBlobEditMode"
+          <btn title="Rename" size="lg" icon="rename" :active="isEditEnabled" :on-click="startEditBlob"
                :disabled="!selectedBlob"></btn>
         </div>
         <div class="col">
@@ -68,7 +68,6 @@
 
     methods: {
       ...mapMutations([
-        mutations.setBlobEditMode,
         mutations.setCreateEnabled,
         mutations.setGridView,
         mutations.setListView,
@@ -77,7 +76,8 @@
       ]),
 
       ...mapActions([
-        actions.deleteBlob
+        actions.deleteBlob,
+        actions.startEditBlob
       ]),
 
       none: _ => _,
@@ -95,7 +95,7 @@
 
           this.setSelectedBlob(dirToCreate)
           this.setNewBlob(dirToCreate)
-          this.setBlobEditMode()
+          this.startEditBlob()
         }
       },
 

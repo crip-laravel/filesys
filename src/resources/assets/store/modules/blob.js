@@ -1,8 +1,8 @@
 import settings from '../../settings'
-import Vue from 'vue'
 import { creating } from '../getters'
 import {
-  deleteBlob, saveBlob, openBlob, fetchTree, changePath
+  deleteBlob, saveBlob, openBlob, fetchTree, changePath,
+  startEditBlob
 } from '../actions'
 import {
   setUpdatedBlob, setBlobEditMode, setCreateEnabled,
@@ -60,7 +60,6 @@ const actions = {
    * @param {String} size
    */
   [openBlob]: ({dispatch}, {blob, size}) => {
-    console.log({blob, size})
     if (blob.isDir) {
       return dispatch(changePath, blob.full_name)
     }
@@ -72,6 +71,17 @@ const actions = {
     }
 
     return dispatch(action, blob.url)
+  },
+
+  /**
+   * Enable edit mode for selected blob.
+   * @param commit
+   * @param rootState
+   */
+  [startEditBlob]: ({commit, rootState}) => {
+    if (rootState.content.selected && rootState.content.selected.name !== '..') {
+      commit(setBlobEditMode)
+    }
   },
 
   /**
@@ -129,19 +139,6 @@ const mutations = {
     let toUpdate = state.blobs.filter(b => b.$id === id)[0]
     state.blobs.splice(state.items.indexOf(toUpdate), 1)
     state.blobs.push(blob)
-  },
-
-  /**
-   * Mutate selected blob state to edit state.
-   * @param state
-   */
-  [setBlobEditMode]: (state) => {
-    if (state.selected && state.selected.name !== '..') {
-      state.selected.$edit = !state.selected.$edit
-      if (state.selected.$edit) {
-        Vue.nextTick(() => document.getElementById(state.selected.$id).focus())
-      }
-    }
   },
 
   /**

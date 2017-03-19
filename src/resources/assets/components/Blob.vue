@@ -8,17 +8,17 @@
         <input name="name" :id="blob.$id" v-model="blob.newName">
       </form>
     </div>
-    <div v-else class="blob-description" @dblclick="setBlobEditMode">
+    <div v-else class="blob-description" @dblclick="startEditBlob">
       {{title}}
     </div>
   </div>
 </template>
 
 <script>
+  import * as actions from '../store/actions'
   import * as getters from '../store/getters'
   import * as mutations from '../store/mutations'
   import Blob from '../models/Blob'
-  import { openBlob, saveBlob } from '../store/actions'
   import { mapGetters, mapMutations, mapActions } from 'vuex'
 
   export default {
@@ -36,13 +36,13 @@
 
     methods: {
       ...mapMutations([
-        mutations.setSelectedBlob,
-        mutations.setBlobEditMode
+        mutations.setSelectedBlob
       ]),
 
       ...mapActions([
-        openBlob,
-        saveBlob
+        actions.openBlob,
+        actions.saveBlob,
+        actions.startEditBlob
       ])
     }
   }

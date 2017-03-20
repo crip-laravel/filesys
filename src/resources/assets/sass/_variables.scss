@@ -49,3 +49,11 @@ $link-color: $main-color;
 $link-hover-color: $hover-color;
 
 $icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";
+
+$menu-bg: #F5F6F7;
+
+// Theme interaction-item colors
+$active-border-color: #3598E8;
+$hover-border-color: transparentize($active-border-color, 0.3);
+$active-bg: transparentize($active-border-color, 0.6);
+$hover-bg: transparentize($active-border-color, 0.8);

@@ -1,0 +1,24 @@
+@import "./variables";
+
+.i-item { /* .interaction-item */
+  text-decoration: none !important;
+  color: $text-color !important;
+  outline: none !important;
+
+  &:focus, &.focus {
+    border: 1px solid $hover-border-color;
+  }
+
+  &:hover, &.active {
+    text-decoration: none;
+    color: $text-color;
+
+    border: 1px solid $hover-border-color;
+    background-color: $hover-bg;
+  }
+
+  &:active, &.active:hover {
+    border: 1px solid $active-border-color;
+    background-color: $active-bg;
+  }
+}

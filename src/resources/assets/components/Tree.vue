@@ -47,14 +47,13 @@
   @import "../sass/variables";
 
   #tree {
-    border-top: 1px solid $second-color;
+    border-top: 1px solid $menu-border-color;
     overflow-x: auto;
 
     ul {
       border-left: 1px dotted gray;
       list-style-type: none;
-      margin-left: 9px;
-      padding-left: 19px;
+      padding-left: 26px;
     }
 
     > ul {

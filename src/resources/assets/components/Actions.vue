@@ -3,18 +3,18 @@
     <div class="manager-actions clearfix">
       <div class="group">
         <div class="col">
-          <label for="file-input">
-            <btn title="Add files" size="lg" icon="add" :on-click="none"></btn>
+          <label for="file-input" class="file-input">
+            <btn title="Add files" size="lg" icon="add" :on-click="noop"></btn>
           </label>
           <input id="file-input" type="file" multiple @change="filesForUploadAdded"/>
-        </div>
+        </div><!-- /.col Add files btn -->
         <div class="col" v-if="filesForUploadCount">
           <btn :title="`Upload ${filesForUploadCount} files`" size="lg" icon="upload" :on-click="startUpload"></btn>
-        </div>
+        </div><!-- /.col Upload files btn -->
         <div class="col">
           <btn title="Create Folder" size="lg" icon="add-folder" :on-click="createFolderDialog"
                :active="creating"></btn>
-        </div>
+        </div><!-- /.col Create folder btn -->
       </div>
       <div class="group">
         <div class="col">
@@ -79,11 +79,17 @@
         actions.startEditBlob
       ]),
 
-      none: _ => _,
+      /**
+       * Do nothing.
+       * @param _
+       */
+      noop: _ => _,
 
+      /**
+       * Display folder create dialog.
+       */
       createFolderDialog () {
         if (!this.creating) {
-          this.setCreateEnabled()
           let dirToCreate = new Blob({
             $isSystem: true,
             $temp: true,
@@ -95,9 +101,14 @@
           this.setSelectedBlob(dirToCreate)
           this.setNewBlob(dirToCreate)
           this.startEditBlob()
+          this.setCreateEnabled()
         }
       },
 
+      /**
+       * Add files to upload queue.
+       * @param {Event} event
+       */
       filesForUploadAdded (event) {
         let files = event.target.files || event.dataTransfer.files
         if (files.length < 1) {
@@ -111,6 +122,9 @@
         }
       },
 
+      /**
+       * Start upload files from queue.
+       */
       startUpload () {
         this.filesForUpload.forEach(file => {
           fileApi.upload(this.path, file)
@@ -130,22 +144,30 @@
   @import "../sass/variables";
 
   .manager-actions {
-    border-bottom: 1px solid $second-color;
-    width: 100%;
+    border-bottom: 2px solid $menu-border-color;
+    background-color: $menu-bg;
 
     .group {
-      margin: 4px 0;
-      border-right: 1px solid lighten($second-color, 20%);
-      padding: 0 6px;
+      border-right: 1px solid $menu-border-color;
     }
 
     .col, .group {
-      height: 100px;
       float: left;
+      min-height: 58px;
+
+      @media (min-width: $screen-sm-min) {
+        .col, .group {
+          min-height: 88px;
+        }
+      }
     }
 
     #file-input {
       display: none;
+    }
+
+    .file-input {
+      margin: 0;
     }
   }
 </style>

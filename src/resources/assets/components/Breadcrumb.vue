@@ -1,11 +1,11 @@
 <template>
   <div id="breadcrumb">
-    <div class="col-xs-1" :class="{disabled: isUpDisabled}">
+    <div class="col-xs-2 col-md-1" :class="{disabled: isUpDisabled}">
       <a class="icon-wrapp" href="#" @click.prevent="changePath(up)">
         <img class="icon" :src="iconUp">
       </a>
     </div>
-    <div class="col-xs-10">
+    <div class="col-xs-8 col-md-10">
       <ol class="breadcrumb">
         <li v-for="item in items" :class="{active: item.isActive()}">
           <a v-if="!item.isActive()" href="#" @click="changePath(item.path)">{{item.text}}</a>
@@ -13,7 +13,7 @@
         </li>
       </ol>
     </div>
-    <div class="col-xs-1 text-right">
+    <div class="col-xs-2 col-md-1 text-right">
       <a class="icon-wrapp" href="#" @click="refreshContent"><img class="icon" :src="iconRefresh"></a>
     </div>
   </div>
@@ -41,6 +41,10 @@
         getters.breadcrumb
       ]),
 
+      /**
+       * Calculate breadcrumb items.
+       * @returns {Array}
+       */
       items () {
         let result = []
         let fullPath = this.path
@@ -55,11 +59,19 @@
         return result
       },
 
+      /**
+       * Calculate up path.
+       * @returns {string}
+       */
       up () {
         let parts = this.path.split('/')
         return parts.splice(0, parts.length - 1).join('/')
       },
 
+      /**
+       * Determine is the current path same as root.
+       * @returns {boolean}
+       */
       isUpDisabled () {
         return this.path === ''
       }
@@ -80,6 +92,7 @@
 
     .breadcrumb {
       margin-bottom: 0;
+      background-color: transparent;
     }
 
     .icon {

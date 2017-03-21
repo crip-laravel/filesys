@@ -3,18 +3,18 @@
       :style="{top: posTop, left: posLeft}">
 
     <li v-if="isDir">
-      <a class="content" href="#" @click.prevent="open(blob)">Open folder <i>{{blob.name}}</i></a>
+      <a class="content inte-item" href="#" @click.prevent="open(blob)">Open folder <i>{{blob.name}}</i></a>
     </li>
 
     <li v-if="!isDir && !blob.$isSystem">
-      <a href="#" class="content" @click.prevent="open(blob)">
+      <a href="#" class="content inte-item" @click.prevent="open(blob)">
         Select <span v-if="blob.mime === 'img'">image <small>({{blob.size[0]}} x {{blob.size[1]}})</small></span>
         <span v-else>file</span>
       </a>
     </li>
 
     <li v-for="size in sizes">
-      <a class="content" href="#" @click.prevent="open(blob, size.url)">
+      <a class="content inte-item" href="#" @click.prevent="open(blob, size.url)">
         Select <i>{{size.name}}</i> image
         <small>({{size.x}} x {{size.y}})</small>
       </a>
@@ -172,8 +172,8 @@
   @import "../sass/variables";
 
   .context-menu {
-    background: #FAFAFA;
-    border: 1px solid $laravel-border-color;
+    background: $menu-bg;
+    border: 1px solid $menu-border-color;
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(0, 0, 0, .2), 0 1px 5px 0 rgba(0, 0, 0, .12);
     display: block;
     list-style: none;
@@ -184,16 +184,11 @@
     z-index: 999999;
 
     li {
-      border-bottom: 1px solid $laravel-border-color;
+      border-bottom: 1px solid $menu-border-color;
       margin: 0;
 
       &:last-child {
         border-bottom: none;
-      }
-
-      a:hover {
-        background: $brand-primary;
-        color: $text-color;
       }
 
       .content {

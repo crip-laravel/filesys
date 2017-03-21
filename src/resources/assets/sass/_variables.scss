@@ -1,5 +1,9 @@
+// Custom
+$menu-bg: #F5F6F7;
+$menu-border-color: #D9D9D9;
+
 // Body
-$body-bg: #f5f8fa;
+$body-bg: #fff;
 $border-radius-base: 0;
 
 // Borders
@@ -13,7 +17,7 @@ $panel-inner-border: $laravel-border-color;
 $main-color: #35366a;
 $second-color: #585ba9;
 $grad-1-color: #424383;
-$hover-color: #0d8ff3;
+$footer-bg: $second-color;
 $footer-text-color: #c6c8fd;
 
 $brand-primary: $second-color;
@@ -21,7 +25,6 @@ $brand-info: #8eb4cb;
 $brand-success: #2ab27b;
 $brand-warning: #cbb956;
 $brand-danger: #bf5329;
-
 
 // Typography
 $font-family-sans-serif: "Raleway", sans-serif;
@@ -42,18 +45,15 @@ $input-border-focus: lighten($brand-primary, 25%);
 $input-color-placeholder: lighten($text-color, 30%);
 
 // Panels
-$panel-default-heading-bg: #fff;
-
-// Links
-$link-color: $main-color;
-$link-hover-color: $hover-color;
+$panel-default-heading-bg: $body-bg;
 
 $icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";
-
-$menu-bg: #F5F6F7;
 
 // Theme interaction-item colors
 $active-border-color: #3598E8;
 $hover-border-color: transparentize($active-border-color, 0.3);
 $active-bg: transparentize($active-border-color, 0.6);
 $hover-bg: transparentize($active-border-color, 0.8);
+
+
+@import "~bootstrap-sass/assets/stylesheets/bootstrap/variables";

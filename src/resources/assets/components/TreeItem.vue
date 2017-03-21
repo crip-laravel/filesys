@@ -1,8 +1,13 @@
 <template>
   <div>
     <div class="clearfix">
-      <a href="#" @click="toggle()" v-if="item.children.length" class="toggle">{{sign}}</a>
-      <a href="#" @click="changePath(item.path)" class="tree-link" :class="{disabled: isLoading}">{{item.name}}</a>
+
+      <a href="#" class="toggle inte-item"
+         v-if="item.children.length" :class="{disabled: isLoading}" @click="toggle()">{{sign}}</a>
+
+      <a href="#" class="tree-link inte-item"
+         :class="{disabled: isLoading}" @click="changePath(item.path)">{{item.name}}</a>
+
     </div>
 
     <ul v-if="item.children.length && isOpen">
@@ -55,14 +60,10 @@
 <style lang="sass" rel="stylesheet/scss">
   .tree-link {
     display: block;
-
-    .disabled {
-      opacity: 0.5;
-    }
   }
 
   .toggle {
     float: left;
-    padding: 0 7px;
+    padding: 2px 10px;
   }
 </style>

@@ -1,7 +1,7 @@
 <template>
-  <div :class="classes">
-    <a @click="onClick" :class="{enabled}">
-      <img :src="iconUrl" v-if="hasIcon" class="action-icon">
+  <div class="action-btn" :class="elClasses">
+    <a class="inte-item" @click="onClick" :class="linkClasses">
+      <img class="action-icon hidden-xs" :src="iconUrl" v-if="hasIcon">
       <div class="action-text">{{title}}</div>
     </a>
   </div>
@@ -28,8 +28,13 @@
       ...mapGetters([
         getters.isLoading
       ]),
-      enabled () { return !this.isLoading && !this.disabled },
-      classes () { return {'action-btn': true, [`action-btn-${this.size}`]: true, 'active': this.active} }
+      elClasses () { return [`action-btn-${this.size}`] },
+      linkClasses () {
+        return {
+          'active': this.active,
+          'disabled': this.isLoading || this.disabled
+        }
+      }
     },
 
     data () {
@@ -45,56 +50,25 @@
   @import "../sass/_variables";
 
   .action-btn {
-    &.action-btn-lg {
-      height: 100px;
-    }
-
     &.action-btn-sm a {
       height: auto;
-      padding: 0 10px;
       margin-bottom: 2px;
     }
 
-    &.active a {
-      background-color: darken($footer-text-color, 10%);
-      border-color: $second-color;
-      color: $link-color;
-    }
-
     a {
-      border: 1px solid transparent;
-      color: lighten($main-color, 30%);
       display: block;
-      height: 100%;
-      padding: 10px;
-      text-decoration: none;
-      width: 100%;
+      padding: 0 4px;
+      margin: 4px;
 
       .action-icon {
         display: block;
         margin: 0 auto;
         max-height: 56px;
         max-width: 56px;
-        opacity: 0.5;
       }
 
       .action-text {
         text-align: center;
-      }
-
-      &.enabled {
-        color: $main-color;
-
-        .action-icon {
-          opacity: 1;
-        }
-
-        &:hover {
-          background-color: darken($footer-text-color, 20%);
-          border-color: $second-color;
-          color: $link-color;
-          cursor: pointer;
-        }
       }
     }
   }

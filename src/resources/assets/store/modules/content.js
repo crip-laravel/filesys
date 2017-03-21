@@ -4,7 +4,7 @@ import settings from '../../settings'
 import Vue from 'vue'
 import {
   blobs, selectedBlob, displayType, isGridView, isListView, pathUp,
-  path
+  path, creating
 } from '../getters'
 import { fetchContent, refreshContent } from '../actions'
 import {
@@ -186,7 +186,8 @@ const getters = {
   [isGridView]: (store) => store.displayType === 'grid',
   [isListView]: (store) => store.displayType === 'list',
   [selectedBlob]: (store) => store.selected,
-  [displayType]: (store) => store.displayType
+  [displayType]: (store) => store.displayType,
+  [creating]: (store) => store.creating
 }
 
 export default {state, actions, mutations, getters}

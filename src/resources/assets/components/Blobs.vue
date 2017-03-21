@@ -69,12 +69,18 @@
     },
 
     methods: {
+      /**
+       * Determines is context menu visible for this index blob.
+       * @param {Number} index
+       * @return {Boolean}
+       */
       isVisible (index) {
         return !!this.viewMenu[index]
       },
 
       /**
-       * Close menu
+       * Close menu for blob with index.
+       * @param {Number} index
        */
       closeMenu (index) {
         Vue.set(this.viewMenu, index, false)
@@ -87,6 +93,7 @@
       openMenu (e, index) {
         this.top = e.y
         this.left = e.x
+
         // before open, make sure all other are closed
         Object.keys(this.viewMenu).forEach(key => Vue.set(this.viewMenu, key, false))
 
@@ -109,6 +116,6 @@
   }
 
   #blobs {
-    border-top: 1px solid $second-color;
+    border-top: 1px solid $menu-border-color;
   }
 </style>

@@ -1,6 +1,6 @@
 <template>
-  <div class="blob" :class="classes" @click="setSelectedBlob(blob)" :title="title">
-    <div class="thumb thumbnail" @dblclick="openBlob({blob})">
+  <div class="blob inte-item" :class="classes" @click="setSelectedBlob(blob)" :title="title">
+    <div class="thumb" @dblclick="openBlob({blob})">
       <img :src="blob.thumb">
     </div>
     <div v-if="blob.$edit">
@@ -57,39 +57,23 @@
   .blob {
     overflow: hidden;
 
-    &.active {
-      background-color: darken($footer-text-color, 10%);
-      border-color: $second-color;
-      color: $link-color;
-    }
-
-    &.disabled {
-      opacity: 0.5;
-    }
-
-    &:hover {
-      background-color: darken($footer-text-color, 20%);
-      border-color: $second-color;
-      color: $link-color;
-      cursor: pointer;
-    }
-
     .thumb {
       height: 105px;
-      overflow: hidden;
       margin-bottom: 8px;
+      overflow: hidden;
 
       img {
-        margin-bottom: 6px;
+        display: block;
+        margin: 0 auto 6px auto;
         max-height: 100px;
       }
     }
 
     input {
-      color: $brand-primary;
-      width: 100%;
-      padding: 0 5px;
+      border-color: transparent;
       outline: none;
+      padding: 0 5px;
+      width: 100%;
     }
 
     .blob-description {
@@ -100,16 +84,14 @@
   }
 
   .list .blob {
-    border-bottom: 1px solid $second-color;
-
     .thumb {
+      border: none;
       float: left;
       height: auto;
       margin: 4px 0 4px 4px;
       padding: 0;
       text-align: center;
       width: 50px;
-      border: none;
 
       img {
         height: 25px;
@@ -117,15 +99,16 @@
       }
     }
 
-    .blob-description, form {
-      float: left;
-      margin: 5px 0 0 10px;
+    .blob-description {
+      margin: 5px 0 0 64px;
+      text-align: left;
     }
 
     form {
-      margin-top: 3px;
+      margin: 3px 0 0 10px;
       min-width: 218px;
       width: 50%;
+      float: left;
     }
   }
 </style>

@@ -4,7 +4,7 @@
     <breadcrumb class="row"></breadcrumb>
     <div class="row">
       <tree class="col-sm-4 col-md-3"></tree>
-      <blobs class="col-sm-8 col-md-9 display-default"></blobs>
+      <blobs class="col-sm-8 col-md-9 position-inherit"></blobs>
     </div>
   </div>
 </template>
@@ -29,7 +29,7 @@
 </script>
 
 <style>
-  .display-default {
+  .position-inherit {
     position: inherit;
   }
 </style>

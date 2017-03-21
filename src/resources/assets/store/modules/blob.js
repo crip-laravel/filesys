@@ -1,5 +1,4 @@
 import settings from '../../settings'
-import { creating } from '../getters'
 import {
   deleteBlob, saveBlob, openBlob, fetchTree, changePath,
   startEditBlob
@@ -132,8 +131,6 @@ const actions = {
 
 const mutations = {}
 
-const getters = {
-  [creating]: (store) => store.creating
-}
+const getters = {}
 
 export default {state, actions, mutations, getters}

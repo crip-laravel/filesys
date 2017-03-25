@@ -20,7 +20,7 @@ tinymce.PluginManager.add('cripfilesys', (editor) => {
     })
   }
 
-  editor.addButton('cripfilesys', {
+  editor.addButton('cripfilesys-btn', {
     icon: 'browse',
     tooltip: 'Insert file',
     shortcut: 'Ctrl+E',
@@ -29,7 +29,7 @@ tinymce.PluginManager.add('cripfilesys', (editor) => {
 
   editor.addShortcut('Ctrl+E', '', OpenCripFilesystemManager)
 
-  editor.addMenuItem('cripfilesys', {
+  editor.addMenuItem('cripfilesys-menu-btn', {
     icon: 'browse',
     text: 'Insert file',
     shortcut: 'Ctrl+E',

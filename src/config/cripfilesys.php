@@ -7,7 +7,6 @@ use Crip\Filesys\App\Controllers\TreeController;
 return [
     'public_url' => '/vendor/crip/filesys',
     'target_dir' => 'storage/uploads',
-    'thumbs_dir' => 'thumbs',
     'thumbs' => [
         'thumb' => [205, 100, 'resize',],
         'xs' => [24, 24, 'resize',],

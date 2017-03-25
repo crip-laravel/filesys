@@ -15,7 +15,7 @@ class ThumbService
      * @var array
      */
     private $sizes = [
-        'thumb' => [205, 100, 'resize',],
+        'thumb' => [205, 100, 'resize'],
         'xs' => [50, 25, 'resize']
     ];
 

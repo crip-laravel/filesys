@@ -49,6 +49,7 @@
   #tree {
     border-top: 1px solid $menu-border-color;
     overflow-x: auto;
+    padding-top: 6px;
 
     ul {
       border-left: 1px dotted gray;

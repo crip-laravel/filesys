@@ -5,7 +5,7 @@ use Crip\Filesys\App\Controllers\FolderController;
 use Crip\Filesys\App\Controllers\TreeController;
 
 return [
-    'public_url' => '/vendor/crip/filesys',
+    'public_url' => '/vendor/crip/cripfilesys',
     'target_dir' => 'storage/uploads',
     'thumbs' => [
         'thumb' => [205, 100, 'resize',],
@@ -15,7 +15,7 @@ return [
         'lg' => [1024, 2000, 'width',],
     ],
     'icons' => [
-        'url' => '/vendor/crip/filesys/images/',
+        'url' => '/vendor/crip/cripfilesys/images/',
         'files' => [
             'any' => 'file.png',
             'audio' => 'audio.png',

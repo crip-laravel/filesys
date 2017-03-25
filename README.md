@@ -107,7 +107,7 @@ correctly allocate file location in server filesystem.
 ## Configuration
 
 `public_url` - Public url to assets folder. By default assets are published to 
-               `/vendor/crip/filesys` and this configuration default value is 
+               `/vendor/crip/cripfilesys` and this configuration default value is 
                set to this folder.
 
 `target_dir` - Filesystem folder, relative to application root, where files will
@@ -121,7 +121,7 @@ correctly allocate file location in server filesystem.
 - `height` - resize the image to a height and constrain aspect ratio (auto width);
 
 `icons.path` - Public url to images folder. By default images are published to 
-               `/vendor/crip/filesys/images/` and this configuration default 
+               `/vendor/crip/cripfilesys/images/` and this configuration default 
                value is set to this folder.
 
 `icons.files` - Mapping array between file mime type name and icon image 
@@ -141,8 +141,9 @@ correctly allocate file location in server filesystem.
 ### TinyMCE
 
 Download and set up TinyMCE editor. Copy `plugins` folder from published 
-resources `\public\vendor\crip\filesys\tinymce\plugins` to installed TinyMCE 
-editor `plugins` directory. Configure TinyMCE to enable `filesys` plugin in it:
+resources `\public\vendor\crip\cripfilesys\tinymce\plugins` to installed TinyMCE 
+editor `plugins` directory. Configure TinyMCE to enable `cripfilesys` plugin in 
+it:
 ```javascript
 if (tinymce) {
   tinymce.init({
@@ -166,7 +167,7 @@ if (tinymce) {
     external_filemanager_path: '/packages/filemanager',
     
     /* Enables select buttons for 'media' and 'image' plugins. */
-    external_plugins: {filemanager: '/vendor/crip/filesys/tinymce/plugin.js'}
+    external_plugins: {filemanager: '/vendor/crip/cripfilesys/tinymce/plugin.js'}
   })
 }
 ```

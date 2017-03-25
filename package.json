@@ -1,6 +1,6 @@
 {
   "name": "crip-laravel_filesys",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Laravel - Filemanager extension",
   "main": "src/resources/assets/app.js",
   "scripts": {

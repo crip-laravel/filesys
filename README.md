@@ -18,7 +18,7 @@ composer require crip-laravel/filesys
 ```
 
 After package is downloaded, add `ServiceProvider` to the providers array in 
-configuration file of your Laravel application `config/app.ph` :
+configuration file of your Laravel application `config/app.php`:
 
 ```php
 'providers' = [
@@ -47,6 +47,8 @@ application routes, as it can be anything you choose.
 
 Add new methods in your `app\Providers\RouteServiceProvider.php`
 ```php
+...
+
 /**
  * Define your route model bindings, pattern filters, etc.
  *
@@ -71,6 +73,7 @@ public function map()
     $this->mapWebRoutes();
     $this->mapPackageRoutes();
 }
+
 /**
  * Define the "package" routes for the application.
  */
@@ -78,6 +81,8 @@ protected function mapPackageRoutes() {
     Route::prefix('packages')
         ->group(base_path('routes/package.php'));
 }
+
+...
 ```
 
 Now you can add new routes file to map package controllers tou your application
@@ -169,7 +174,7 @@ if (tinymce) {
 ### Stand-alone filesystem manager
 
 You can use `iframe`, `FancyBox` or `Lightbox` iframe to open the Fylesystem
-manager. To handle selected file, add GET parameter to the end of the path: 
+manager. To handle selected file, add GET parameter to the end of the path:
 `/packages/filemanager?target=callback`. You can filter visible files by they 
 type: `/packages/filemanager?target=callback&type=[type]`. Supported types are:
 - `document` - excel, word, pwp, html, txt, js;
@@ -216,6 +221,7 @@ selected file url and all GET parameters of opened window.
         external_plugins: {filemanager: '/vendor/crip/filesys/tinymce/plugin.js'}
       })
        
+      // Callback method for input group btn
       window.cripFilesystemManager = function(fileUrl, params) {
         // will recive params.flag and params.one parameter as they are 
         // presented in href below
@@ -251,8 +257,8 @@ selected file url and all GET parameters of opened window.
         <input type="text" id="input-id" class="form-control" placeholder="File...">
         <span class="input-group-btn">
           <a class="btn btn-default fancybox" type="button" 
-             href="/packages/filemanager?target=callback&flag=link&one=1">
-            Select file
+             href="/packages/filemanager?target=callback&flag=link&one=1&type=image">
+            Select image
           </a>
         </span>
       </div>

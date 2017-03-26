@@ -7,11 +7,16 @@ export default class FileUpload {
    */
   constructor (file) {
     this.file = file
+    this.name = file.name
     this.reader = new FileReader()
     this.src = settings.icon('file')
 
     this.reader.onload = (e) => {
-      this.src = e.target.result
+      // Mutate content only for images, all other files should show default
+      // icon of the file
+      if (e.target.result && e.target.result.startsWith('data:image')) {
+        this.src = e.target.result
+      }
     }
 
     this.reader.readAsDataURL(file)

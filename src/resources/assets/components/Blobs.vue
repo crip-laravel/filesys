@@ -1,7 +1,7 @@
 <template>
   <div id="blobs">
 
-    <div class="row clearfix">
+    <div class="row clearfix" :class="[displayType]">
       <uploads></uploads>
     </div>
 
@@ -129,5 +129,38 @@
 
   #blobs {
     border-top: 1px solid $menu-border-color;
+  }
+
+  .blob {
+    overflow: hidden;
+
+    .thumb {
+      height: 105px;
+      margin-bottom: 8px;
+      overflow: hidden;
+
+      img {
+        display: block;
+        margin: 0 auto 6px auto;
+        max-height: 100px;
+      }
+    }
+  }
+
+  .list .blob {
+    .thumb {
+      border: none;
+      float: left;
+      height: auto;
+      margin: 4px 0 4px 4px;
+      padding: 0;
+      text-align: center;
+      width: 50px;
+
+      img {
+        height: 25px;
+        margin: 0 auto;
+      }
+    }
   }
 </style>

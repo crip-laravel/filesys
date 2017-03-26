@@ -111,7 +111,7 @@ const getters = {
    * @param {Object} state
    * @returns {Array}
    */
-  [uploads]: state => state.uplaods,
+  [uploads]: state => state.uploads,
 
   /**
    * Gets count of uploads.

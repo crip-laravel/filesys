@@ -62,7 +62,7 @@ class UrlService
     {
         $path = Str::normalizePath($path);
         $postfix = '';
-        $baseDir = Str::normalizePath(base_path($this->package->config('target_dir')));
+        $baseDir = Str::normalizePath($this->package->config('target_dir'));
         $relativePath = trim(str_replace($baseDir, '', $path), '/');
         $isThumb = substr_count($relativePath, '--thumbs--');
 

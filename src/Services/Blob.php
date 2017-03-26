@@ -70,7 +70,7 @@ class Blob implements ICripObject
     public function setFolder($folder)
     {
         $folder = Str::normalizePath($folder);
-        $confDir = base_path(trim($this->package->config('target_dir'), '/\\'));
+        $confDir = trim($this->package->config('target_dir'), '/\\');
         if (str_contains($folder, Str::normalizePath($confDir))) {
             $folder = str_replace(Str::normalizePath($confDir), '', $folder);
         }

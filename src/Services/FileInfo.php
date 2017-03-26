@@ -2,7 +2,7 @@
 
 use Crip\Core\Contracts\ICripObject;
 use Crip\Core\Support\PackageBase;
-use Illuminate\Filesystem\Filesystem;
+use Illuminate\Contracts\Filesystem\Filesystem;
 
 /**
  * Class FileManager
@@ -72,7 +72,7 @@ class FileInfo implements ICripObject
             $this->ext = pathinfo($file, PATHINFO_EXTENSION);
             $this->update();
             if (substr($this->mimeType, 0, 5) === 'image') {
-                $this->size = getimagesize($this->getSystemPath());
+                $this->size = app(Filesystem::class)->size($this->getSystemPath());
             }
         }
     }

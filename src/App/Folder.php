@@ -2,10 +2,8 @@
 
 use Crip\Core\Contracts\ICripObject;
 use Crip\Filesys\Services\Blob;
-use Crip\Filesys\Services\FileInfo;
-use Crip\Filesys\Services\FilesystemManager;
 use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Filesystem\Filesystem;
+use Illuminate\Contracts\Filesystem\Filesystem;
 
 /**
  * Class Folder

@@ -2,10 +2,8 @@
 
 use Crip\Core\Contracts\ICripObject;
 use Crip\Filesys\Services\Blob;
-use Crip\Filesys\Services\FileInfo;
-use Crip\Filesys\Services\FilesystemManager;
 use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Filesystem\Filesystem;
+use Illuminate\Contracts\Filesystem\Filesystem;
 
 /**
  * Class File
@@ -27,7 +25,7 @@ class File extends FileSystemObject implements ICripObject, Arrayable
         if ($blob !== null) {
             $this->name = $blob->file->getName();
             $this->extension = $blob->file->getExt();
-            $this->type = $fs->type($blob->systemPath());
+            $this->type = $fs->getMetaData($blob->systemPath())['type'];
             $this->mimetype = $blob->file->getMimeType();
             $this->mime = $blob->getMime();
             $this->mediatype = $blob->getMediatype();

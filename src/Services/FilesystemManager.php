@@ -6,7 +6,7 @@ use Crip\Core\Helpers\Str;
 use Crip\Core\Support\PackageBase;
 use Crip\Filesys\App\File;
 use Crip\Filesys\App\Folder;
-use Illuminate\Filesystem\Filesystem;
+use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Http\UploadedFile;
 
 /**
@@ -127,18 +127,20 @@ class FilesystemManager implements ICripObject
     public function folderContent(Blob $blob)
     {
         $result = [];
-        $list = $this->fs->glob($blob->systemPath() . '/*');
-        foreach ($list as $glob) {
+        $list = collect($this->fs->files($blob->systemPath()));
+        $list = $list->union($this->fs->directories($blob->systemPath()));
+
+        $list->each(function ($glob) use (&$result) {
             if (str_contains($glob, '--thumbs--')) {
                 // skip thumbs dir and do not show it for users
-                continue;
+                return;
             }
 
             $blobInfo = new Blob($this->package, $glob);
             $result[] = $blobInfo->file->isDefined() ?
                 new File($blobInfo) :
                 new Folder($blobInfo);
-        }
+        });
 
         return $result;
     }
@@ -222,7 +224,7 @@ class FilesystemManager implements ICripObject
         /** @var Filesystem $fs */
         $fs = app(Filesystem::class);
         $dirs = [];
-        $dir = Str::normalizePath(base_path($this->package->config('target_dir')));
+        $dir = Str::normalizePath($this->package->config('target_dir'));
 
         $this->readDirs($fs, $dir, $dirs, $dir, $dir);
 

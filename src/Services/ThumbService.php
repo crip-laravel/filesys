@@ -2,7 +2,7 @@
 
 use Crip\Core\Helpers\Str;
 use Crip\Core\Support\PackageBase;
-use Illuminate\Filesystem\Filesystem;
+use Illuminate\Contracts\Filesystem\Filesystem;
 use Intervention\Image\ImageManager;
 
 /**
@@ -169,7 +169,7 @@ class ThumbService
      */
     public function getThumbPath($originalFilePath, $thumbSizeIdentifier)
     {
-        $baseDir = Str::normalizePath(base_path($this->package->config('target_dir')));
+        $baseDir = Str::normalizePath($this->package->config('target_dir'));
         $relativePath = str_replace($baseDir, '', $originalFilePath);
         $parts = explode('/', $relativePath);
         $fileName = array_pop($parts);

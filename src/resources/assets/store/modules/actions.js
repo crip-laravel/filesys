@@ -1,17 +1,20 @@
 import Blob from '../../models/Blob'
 import fileApi from '../../api/file'
 import FileUpload from '../../models/FileUpload'
+import Vue from 'vue'
 
 import {
   isEditEnabled, path, creating, uploads, selectedBlob, uploadsCount
 } from '../getters'
 
 import {
-  setSelectedBlob, setNewBlob, setCreateEnabled, setNewUpload, removeUpload
+  setSelectedBlob, setNewBlob, setCreateEnabled, setNewUpload, removeUpload,
+  setFileUploadLoading
 } from '../mutations'
 
 import {
-  openCreateFolderDialog, startEditBlob, filesForUploadAdded, startUpload
+  openCreateFolderDialog, startEditBlob, filesForUploadAdded, startUpload,
+  uploadFile
 } from '../actions'
 
 const state = {
@@ -62,17 +65,32 @@ const actions = {
 
   /**
    * Start upload files from the queue.
+   * @param {Object} state
+   * @param {Function} dispatch
+   */
+  [startUpload]: ({state, dispatch}) => {
+    state.uploads.forEach(file => {
+      dispatch(uploadFile, file)
+    })
+  },
+
+  /**
+   * Start upload single file.
    * @param {Function} commit
    * @param {Object} getters
+   * @param {FileUpload} fileUpload
    */
-  [startUpload]: ({commit, state, getters}) => {
-    state.uploads.forEach(f => {
-      fileApi.upload(getters[path], f.file)
-        .then(blob => {
-          commit(removeUpload, f)
-          commit(setNewBlob, blob)
-        })
-    })
+  [uploadFile]: ({commit, getters}, fileUpload) => {
+    if (fileUpload.$loading) {
+      // File already is uploading
+      return
+    }
+    commit(setFileUploadLoading, fileUpload)
+    fileApi.upload(getters[path], fileUpload.file)
+      .then(blob => {
+        commit(removeUpload, fileUpload)
+        commit(setNewBlob, blob)
+      })
   }
 }
 
@@ -93,6 +111,15 @@ const mutations = {
    */
   [removeUpload]: (state, fileUpload) => {
     state.uploads.splice(state.uploads.indexOf(fileUpload), 1)
+  },
+
+  /**
+   * Mark file as loading.
+   * @param {Object} state
+   * @param {FileUpload} fileUpload
+   */
+  [setFileUploadLoading]: (state, fileUpload) => {
+    Vue.set(fileUpload, '$loading', true)
   }
 }
 

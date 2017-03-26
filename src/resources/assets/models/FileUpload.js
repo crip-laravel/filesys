@@ -12,6 +12,7 @@ export default class FileUpload {
     this.reader = new FileReader()
     this.src = settings.icon('file')
     this.$loading = false
+    this.$error = ''
 
     this.reader.onload = (e) => {
       // Mutate content only for images, all other files should show default
@@ -23,4 +24,8 @@ export default class FileUpload {
 
     this.reader.readAsDataURL(file)
   }
+
+  get hasError () { return !!this.$error }
+
+  get title () { return this.hasError ? this.$error : this.name }
 }

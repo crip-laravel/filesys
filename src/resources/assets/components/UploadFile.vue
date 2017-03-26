@@ -1,5 +1,6 @@
 <template>
-  <div class="file-upload blob">
+  <div class="file-upload blob" :class="{error: file.hasError}"
+       :title="file.title">
     <div class="thumb no-margin">
       <img :src="file.src">
     </div>
@@ -46,6 +47,10 @@
   .file-upload {
     border: 1px solid $panel-default-border;
     padding: 2px;
+
+    &.error {
+      border: 1px solid $brand-danger;
+    }
 
     .inte-item {
       max-height: 28px;

@@ -35,7 +35,13 @@ export default {
 
     return new Promise((resolve, reject) => {
       vue.http.post(`${settings.filesUrl}`, formData)
-        .then(({data}) => resolve(new Blob(data)), reject)
+        .then(
+          ({data}) => resolve(new Blob(data)),
+          ({status, data}) => {
+            if (status === 422) {
+              reject(data)
+            }
+          })
     })
   }
 }

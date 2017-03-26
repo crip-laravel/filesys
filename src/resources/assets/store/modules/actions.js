@@ -9,7 +9,7 @@ import {
 
 import {
   setSelectedBlob, setNewBlob, setCreateEnabled, setNewUpload, removeUpload,
-  setFileUploadLoading
+  setFileUploadLoading, setUploadError
 } from '../mutations'
 
 import {
@@ -90,6 +90,8 @@ const actions = {
       .then(blob => {
         commit(removeUpload, fileUpload)
         commit(setNewBlob, blob)
+      }, errors => {
+        commit(setUploadError, {file: fileUpload, error: errors.join(' ')})
       })
   }
 }
@@ -120,6 +122,16 @@ const mutations = {
    */
   [setFileUploadLoading]: (state, fileUpload) => {
     Vue.set(fileUpload, '$loading', true)
+  },
+
+  /**
+   * Set file upload error state.
+   * @param {Object} state
+   * @param {FileUpload} file
+   * @param {String} error
+   */
+  [setUploadError]: (state, {file, error}) => {
+    Vue.set(file, '$error', error)
   }
 }
 

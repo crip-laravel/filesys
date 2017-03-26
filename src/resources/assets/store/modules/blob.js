@@ -21,7 +21,7 @@ const actions = {
     commit(setLoadingStarted)
     let selected = getters.selectedBlob
     selected.delete().then(() => {
-      commit(removeBlob, selected)
+      commit(removeBlob, selected.$id)
       commit(setLoadingCompleted)
 
       if (selected.isDir) {

@@ -61,7 +61,7 @@ const mutations = {
    */
   [removeBlob]: (state, id) => {
     let toRemove = state.blobs.filter(b => b.$id === id)[0]
-    state.items.splice(state.blobs.indexOf(toRemove), 1)
+    state.blobs.splice(state.blobs.indexOf(toRemove), 1)
   },
 
   /**

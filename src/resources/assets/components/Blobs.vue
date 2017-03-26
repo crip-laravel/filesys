@@ -1,14 +1,23 @@
 <template>
   <div id="blobs">
+
+    <div class="row clearfix">
+      <uploads></uploads>
+    </div>
+
     <div class="row clearfix" :class="[displayType]">
       <div v-for="(blob, index) in content" class="blob-container">
-        <div @contextmenu.prevent="openMenu($event, index)" class="context-wrapp">
+        <div @contextmenu.prevent="openMenu($event, index)"
+             class="context-wrapp">
           <blob :blob="blob"></blob>
-          <blob-context-menu :is-visible="isVisible(index)" :index="index" :blob="blob"
-                             :top="top" :left="left" @close="closeMenu"></blob-context-menu>
+          <blob-context-menu :is-visible="isVisible(index)" :index="index"
+                             :blob="blob"
+                             :top="top" :left="left"
+                             @close="closeMenu"></blob-context-menu>
         </div>
       </div>
     </div>
+
   </div>
 </template>
 
@@ -17,6 +26,7 @@
   import blob from './Blob.vue'
   import blobContextMenu from './BlobContextMenu.vue'
   import settings from './../settings'
+  import uploads from './Uploads.vue'
   import Vue from 'vue'
   import { mapGetters } from 'vuex'
 
@@ -45,7 +55,9 @@
 
         return filtered.sort((a, b) => {
           if ((a.isDir && b.isDir) || (!a.isDir && !b.isDir)) {
-            return a.name > b.name
+            if (a.name < b.name) return -1
+            if (a.name > b.name) return 1
+            return 0
           }
 
           // if types are different, make sure that dir always is first
@@ -101,7 +113,7 @@
       }
     },
 
-    components: {blob, blobContextMenu}
+    components: {blob, blobContextMenu, uploads}
   }
 </script>
 

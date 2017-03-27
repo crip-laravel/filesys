@@ -26,54 +26,29 @@ class UrlService
     /**
      * Generate URL for a file.
      * @param $path
-     * @param bool $pathIsSystem
      * @return string
      */
-    public function file($path, $pathIsSystem = false)
+    public function file($path)
     {
-        return $this->make('file', $path, $pathIsSystem);
+        return $this->make('file', $path);
     }
 
     /**
      * Generate URL for a folder.
      * @param $path
-     * @param bool $pathIsSystem
      * @return string
      */
-    public function folder($path, $pathIsSystem = false)
+    public function folder($path)
     {
-        return $this->make('folder', $path, $pathIsSystem);
+        return $this->make('folder', $path);
     }
 
-    private function make($for, $path, $pathIsSystem)
+    private function make($for, $path)
     {
-        if ($pathIsSystem) {
-            return $this->makeFromSysPath($for, $path);
-        }
-
         $path = trim($path, '\\/');
         $ctrl = '\\' . $this->package->config('actions.' . $for) . '@show';
         $url = '/' . Str::normalizePath(action($ctrl, '', false) . '/' . $path);
 
         return $url;
-    }
-
-    private function makeFromSysPath($for, $path)
-    {
-        $path = Str::normalizePath($path);
-        $postfix = '';
-        $baseDir = Str::normalizePath($this->package->config('target_dir'));
-        $relativePath = trim(str_replace($baseDir, '', $path), '/');
-        $isThumb = substr_count($relativePath, '--thumbs--');
-
-        if ($isThumb) {
-            $clean = trim(str_replace('--thumbs--', '', $relativePath), '/');
-            $parts = explode('/', $clean);
-            $size = array_shift($parts);
-            $relativePath = join('/', $parts);
-            $postfix = '?s=' . $size;
-        }
-
-        return $this->make($for, $relativePath . $postfix, false);
     }
 }

@@ -50,6 +50,15 @@ class ThumbService
     }
 
     /**
+     * Get all thumb sizes.
+     * @return array
+     */
+    public function getSizes()
+    {
+        return $this->sizes;
+    }
+
+    /**
      * Resize image to all configured sizes
      * @param $pathToImage
      */

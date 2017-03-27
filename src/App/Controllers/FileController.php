@@ -1,6 +1,7 @@
 <?php namespace Crip\Filesys\App\Controllers;
 
 use Crip\Filesys\App\File;
+use Crip\Filesys\Services\FilesysManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -19,27 +20,24 @@ class FileController extends BaseController
     public function store(Request $request)
     {
         if ($request->hasFile('file')) {
-            // Configure manager path where file should be uploaded
-            // and make sure that directory exists in file system
-            $blob = $this->manager->parsePath($request->path);
-            $file = $request->file('file');
-
-            if (!$this->manager->isSafe($file->getClientOriginalExtension(), $file->getMimeType())) {
+            $manager = new FilesysManager($this->package, $request->path);
+            /*
+              if (!$this->manager->isSafe($file->getClientOriginalExtension(), $file->getMimeType())) {
                 return $this->json(['Uploading file is not safe and could not be uploaded.'], 422);
-            }
+              }
+             */
 
-            // Upload file to the server
-            $this->manager->upload($blob, $request->file('file'));
+            $blob = $manager->upload($request->file('file'));
+
 
             // If file is image, create all configured sizer for it
-            if ($blob->file->isImage()) {
+            /*if ($blob->file->isImage()) {
                 $this->manager->resizeImage($blob);
                 // Update file details after creating thumbs
                 $blob->file->update();
-            }
+            }*/
 
-            // Return file public url to the uploaded file
-            return $this->json(new File($blob));
+            return $this->json($blob);
         }
 
         return $this->json(['File not presented for upload.'], 422);

@@ -16,94 +16,6 @@ use Illuminate\Http\UploadedFile;
 class FilesystemManager implements ICripObject
 {
     /**
-     * @var array
-     */
-    private $params;
-
-    /**
-     * @var PackageBase
-     */
-    private $package;
-
-    /**
-     * @var Filesystem
-     */
-    private $fs;
-
-    /**
-     * @var ThumbService
-     */
-    private $thumb;
-
-    /**
-     * FilesystemManager constructor.
-     * @param PackageBase $package
-     */
-    public function __construct(PackageBase $package)
-    {
-        $this->package = $package;
-        $this->fs = app(Filesystem::class);
-        $this->thumb = new ThumbService($this->package);
-    }
-
-    /**
-     * Parse path to file/folder.
-     * @param string $path
-     * @param array $params
-     * @return Blob
-     */
-    public function parsePath($path = '', array $params = [])
-    {
-        $this->params = $params;
-
-        return new Blob($this->package, $path);
-    }
-
-    /**
-     * Determine if a file or directory exists.
-     * @param Blob $blob
-     * @return bool
-     */
-    public function exists(Blob $blob)
-    {
-        return $this->fs->exists($blob->systemPath());
-    }
-
-    /**
-     * Upload file in to package configured folder.
-     * @param Blob $blob
-     * @param UploadedFile $upload Uploading file
-     * @return string Location where file were uploaded
-     */
-    public function upload(Blob $blob, UploadedFile $upload)
-    {
-        $blob->folder->mk();
-
-        $ext = $upload->getClientOriginalExtension();
-        $name = Slug::make(pathinfo($upload->getClientOriginalName(), PATHINFO_FILENAME));
-        // To get full path, join dir and its name
-
-        $dir = $blob->systemPath();
-        $targetFileName = $this->getUniqueFileName($dir, $name, $ext);
-
-        $upload->move($dir, $targetFileName . '.' . $ext);
-
-        // Update file info details after it is successfully uploaded to server
-        $blob->setFile($targetFileName, $ext);
-
-        return join('/', [$dir, $targetFileName . '.' . $ext]);
-    }
-
-    /**
-     * Resize blob.
-     * @param Blob $blob
-     */
-    public function resizeImage(Blob $blob)
-    {
-        $this->thumb->resize($blob->file->getSystemPath());
-    }
-
-    /**
      * Get the contents of a file.
      * @param Blob $blob
      * @return string
@@ -204,21 +116,6 @@ class FilesystemManager implements ICripObject
         return $this->fs->deleteDirectory($blob->systemPath());
     }
 
-    /**
-     * @param Blob $blob
-     * @param $name
-     * @return string
-     */
-    public function mkdir(Blob $blob, $name)
-    {
-        $name = Slug::make($name);
-        $newName = $this->getUniqueFileName($blob->folder->getDir(), $name);
-        $blob->folder->setSubfolder($newName);
-        $blob->folder->mk();
-
-        return $newName;
-    }
-
     public function getTree($recursive = true)
     {
         /** @var Filesystem $fs */
@@ -273,24 +170,5 @@ class FilesystemManager implements ICripObject
                 $this->readDirs($fs, $dir, $result[$index]['children'], $base . '/' . $name, $root);
             }
         });
-    }
-
-    /**
-     * Get unique name for a file/folder in system path
-     * @param $sysPath string System full path
-     * @param $name string File/Folder name
-     * @param null $ext File extension
-     * @return string Unique name
-     */
-    private function getUniqueFileName($sysPath, $name, $ext = null)
-    {
-        $originalName = $name;
-        $i = 0;
-
-        do {
-            $fullPath = $sysPath . '/' . $name . ($ext ? '.' . $ext : '');
-        } while ($this->fs->exists($fullPath) && $name = $originalName . '-' . ++$i);
-
-        return $name;
     }
 }

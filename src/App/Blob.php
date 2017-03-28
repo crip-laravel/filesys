@@ -23,16 +23,16 @@ class Blob implements ICripObject, Arrayable
 
     public function __construct(\Crip\Filesys\Services\Blob $blob)
     {
-        $this->bytes = $blob->getSize();
-        $this->dir = $blob->getDir();
-        $this->full_name = $blob->getFullName();
+        $this->bytes = $blob->metadata->getSize();
+        $this->dir = $blob->metadata->getDir();
+        $this->full_name = $blob->metadata->getFullName();
         $this->mediatype = $blob->getMediatype();
-        $this->name = $blob->getName();
+        $this->name = $blob->metadata->getName();
         $this->thumb = $blob->getThumbUrl();
         $this->type = $blob->getType();
-        $this->updated_at = $blob->getLastModified();
+        $this->updated_at = $blob->metadata->getLastModified();
         $this->url = $blob->getUrl();
-        $this->visibility = $blob->getVisibility();
+        $this->visibility = $blob->metadata->getVisibility();
         $this->xs = $blob->getXsThumbUrl();
     }
 

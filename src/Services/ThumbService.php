@@ -1,6 +1,5 @@
 <?php namespace Crip\Filesys\Services;
 
-use Crip\Core\Helpers\Str;
 use Crip\Core\Support\PackageBase;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Intervention\Image\ImageManager;
@@ -12,7 +11,7 @@ use Intervention\Image\ImageManager;
 class ThumbService
 {
     /**
-     * @var array
+     * @var \Illuminate\Support\Collection
      */
     private $sizes = [
         'thumb' => [205, 100, 'resize'],
@@ -47,6 +46,8 @@ class ThumbService
         // Merge configuration file sizes in to this class
         // sizes property
         $package->mergeWithConfig($this->sizes, 'thumbs');
+
+        $this->sizes = collect($this->sizes);
     }
 
     /**
@@ -64,9 +65,11 @@ class ThumbService
      */
     public function resize($pathToImage)
     {
-        foreach ($this->sizes as $key => $size) {
-            $img = app(ImageManager::class)->make($pathToImage);
-            $newPath = $this->createThumbPath($pathToImage, $key);
+        $file = \Storage::get($pathToImage);
+
+        $this->sizes->each(function ($size, $key) use ($pathToImage, $file) {
+            $img = app(ImageManager::class)->make($file);
+            $path = $this->createThumbPath($pathToImage, $key);
 
             switch ($size[2]) {
                 case 'width':
@@ -87,8 +90,46 @@ class ThumbService
                     break;
             }
 
-            $img->save($newPath);
-        }
+            \Storage::put($path, $img->stream()->__toString());
+        });
+    }
+
+    /**
+     * Rename thumbs for a image.
+     * @param string $pathToImage
+     * @param string $newName
+     * @param string $ext
+     */
+    public function rename($pathToImage, $newName, $ext)
+    {
+        $this->sizes->each(function ($D, $size) use ($pathToImage, $newName, $ext) {
+            $existing = $this->createThumbPath($pathToImage, $size);
+            list($path, $oldName) = $this->getThumbPath($pathToImage, $size);
+
+            if ($this->fs->exists($existing)) {
+                \Storage::move($existing, $path . '/' . $newName . '.' . $ext);
+            }
+        });
+    }
+
+    /**
+     * Delete all thumbs of an image.
+     * @param string $pathToImage
+     * @param bool $isDir
+     */
+    public function delete($pathToImage, $isDir = false)
+    {
+        $this->sizes->each(function ($D, $size) use ($pathToImage, $isDir) {
+            list($path, $name) = $this->getThumbPath($pathToImage, $size);
+            $file = $path . '/' . $name;
+            if ($this->fs->exists($file)) {
+                if (!$isDir) {
+                    $this->fs->delete($file);
+                } else {
+                    $this->fs->deleteDirectory($file);
+                }
+            }
+        });
     }
 
     /**
@@ -108,82 +149,16 @@ class ThumbService
     }
 
     /**
-     * Get details of all available thumbs
-     * @param $pathToImage
-     * @return array
-     */
-    public function details($pathToImage)
-    {
-        $thumbs = collect([]);
-
-        collect(array_keys($this->sizes))
-            ->each(function ($size) use ($thumbs, $pathToImage) {
-                list($path, $file) = $this->getThumbPath($pathToImage, $size);
-                if ($this->fs->exists($path . '/' . $file)) {
-                    list($width, $height) = getimagesize($path . '/' . $file);
-
-                    $thumbs->put($size, [
-                        'url' => $this->url->file($path . '/' . $file, true),
-                        'size' => [$width, $height]
-                    ]);
-                }
-            });
-
-        return $thumbs->all();
-    }
-
-    /**
-     * Rename thumbs for a image.
-     * @param string $pathToImage
-     * @param string $newName
-     */
-    public function rename($pathToImage, $newName)
-    {
-        collect(array_keys($this->sizes))
-            ->each(function ($size) use ($pathToImage, $newName) {
-                $existing = $this->createThumbPath($pathToImage, $size);
-                list($path, $oldName) = $this->getThumbPath($pathToImage, $size);
-
-                if ($this->fs->exists($existing)) {
-                    rename($existing, $path . '/' . $newName);
-                }
-            });
-    }
-
-    /**
-     * Delete all thumbs of an image.
-     * @param string $pathToImage
-     * @param bool $isFile
-     */
-    public function delete($pathToImage, $isFile)
-    {
-        collect(array_keys($this->sizes))
-            ->each(function ($size) use ($pathToImage, $isFile) {
-                list($path, $name) = $this->getThumbPath($pathToImage, $size);
-                $file = $path . '/' . $name;
-                if ($this->fs->exists($file)) {
-                    if ($isFile) {
-                        $this->fs->delete($file);
-                    } else {
-                        $this->fs->deleteDirectory($file);
-                    }
-                }
-            });
-    }
-
-    /**
      * @param $originalFilePath
      * @param $thumbSizeIdentifier
      * @return array ['path', 'filename']
      */
     public function getThumbPath($originalFilePath, $thumbSizeIdentifier)
     {
-        $baseDir = Str::normalizePath($this->package->config('target_dir'));
-        $relativePath = str_replace($baseDir, '', $originalFilePath);
-        $parts = explode('/', $relativePath);
+        $parts = explode('/', $originalFilePath);
         $fileName = array_pop($parts);
-        $result = Str::normalizePath($baseDir . '/--thumbs--/' . $thumbSizeIdentifier . '/' . join('/', $parts));
+        array_unshift($parts, $thumbSizeIdentifier);
 
-        return [$result, $fileName];
+        return [join('/', $parts), $fileName];
     }
 }

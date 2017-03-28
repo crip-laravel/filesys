@@ -13,33 +13,19 @@ use Crip\Filesys\App\Folder;
  */
 class Blob implements ICripObject
 {
-    private $isFile = false;
-    private $mime = 'dir';
-    private $thumbsDetails = null;
-
-    /**
-     * @var string
-     */
-
     public $path;
+
     /**
-     * @var \Illuminate\Contracts\Filesystem\Filesystem
+     * @var BlobMetadata
      */
+    public $metadata;
 
     /**
      * @var PackageBase
      */
     private $package;
 
-    private $fs;
-    private $visibility;
-    private $size;
-    private $mimeType;
-    private $type;
-    private $lastModified;
-    private $dir;
-    private $name;
-    private $extension;
+    private $thumbsDetails = null;
 
     /**
      * Blob constructor.
@@ -48,69 +34,29 @@ class Blob implements ICripObject
      */
     public function __construct(PackageBase $package, $path = '')
     {
-        $this->fs = app(\Illuminate\Contracts\Filesystem\Filesystem::class);
         $this->package = $package;
         $this->path = Str::normalizePath($path);
     }
 
     /**
+     * @param BlobMetadata $metadata
      * @return File|Folder
      * @throws \Exception
      */
-    public function fullDetails()
+    public function fullDetails($metadata = null)
     {
-        if (!\Storage::exists($this->path)) {
+        $this->metadata = $metadata ?: (new BlobMetadata())->init($this->path);
+        if (!$this->metadata->exists()) {
             throw new \Exception('File not found');
         }
 
-        $metadata = \Storage::getMetaData($this->path);
-
-        $this->path = $metadata['path'];
-        $this->visibility = $metadata['visibility'];
-        $this->size = $metadata['size'];
-        $this->mimeType = 'folder';
-        $this->lastModified = \Storage::lastModified($this->path);
-
-        list($this->dir, $this->name) = FileSystem::splitNameFromPath($this->path);
-
-        if ($metadata['type'] === 'file') {
-            $this->isFile = true;
-            $this->type = 'file';
-            $this->mimeType = \Storage::mimeType($this->path);
-
-            $parts = explode('.', $this->name);
-            $this->extension = array_pop($parts);
-            $this->name = join('.', $parts);
-
+        if ($this->metadata->isFile()) {
             $result = new File($this);
         } else {
-            $this->type = 'dir';
             $result = new Folder($this);
         }
 
         return $result;
-    }
-
-    /**
-     * get blob name.
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * Get blob full name.
-     * @return string
-     */
-    public function getFullName()
-    {
-        if ($this->isFile) {
-            return $this->name . '.' . $this->extension;
-        }
-
-        return $this->name;
     }
 
     /**
@@ -119,7 +65,7 @@ class Blob implements ICripObject
      */
     public function getType()
     {
-        return $this->type;
+        return $this->metadata->isFile() ? 'file' : 'dir';
     }
 
     /**
@@ -134,22 +80,13 @@ class Blob implements ICripObject
             return $mime;
         }
 
-        foreach ($this->package->config('mime.media') as $mediatype => $mimes) {
+        foreach ($this->package->config('mime.media') as $mediaType => $mimes) {
             if (in_array($mime, $mimes)) {
-                return $mediatype;
+                return $mediaType;
             }
         }
 
         return 'dir';
-    }
-
-    /**
-     * Get blob size in bytes.
-     * @return int
-     */
-    public function getSize()
-    {
-        return $this->size;
     }
 
     /**
@@ -163,7 +100,7 @@ class Blob implements ICripObject
         $url = $this->package->config('icons.url');
         $icons = $this->package->config('icons.files');
 
-        if (!$this->isFile) {
+        if (!$this->metadata->isFile()) {
             return $url . $icons['dir'];
         }
 
@@ -196,24 +133,6 @@ class Blob implements ICripObject
     }
 
     /**
-     * Get last modified timestamp.
-     * @return mixed
-     */
-    public function getLastModified()
-    {
-        return $this->lastModified;
-    }
-
-    /**
-     * Get blob dir.
-     * @return string
-     */
-    public function getDir()
-    {
-        return $this->dir;
-    }
-
-    /**
      * Generates url to a file.
      * @param null $path
      * @return string
@@ -223,7 +142,7 @@ class Blob implements ICripObject
         $path = $path ?: $this->path;
         // If file has public access enabled, we simply can return storage url
         // to file
-        if ($this->visibility === 'public') {
+        if ($this->metadata->getVisibility() === 'public') {
             try {
                 return \Storage::url($path);
             } catch (\Exception $ex) {
@@ -233,20 +152,11 @@ class Blob implements ICripObject
         }
 
         $service = new UrlService($this->package);
-        if ($this->isFile) {
+        if ($this->metadata->isFile()) {
             return $service->file($path);
         }
 
         return $service->folder($path);
-    }
-
-    /**
-     * Get file extension.
-     * @return string
-     */
-    public function getExtension()
-    {
-        return $this->extension;
     }
 
     /**
@@ -255,11 +165,11 @@ class Blob implements ICripObject
      */
     public function getMime()
     {
-        if ($this->isFile) {
+        if ($this->metadata->isFile()) {
             $mimes = $this->package->config('mime.types');
             foreach ($mimes as $mime => $mimeValues) {
                 $key = collect($mimeValues)->search(function ($mimeValue) {
-                    return preg_match($mimeValue, $this->mimeType);
+                    return preg_match($mimeValue, $this->metadata->getMimeType());
                 });
 
                 if ($key !== false) {
@@ -270,16 +180,7 @@ class Blob implements ICripObject
             return 'file';
         }
 
-        return $this->mime;
-    }
-
-    /**
-     * Get blob mime type.
-     * @return string
-     */
-    public function getMimeType()
-    {
-        return $this->mimeType;
+        return 'dir';
     }
 
     /**
@@ -296,27 +197,23 @@ class Blob implements ICripObject
     }
 
     /**
-     * Get blob visibility.
-     * @return string Gets 'public' or 'private'
-     */
-    public function getVisibility()
-    {
-        return $this->visibility;
-    }
-
-    /**
      * Determines is the current blob an image.
      * @return bool
      */
     private function isImage()
     {
-        if (mb_strpos($this->getMimeType(), 'image/') === 0) {
+        if ($this->metadata->isFile() &&
+            mb_strpos($this->metadata->getMimeType(), 'image/') === 0
+        ) {
             return true;
         }
 
         return false;
     }
 
+    /**
+     * Set thumb sizes details for current file.
+     */
     private function setThumbsDetails()
     {
         $this->thumbsDetails = [];

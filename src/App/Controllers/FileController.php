@@ -20,22 +20,14 @@ class FileController extends BaseController
     public function store(Request $request)
     {
         if ($request->hasFile('file')) {
+            $file = $request->file('file');
             $manager = new FilesysManager($this->package, $request->path);
-            /*
-              if (!$this->manager->isSafe($file->getClientOriginalExtension(), $file->getMimeType())) {
+
+            if (!$manager->isSafe($file->getClientOriginalExtension(), $file->getMimeType())) {
                 return $this->json(['Uploading file is not safe and could not be uploaded.'], 422);
-              }
-             */
+            }
 
-            $blob = $manager->upload($request->file('file'));
-
-
-            // If file is image, create all configured sizer for it
-            /*if ($blob->file->isImage()) {
-                $this->manager->resizeImage($blob);
-                // Update file details after creating thumbs
-                $blob->file->update();
-            }*/
+            $blob = $manager->upload($file);
 
             return $this->json($blob);
         }
@@ -44,18 +36,16 @@ class FileController extends BaseController
     }
 
     /**
-     * Get file
-     * @param Request $request
+     * Get file content.
      * @param string $file Path to the requested file
      * @return JsonResponse|Response
      */
-    public function show(Request $request, $file)
+    public function show($file)
     {
-        $blob = $this->manager->parsePath($file, $request->all());
-
-        if ($blob->file->isDefined() && $this->manager->exists($blob)) {
-            return new Response($this->manager->fileContent($blob), 200, [
-                'Content-Type' => $blob->file->getMimeType(),
+        $manager = new FilesysManager($this->package, $file);
+        if ($manager->isFile()) {
+            return new Response($manager->fileContent(), 200, [
+                'Content-Type' => $manager->fileMimeType(),
                 'Cache-Control' => 'private, max-age=31536000'
             ]);
         }
@@ -75,15 +65,15 @@ class FileController extends BaseController
             return $this->json('Name property is required.', 422);
         }
 
-        $blob = $this->manager->parsePath($file);
+        $manager = new FilesysManager($this->package, $file);
 
-        if (!$this->manager->exists($blob)) {
+        if (!$manager->getMetaData()->isFile()) {
             return $this->json('File not found.', 404);
         }
 
-        $this->manager->rename($blob, $request->name);
+        $blob = $manager->rename($request->name);
 
-        return $this->json(new File($blob));
+        return $this->json($blob);
     }
 
     /**
@@ -93,13 +83,13 @@ class FileController extends BaseController
      */
     public function destroy($file)
     {
-        $blob = $this->manager->parsePath($file);
+        $manager = new FilesysManager($this->package, $file);
 
-        if (!$this->manager->exists($blob)) {
+        if (!$manager->blobExists()) {
             return $this->json('File not found.', 404);
         }
 
-        $isRemoved = $this->manager->delete($blob);
+        $isRemoved = $manager->delete();
 
         return $this->json($isRemoved, $isRemoved ? 200 : 500);
     }

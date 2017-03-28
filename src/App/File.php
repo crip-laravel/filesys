@@ -18,9 +18,9 @@ class File extends Blob implements ICripObject, Arrayable
     {
         parent::__construct($blob);
 
-        $this->extension = $blob->getExtension();
+        $this->extension = $blob->metadata->getExtension();
         $this->mime = $blob->getMime();
-        $this->mimetype = $blob->getMimeType();
+        $this->mimetype = $blob->metadata->getMimeType();
         $this->thumbs = $blob->getThumbsDetails();
     }
 }

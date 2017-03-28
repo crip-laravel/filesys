@@ -1,6 +1,7 @@
 <?php namespace Crip\Filesys\App\Controllers;
 
 use Crip\Filesys\App\Folder;
+use Crip\Filesys\Services\FilesysManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -26,19 +27,19 @@ class FolderController extends BaseController
      */
     public function store(Request $request)
     {
-        $blob = $this->manager->parsePath($request->folder);
-
-        if (!$this->manager->exists($blob)) {
-            return $this->json('Folder not found.', 404);
-        }
+        $manager = new FilesysManager($this->package, $request->folder);
 
         if (empty($request->name)) {
             return $this->json('Name property is required.', 422);
         }
 
-        $this->manager->mkdir($blob, $request->name);
+        if (!$manager->blobExists()) {
+            return $this->json('Folder not found.', 404);
+        }
 
-        return $this->json(new Folder($blob));
+        $result = $manager->makeDirectory($request->name)->fullDetails();
+
+        return $this->json($result);
     }
 
     /**

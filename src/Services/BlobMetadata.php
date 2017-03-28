@@ -34,8 +34,15 @@ class BlobMetadata implements ICripObject
 
             $metadata = \Storage::getMetaData($path);
             $this->path = $metadata['path'];
-            $this->visibility = $metadata['visibility'];
-            $this->size = $metadata['size'];
+
+            $this->visibility = array_key_exists('visibility', $metadata) ?
+                $metadata['visibility'] :
+                'public';
+
+            $this->size = array_key_exists('size', $metadata) ?
+                $metadata['size'] :
+                0;
+
             $this->type = $metadata['type'];
 
             if ($this->isFile()) {

@@ -20,6 +20,7 @@ class Blob implements ICripObject, Arrayable
     public $url = '';
     public $visibility = 'public';
     public $xs = '';
+    public $path = '';
 
     public function __construct(\Crip\Filesys\Services\Blob $blob)
     {
@@ -34,6 +35,7 @@ class Blob implements ICripObject, Arrayable
         $this->url = $blob->getUrl();
         $this->visibility = $blob->metadata->getVisibility();
         $this->xs = $blob->getXsThumbUrl();
+        $this->path = $blob->metadata->getPath();
     }
 
     /**

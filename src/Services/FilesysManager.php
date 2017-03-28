@@ -69,7 +69,7 @@ class FilesysManager implements ICripObject
                 ->resize($this->getMetaData()->getPath());
         }
 
-        return (new Blob($this->package, $path))->fullDetails($this->getMetaData());
+        return $this->fullDetails();
     }
 
     /**
@@ -108,13 +108,18 @@ class FilesysManager implements ICripObject
 
     /**
      * Create a directory.
+     * @param string $subDir
      * @return FilesysManager
      * @throws \Exception
      */
-    public function makeDirectory()
+    public function makeDirectory($subDir = '')
     {
         if ($this->blob === null) {
             throw new \Exception('Blob path is not set yet.');
+        }
+
+        if ($subDir) {
+            $this->blob->path = trim($this->blob->path . '/' . Str::slug($subDir), '/\\');
         }
 
         if ($this->blob->path !== '') {
@@ -139,6 +144,10 @@ class FilesysManager implements ICripObject
      */
     public function blobExists()
     {
+        if ($this->blob->path . '' === '') {
+            return true;
+        }
+
         return \Storage::exists($this->blob->path);
     }
 
@@ -203,6 +212,15 @@ class FilesysManager implements ICripObject
     }
 
     /**
+     * @return File|Folder
+     */
+    public function fullDetails()
+    {
+        return (new Blob($this->package, $this->blob->path))
+            ->fullDetails($this->getMetaData());
+    }
+
+    /**
      * Get unique name for a file/folder in system path
      * @param $path string System full path
      * @param $name string File/Folder name
@@ -238,9 +256,10 @@ class FilesysManager implements ICripObject
         }
 
         $newPath = $meta->getDir() . '/' . $newName . '.' . $meta->getExtension();
+        $this->blob->path = $newPath;
         \Storage::move($meta->getPath(), $newPath);
 
-        return (new Blob($this->package, $newPath))->fullDetails();
+        return $this->fullDetails();
     }
 
     private function renameFolder($name)

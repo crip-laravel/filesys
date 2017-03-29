@@ -247,12 +247,13 @@ class FilesysManager implements ICripObject
     }
 
     /**
+     * @param bool $reset
      * @return File|Folder
      */
-    public function fullDetails()
+    public function fullDetails($reset = false)
     {
         return (new Blob($this->package, $this->blob->path))
-            ->fullDetails($this->getMetaData());
+            ->fullDetails($reset ? null : $this->getMetaData());
     }
 
     /**
@@ -286,8 +287,7 @@ class FilesysManager implements ICripObject
         if ($meta->isImage()) {
             (new ThumbService($this->package))->rename(
                 $meta->getPath(),
-                $newName,
-                $meta->getExtension());
+                $newName . '.' . $meta->getExtension());
         }
 
         $newPath = $meta->getDir() . '/' . $newName . '.' . $meta->getExtension();
@@ -297,8 +297,21 @@ class FilesysManager implements ICripObject
         return $this->fullDetails();
     }
 
+    /**
+     * @param $name
+     * @return File|Folder
+     */
     private function renameFolder($name)
     {
+        $meta = $this->getMetaData();
+        $newName = $this->getUniqueFileName($meta->getDir(), $name);
 
+        (new ThumbService($this->package))->rename($meta->getPath(), $newName);
+
+        $newPath = trim($meta->getDir() . '/' . $newName, '/');
+        $this->blob->path = $newPath;
+        $this->storage->move($meta->getPath(), $newPath);
+
+        return $this->fullDetails(true);
     }
 }

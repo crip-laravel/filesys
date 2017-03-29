@@ -72,15 +72,15 @@ class FolderController extends BaseController
             return $this->json('Name property is required.', 422);
         }
 
-        $blob = $this->manager->parsePath($folder);
+        $manager = new FilesysManager($this->package, $folder);
 
-        if (!$this->manager->exists($blob)) {
+        if (!$manager->blobExists()) {
             return $this->json('Folder not found.', 404);
         }
 
-        $this->manager->rename($blob, $request->name);
+        $details = $manager->rename($request->name);
 
-        return $this->json(new Folder($blob));
+        return $this->json($details);
     }
 
     /**
@@ -90,13 +90,13 @@ class FolderController extends BaseController
      */
     public function destroy($folder)
     {
-        $blob = $this->manager->parsePath($folder);
+        $manager = new FilesysManager($this->package, $folder);
 
-        if (!$this->manager->exists($blob)) {
+        if (!$manager->blobExists()) {
             return $this->json('Folder not found.', 404);
         }
 
-        $isRemoved = $this->manager->delete($blob);
+        $isRemoved = $manager->delete();
 
         return $this->json($isRemoved, $isRemoved ? 200 : 500);
     }

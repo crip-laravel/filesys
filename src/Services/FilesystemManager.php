@@ -15,33 +15,6 @@ use Illuminate\Http\UploadedFile;
  */
 class FilesystemManager implements ICripObject
 {
-
-    /**
-     * List folder content.
-     * @param Blob $blob
-     * @return array
-     */
-    public function folderContent(Blob $blob)
-    {
-        $result = [];
-        $list = collect($this->fs->files($blob->systemPath()));
-        $list = $list->union($this->fs->directories($blob->systemPath()));
-
-        $list->each(function ($glob) use (&$result) {
-            if (str_contains($glob, '--thumbs--')) {
-                // skip thumbs dir and do not show it for users
-                return;
-            }
-
-            $blobInfo = new Blob($this->package, $glob);
-            $result[] = $blobInfo->file->isDefined() ?
-                new File($blobInfo) :
-                new Folder($blobInfo);
-        });
-
-        return $result;
-    }
-
     /**
      * Delete file/folder from the system
      * @param Blob $blob

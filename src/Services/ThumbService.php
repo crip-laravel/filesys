@@ -98,16 +98,15 @@ class ThumbService
      * Rename thumbs for a image.
      * @param string $pathToImage
      * @param string $newName
-     * @param string $ext
      */
-    public function rename($pathToImage, $newName, $ext)
+    public function rename($pathToImage, $newName)
     {
-        $this->sizes->keys()->each(function ($size) use ($pathToImage, $newName, $ext) {
+        $this->sizes->keys()->each(function ($size) use ($pathToImage, $newName) {
             $existing = $this->createThumbPath($pathToImage, $size);
             list($path, $oldName) = $this->getThumbPath($pathToImage, $size);
 
             if ($this->storage->exists($existing)) {
-                $this->storage->move($existing, $path . '/' . $newName . '.' . $ext);
+                $this->storage->move($existing, $path . '/' . $newName);
             }
         });
     }

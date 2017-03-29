@@ -1,5 +1,6 @@
 <?php namespace Crip\Filesys\App\Controllers;
 
+use Crip\Filesys\Services\FilesysManager;
 use Illuminate\Http\JsonResponse;
 
 /**
@@ -14,6 +15,8 @@ class TreeController extends BaseController
      */
     public function __invoke()
     {
-        return $this->json($this->manager->getTree());
+        $manager = new FilesysManager($this->package);
+
+        return $this->json($manager->folderTree());
     }
 }

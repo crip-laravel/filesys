@@ -154,7 +154,7 @@ class FilesysManager implements ICripObject
 
         $exclude = (new ThumbService($this->package))->getSizes()->all();
         $isExcluded = function ($path) use ($exclude) {
-            $parts = explode('/', $path);
+            $parts = explode('/', Str::normalizePath($path));
             if (count($parts) > 0) {
                 return array_key_exists($parts[0], $exclude);
             }
@@ -172,6 +172,37 @@ class FilesysManager implements ICripObject
         });
 
         return $result;
+    }
+
+    public function folderTree()
+    {
+        $exclude = (new ThumbService($this->package))->getSizes()->keys()->all();
+        $dirs = collect($this->storage->allDirectories(''));
+
+        $results = [];
+        $dirs = $dirs->filter(function ($dir) use ($exclude) {
+            $parts = explode('/', Str::normalizePath($dir));
+            return !in_array($parts[0], $exclude);
+        })->each(function ($dir) use (&$results) {
+            $parts = explode('/', Str::normalizePath($dir));
+            $curr = &$results;
+            foreach ($parts as $name) {
+                if (!collect($curr)->contains('name', $name)) {
+                    $curr[] = [
+                        'path' => $dir,
+                        'name' => $name,
+                        'children' => []
+                    ];
+                } else {
+                    foreach ($curr as $key => $item) {
+                        if ($item['name'] === $name)
+                            $curr = &$curr[$key]['children'];
+                    }
+                }
+            }
+        });
+
+       return $results;
     }
 
     /**

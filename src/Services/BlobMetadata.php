@@ -9,6 +9,11 @@ use Crip\Core\Helpers\FileSystem;
  */
 class BlobMetadata implements ICripObject
 {
+    /**
+     * @var \Illuminate\Filesystem\FilesystemAdapter
+     */
+    private $storage;
+
     private $isExistExecuted = false;
     private $exists = false;
     private $path = null;
@@ -22,17 +27,19 @@ class BlobMetadata implements ICripObject
     private $type;
 
     /**
-     * @param string $path
-     * @return $this
+     * BlobMetadata constructor.
+     * @param $path
      */
-    public function init($path = '')
+    public function __construct($path)
     {
+        $this->storage = app()->make('filesystem');
         $this->path = $path;
+
         if ($this->exists()) {
             list($this->dir, $this->name) = FileSystem::splitNameFromPath($path);
-            $this->lastModified = \Storage::lastModified($path);
+            $this->lastModified = $this->storage->lastModified($path);
 
-            $metadata = \Storage::getMetaData($path);
+            $metadata = $this->storage->getMetaData($path);
             $this->path = $metadata['path'];
 
             $this->visibility = array_key_exists('visibility', $metadata) ?
@@ -48,11 +55,9 @@ class BlobMetadata implements ICripObject
             if ($this->isFile()) {
                 list($this->name, $this->extension) = $this->splitNameAndExtension($this->name);
 
-                $this->mimeType = \Storage::mimeType($this->path);
+                $this->mimeType = $this->storage->mimeType($this->path);
             }
         }
-
-        return $this;
     }
 
     /**
@@ -61,7 +66,7 @@ class BlobMetadata implements ICripObject
     public function exists()
     {
         if (!$this->isExistExecuted && $this->path !== null) {
-            $this->exists = \Storage::exists($this->path);
+            $this->exists = $this->storage->exists($this->path);
             $this->isExistExecuted = true;
         }
 

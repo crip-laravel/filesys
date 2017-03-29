@@ -25,6 +25,11 @@ class Blob implements ICripObject
      */
     private $package;
 
+    /**
+     * @var \Illuminate\Filesystem\FilesystemAdapter
+     */
+    private $storage;
+
     private $thumbsDetails = null;
 
     /**
@@ -36,6 +41,7 @@ class Blob implements ICripObject
     {
         $this->package = $package;
         $this->path = Str::normalizePath($path);
+        $this->storage = app()->make('filesystem');
     }
 
     /**
@@ -45,7 +51,7 @@ class Blob implements ICripObject
      */
     public function fullDetails($metadata = null)
     {
-        $this->metadata = $metadata ?: (new BlobMetadata())->init($this->path);
+        $this->metadata = $metadata ?: new BlobMetadata($this->path);
         if (!$this->metadata->exists()) {
             throw new \Exception('File not found');
         }
@@ -144,7 +150,7 @@ class Blob implements ICripObject
         // to file
         if ($this->metadata->getVisibility() === 'public') {
             try {
-                return \Storage::url($path);
+                return $this->storage->url($path);
             } catch (\Exception $ex) {
                 // Some drivers does not support url method (like ftp), so we
                 // simply continue and generate crip url to our controller

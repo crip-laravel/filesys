@@ -24,6 +24,11 @@ class FilesysManager implements ICripObject
      */
     private $package;
 
+    /**
+     * @var \Illuminate\Filesystem\FilesystemAdapter
+     */
+    private $storage;
+
     private $metadata = null;
 
     /**
@@ -35,6 +40,7 @@ class FilesysManager implements ICripObject
     {
         $this->blob = new Blob($package, $path);
         $this->package = $package;
+        $this->storage = app()->make('filesystem');
     }
 
     /**
@@ -58,7 +64,7 @@ class FilesysManager implements ICripObject
 
         $fullName = $uniqueName . '.' . $ext;
 
-        \Storage::putFileAs($path, $uploadedFile, $fullName);
+        $this->storage->putFileAs($path, $uploadedFile, $fullName);
 
         $path .= '/' . $fullName;
 
@@ -100,10 +106,10 @@ class FilesysManager implements ICripObject
         }
 
         if ($meta->isFile()) {
-            return \Storage::delete($meta->getPath());
+            return $this->storage->delete($meta->getPath());
         }
 
-        return \Storage::deleteDirectory($meta->getPath());
+        return $this->storage->deleteDirectory($meta->getPath());
     }
 
     /**
@@ -119,11 +125,12 @@ class FilesysManager implements ICripObject
         }
 
         if ($subDir) {
-            $this->blob->path = trim($this->blob->path . '/' . Str::slug($subDir), '/\\');
+            $name = $this->getUniqueFileName($this->blob->path, Str::slug($subDir));
+            $this->blob->path = trim($this->blob->path . '/' . $name, '/\\');
         }
 
         if ($this->blob->path !== '') {
-            \Storage::makeDirectory($this->blob->path);
+            $this->storage->makeDirectory($this->blob->path);
         }
 
         return $this;
@@ -136,7 +143,35 @@ class FilesysManager implements ICripObject
     public function fileContent()
     {
         // TODO: here should be placed validation on visibility
-        return \Storage::get($this->blob->path);
+        return $this->storage->get($this->blob->path);
+    }
+
+    public function folderContent()
+    {
+        $result = [];
+        $list = collect($this->storage->getDriver()->listContents($this->blob->path))
+            ->pluck('path');
+
+        $exclude = (new ThumbService($this->package))->getSizes()->all();
+        $isExcluded = function ($path) use ($exclude) {
+            $parts = explode('/', $path);
+            if (count($parts) > 0) {
+                return array_key_exists($parts[0], $exclude);
+            }
+
+            return false;
+        };
+
+        $list->each(function ($glob) use (&$result, $isExcluded) {
+            if ($isExcluded($glob)) {
+                // skip any thumbs dir and do not show it for users
+                return;
+            }
+
+            $result[] = (new Blob($this->package, $glob))->fullDetails();
+        });
+
+        return $result;
     }
 
     /**
@@ -148,7 +183,7 @@ class FilesysManager implements ICripObject
             return true;
         }
 
-        return \Storage::exists($this->blob->path);
+        return $this->storage->exists($this->blob->path);
     }
 
     /**
@@ -157,7 +192,7 @@ class FilesysManager implements ICripObject
     public function isFile()
     {
         if ($this->blobExists()) {
-            $metadata = \Storage::getMetaData($this->blob->path);
+            $metadata = $this->storage->getMetaData($this->blob->path);
 
             return $metadata['type'] === 'file';
         }
@@ -171,7 +206,7 @@ class FilesysManager implements ICripObject
      */
     public function fileMimeType()
     {
-        return \Storage::mimeType($this->blob->path);
+        return $this->storage->mimeType($this->blob->path);
     }
 
     /**
@@ -205,7 +240,7 @@ class FilesysManager implements ICripObject
     public function getMetaData()
     {
         if (!$this->metadata) {
-            $this->metadata = (new BlobMetadata())->init($this->blob->path);
+            $this->metadata = new BlobMetadata($this->blob->path);
         }
 
         return $this->metadata;
@@ -234,7 +269,7 @@ class FilesysManager implements ICripObject
 
         do {
             $fullPath = $path . '/' . $name . ($ext ? '.' . $ext : '');
-        } while (\Storage::exists($fullPath) && $name = $originalName . '-' . ++$i);
+        } while ($this->storage->exists($fullPath) && $name = $originalName . '-' . ++$i);
 
         return $name;
     }
@@ -257,7 +292,7 @@ class FilesysManager implements ICripObject
 
         $newPath = $meta->getDir() . '/' . $newName . '.' . $meta->getExtension();
         $this->blob->path = $newPath;
-        \Storage::move($meta->getPath(), $newPath);
+        $this->storage->move($meta->getPath(), $newPath);
 
         return $this->fullDetails();
     }

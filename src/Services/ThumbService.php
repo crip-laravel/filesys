@@ -24,9 +24,9 @@ class ThumbService
     private $package;
 
     /**
-     * @var Filesystem
+     * @var \Illuminate\Filesystem\FilesystemAdapter
      */
-    private $fs;
+    private $storage;
 
     /**
      * @var UrlService
@@ -41,7 +41,7 @@ class ThumbService
     {
         $this->package = $package;
         $this->url = new UrlService($package);
-        $this->fs = app(Filesystem::class);
+        $this->storage = app()->make('filesystem');
 
         // Merge configuration file sizes in to this class
         // sizes property
@@ -52,7 +52,7 @@ class ThumbService
 
     /**
      * Get all thumb sizes.
-     * @return array
+     * @return \Illuminate\Support\Collection
      */
     public function getSizes()
     {
@@ -65,7 +65,7 @@ class ThumbService
      */
     public function resize($pathToImage)
     {
-        $file = \Storage::get($pathToImage);
+        $file = $this->storage->get($pathToImage);
 
         $this->sizes->each(function ($size, $key) use ($pathToImage, $file) {
             $img = app(ImageManager::class)->make($file);
@@ -90,7 +90,7 @@ class ThumbService
                     break;
             }
 
-            \Storage::put($path, $img->stream()->__toString());
+            $this->storage->put($path, $img->stream()->__toString());
         });
     }
 
@@ -102,12 +102,12 @@ class ThumbService
      */
     public function rename($pathToImage, $newName, $ext)
     {
-        $this->sizes->each(function ($D, $size) use ($pathToImage, $newName, $ext) {
+        $this->sizes->keys()->each(function ($size) use ($pathToImage, $newName, $ext) {
             $existing = $this->createThumbPath($pathToImage, $size);
             list($path, $oldName) = $this->getThumbPath($pathToImage, $size);
 
-            if ($this->fs->exists($existing)) {
-                \Storage::move($existing, $path . '/' . $newName . '.' . $ext);
+            if ($this->storage->exists($existing)) {
+                $this->storage->move($existing, $path . '/' . $newName . '.' . $ext);
             }
         });
     }
@@ -119,14 +119,14 @@ class ThumbService
      */
     public function delete($pathToImage, $isDir = false)
     {
-        $this->sizes->each(function ($D, $size) use ($pathToImage, $isDir) {
+        $this->sizes->keys()->each(function ($size) use ($pathToImage, $isDir) {
             list($path, $name) = $this->getThumbPath($pathToImage, $size);
             $file = $path . '/' . $name;
-            if ($this->fs->exists($file)) {
+            if ($this->storage->exists($file)) {
                 if (!$isDir) {
-                    $this->fs->delete($file);
+                    $this->storage->delete($file);
                 } else {
-                    $this->fs->deleteDirectory($file);
+                    $this->storage->deleteDirectory($file);
                 }
             }
         });
@@ -143,7 +143,7 @@ class ThumbService
         list($path, $file) = $this->getThumbPath($originalFilePath, $thumbSizeIdentifier);
 
         // Make sure dir exists for thumb
-        $this->fs->makeDirectory($path, 0777, true, true);
+        $this->storage->makeDirectory($path, 0777, true, true);
 
         return $path . '/' . $file;
     }

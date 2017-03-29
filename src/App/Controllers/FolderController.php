@@ -49,13 +49,13 @@ class FolderController extends BaseController
      */
     public function show($folder)
     {
-        $blob = $this->manager->parsePath($folder);
+        $manager = new FilesysManager($this->package, $folder);
 
-        if (!$this->manager->exists($blob)) {
+        if (!$manager->blobExists()) {
             return $this->json('File not found.', 404);
         }
 
-        $list = $this->manager->folderContent($blob);
+        $list = $manager->folderContent();
 
         return $this->json($list);
     }

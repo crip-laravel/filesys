@@ -150,7 +150,7 @@ class Blob implements ICripObject
         // to file
         if ($this->metadata->getVisibility() === 'public') {
             try {
-                return $this->storage->url($path);
+                return '/' . $this->storage->url($path);
             } catch (\Exception $ex) {
                 // Some drivers does not support url method (like ftp), so we
                 // simply continue and generate crip url to our controller

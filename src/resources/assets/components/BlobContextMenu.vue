@@ -8,7 +8,8 @@
 
     <li v-if="!isDir && !blob.$isSystem">
       <a href="#" class="content inte-item" @click.prevent="open(blob)">
-        Select <span v-if="blob.mime === 'img'">image <small>({{blob.size[0]}} x {{blob.size[1]}})</small></span>
+        Select
+        <span v-if="blob.mime === 'img'">image</span>
         <span v-else>file</span>
       </a>
     </li>
@@ -16,7 +17,7 @@
     <li v-for="size in sizes">
       <a class="content inte-item" href="#" @click.prevent="open(blob, size.url)">
         Select <i>{{size.name}}</i> image
-        <small>({{size.x}} x {{size.y}})</small>
+        <small>({{size.width}} x {{size.height}})</small>
       </a>
     </li>
 
@@ -85,13 +86,7 @@
 
       if (this.blob.thumbs) {
         Object.keys(this.blob.thumbs).forEach(size => {
-          let thumb = this.blob.thumbs[size]
-          sizes.push({
-            name: size,
-            x: thumb.size[0],
-            y: thumb.size[1],
-            url: thumb.url
-          })
+          sizes.push(this.blob.thumbs[size])
         })
       }
 

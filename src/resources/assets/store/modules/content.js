@@ -76,7 +76,7 @@ const mutations = {
       let blobUp = new Blob({
         name: '..',
         type: 'dir',
-        full_name: pathUp,
+        path: pathUp,
         thumb: settings.dirIcon,
         mediatype: settings.mediaTypes.dir,
         $isSystem: true

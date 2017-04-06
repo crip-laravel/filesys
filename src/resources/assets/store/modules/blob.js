@@ -62,7 +62,7 @@ const actions = {
    */
   [openBlob]: ({dispatch}, {blob, url}) => {
     if (blob.isDir) {
-      return dispatch(changePath, `${blob.dir}/${blob.name}`)
+      return dispatch(changePath, blob.path)
     }
 
     let action = 'selectCallback'

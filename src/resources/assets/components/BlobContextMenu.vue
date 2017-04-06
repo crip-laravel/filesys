@@ -1,9 +1,11 @@
 <template>
-  <ul class="context-menu" :id="id(index)" tabindex="-1" v-if="isVisible"
+  <ul class="context-menu" :id="blob.$id" tabindex="-1" v-if="isVisible"
       :style="{top: posTop, left: posLeft}">
 
     <li v-if="isDir">
-      <a class="content inte-item" href="#" @click.prevent="open(blob)">Open folder <i>{{blob.name}}</i></a>
+      <a class="content inte-item" href="#" @click.prevent="open(blob)">
+        Open folder <i>{{blob.name}}</i>
+      </a>
     </li>
 
     <li v-if="!isDir && !blob.$isSystem">
@@ -15,14 +17,19 @@
     </li>
 
     <li v-for="size in sizes">
-      <a class="content inte-item" href="#" @click.prevent="open(blob, size.url)">
+      <a class="content inte-item" href="#"
+         @click.prevent="open(blob, size.url)">
         Select <i>{{size.name}}</i> image
         <small>({{size.width}} x {{size.height}})</small>
       </a>
     </li>
 
-    <li v-if="!blob.$isSystem"><span class="content">Modified: <strong>{{blob.$date}}</strong></span></li>
-    <li v-if="!blob.$isSystem"><span class="content">Size: <strong>{{size}}</strong></span></li>
+    <li v-if="!blob.$isSystem">
+      <span class="content">Modified: <strong>{{blob.$date}}</strong></span>
+    </li>
+    <li v-if="!blob.$isSystem">
+      <span class="content">Size: <strong>{{size}}</strong></span>
+    </li>
   </ul>
 </template>
 
@@ -37,7 +44,6 @@
 
     props: {
       isVisible: {type: Boolean, required: true},
-      index: {type: Number, required: true},
       blob: {type: Blob, required: true},
       top: {type: Number, required: true},
       left: {type: Number, required: true}
@@ -53,6 +59,8 @@
       maxWidth () { return window.innerWidth - this.width - 25 },
       largestWidth () { return this.left > this.maxWidth ? this.maxWidth : this.left },
       posLeft () { return `${this.largestWidth}px` },
+
+      isDir () { return this.blob.isDir },
 
       size () {
         if (this.blob.bytes === 1) {
@@ -78,23 +86,25 @@
         })
 
         return result
+      },
+
+      sizes () {
+        let sizes = []
+
+        if (this.blob.thumbs) {
+          Object.keys(this.blob.thumbs).forEach(size => {
+            sizes.push(this.blob.thumbs[size])
+          })
+        }
+
+        return sizes
       }
     },
 
     data () {
-      let sizes = []
-
-      if (this.blob.thumbs) {
-        Object.keys(this.blob.thumbs).forEach(size => {
-          sizes.push(this.blob.thumbs[size])
-        })
-      }
-
       return {
         width: 0,
-        height: 0,
-        isDir: this.blob.isDir,
-        sizes
+        height: 0
       }
     },
 
@@ -102,10 +112,6 @@
       ...mapActions([
         actions.openBlob
       ]),
-
-      id (index) {
-        return `context-menu-${index}`
-      },
 
       /**
        * Open blob wrapper method to call hide on selecting blob.
@@ -123,10 +129,9 @@
        * @param target
        */
       onDocumentClick ({target}) {
-        let menuId = this.id(this.index)
-        let targetEq = [target.id === menuId]
+        let targetEq = [target.id === this.blob.$id]
         while ((target = target.parentElement)) {
-          targetEq.push(target.id === menuId)
+          targetEq.push(target.id === this.blob.$id)
         }
 
         if (targetEq.filter(eq => eq).length === 0) {
@@ -138,7 +143,7 @@
        * Close menu and unbind event listener from dom.
        */
       hideMenu () {
-        this.$emit('close', this.index)
+        this.$emit('close', this.blob.$id)
         // unbind this listener if we close menu
         document.removeEventListener('click', this.onDocumentClick)
       }

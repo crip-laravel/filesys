@@ -6,13 +6,13 @@
     </div>
 
     <div class="row clearfix" :class="[displayType]">
-      <div v-for="(blob, index) in content" class="blob-container">
-        <div @contextmenu.prevent="openMenu($event, index)"
+      <div v-for="blob in content" track-by="blob.$id"
+           class="blob-container">
+        <div @contextmenu.prevent="openMenu($event, blob.$id)"
              class="context-wrapp">
           <blob :blob="blob"></blob>
-          <blob-context-menu :is-visible="isVisible(index)" :index="index"
-                             :blob="blob"
-                             :top="top" :left="left"
+          <blob-context-menu :is-visible="isVisible(blob.$id)"
+                             :blob="blob" :top="top" :left="left"
                              @close="closeMenu"></blob-context-menu>
         </div>
       </div>
@@ -83,33 +83,35 @@
     methods: {
       /**
        * Determines is context menu visible for this index blob.
-       * @param {Number} index
+       * @param {string} id
        * @return {Boolean}
        */
-      isVisible (index) {
-        return !!this.viewMenu[index]
+      isVisible (id) {
+        return !!this.viewMenu[id]
       },
 
       /**
        * Close menu for blob with index.
-       * @param {Number} index
+       * @param {String} id
        */
-      closeMenu (index) {
-        Vue.set(this.viewMenu, index, false)
+      closeMenu (id) {
+        Vue.set(this.viewMenu, id, false)
       },
 
       /**
        * @param {MouseEvent} e
-       * @param {Number} index
+       * @param {String} id
        */
-      openMenu (e, index) {
+      openMenu (e, id) {
         this.top = e.y
         this.left = e.x
 
         // before open, make sure all other are closed
-        Object.keys(this.viewMenu).forEach(key => Vue.set(this.viewMenu, key, false))
+        Object.keys(this.viewMenu).forEach((key) => {
+          return !this.viewMenu[key] || Vue.set(this.viewMenu, key, false)
+        })
 
-        Vue.set(this.viewMenu, index, true)
+        Vue.set(this.viewMenu, id, true)
       }
     },
 

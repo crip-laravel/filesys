@@ -25,7 +25,7 @@ export default class Blob {
     this.$date = data.updated_at ? data.updated_at.dateFromUnixTimestamp() : ''
     this.$edit = false
     this.$temp = !!data.$temp
-    this.$id = `blob-${data.full_name}`
+    this.$id = data.path ? data.path.replaceAll('/', '-') : 'up'
     this.newName = data.name
   }
 

@@ -1,3 +1,9 @@
+// actionsjs mutations
+export const removeUpload = 'removeUpload'
+export const setFileUploadLoading = 'setFileUploadLoading'
+export const setNewUpload = 'setNewUpload'
+export const setUploadError = 'setUploadError'
+
 // blob.js mutations
 export const setBlobEditMode = 'setBlobEditMode'
 export const setCreateEnabled = 'setCreateEnabled'

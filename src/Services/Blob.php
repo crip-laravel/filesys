@@ -4,17 +4,21 @@ use Crip\Core\Contracts\ICripObject;
 use Crip\Core\Helpers\FileSystem;
 use Crip\Core\Helpers\Str;
 use Crip\Core\Support\PackageBase;
+use Crip\Filesys\App\File;
+use Crip\Filesys\App\Folder;
 
 /**
- * Class BlobInfo
+ * Class Blob
  * @package Crip\Filesys\Services
  */
 class Blob implements ICripObject
 {
+    public $path;
+
     /**
-     * @var string
+     * @var BlobMetadata
      */
-    private $path;
+    public $metadata;
 
     /**
      * @var PackageBase
@@ -22,134 +26,98 @@ class Blob implements ICripObject
     private $package;
 
     /**
-     * @var FolderInfo
+     * @var \Illuminate\Filesystem\FilesystemAdapter
      */
-    public $folder;
+    private $storage;
+
+    private $thumbsDetails = null;
 
     /**
-     * @var FileInfo
-     */
-    public $file;
-
-    /**
-     * BlobInfo constructor.
+     * Blob constructor.
      * @param PackageBase $package
      * @param string $path
      */
     public function __construct(PackageBase $package, $path = '')
     {
         $this->package = $package;
-        $this->setPath($path);
-    }
-
-    /**
-     * Set path for current blob.
-     * @param $path
-     */
-    public function setPath($path)
-    {
         $this->path = Str::normalizePath($path);
-
-        $folder = $this->path;
-        $file = null;
-
-        if (pathinfo($this->path, PATHINFO_EXTENSION)) {
-            $folderArr = explode('/', $this->path);
-            $file = array_pop($folderArr);
-            $folder = join('/', $folderArr);
-        }
-
-        $this->setFolder($folder);
-        $this->setFile($file);
+        $this->storage = app()->make('filesystem');
     }
 
     /**
-     * Set folder for blob.
-     * @param $folder
+     * @param BlobMetadata $metadata
+     * @return File|Folder
+     * @throws \Exception
      */
-    public function setFolder($folder)
+    public function fullDetails($metadata = null)
     {
-        $folder = Str::normalizePath($folder);
-        $confDir = base_path(trim($this->package->config('target_dir'), '/\\'));
-        if (str_contains($folder, Str::normalizePath($confDir))) {
-            $folder = str_replace(Str::normalizePath($confDir), '', $folder);
+        $this->metadata = $metadata ?: new BlobMetadata($this->path);
+        if (!$this->metadata->exists()) {
+            throw new \Exception('File not found');
         }
 
-        $this->folder = new FolderInfo($this->package, $folder);
+        if ($this->metadata->isFile()) {
+            $result = new File($this);
+        } else {
+            $result = new Folder($this);
+        }
+
+        return $result;
     }
 
     /**
-     * Set file for blob.
-     * @param $name
-     * @param null|string $extension
-     */
-    public function setFile($name, $extension = null)
-    {
-        if ($extension != null) {
-            $name .= '.' . $extension;
-        }
-
-        $this->file = new FileInfo($this->package, $this->folder, $name);
-    }
-
-    /**
-     * Get file/dir system path.
+     * Get blob type.
      * @return string
      */
-    public function systemPath()
+    public function getType()
     {
-        if ($this->file->isDefined()) {
-            return $this->file->getSystemPath();
-        }
-
-        return $this->folder->getDir();
+        return $this->metadata->isFile() ? 'file' : 'dir';
     }
 
     /**
-     * Get file/dir mime name.
+     * Get blob media type.
      * @return string
      */
-    public function getMime()
+    public function getMediatype()
     {
-        if (!$this->file->isDefined()) {
-            return 'dir';
+        $mime = $this->getMime();
+
+        if ($mime == 'file') {
+            return $mime;
         }
 
-        foreach ($this->package->config('mime.types') as $mime => $mimeValues) {
-            $key = collect($mimeValues)->search(function ($mimeValue) {
-                return preg_match($mimeValue, $this->file->getMimeType());
-            });
-
-            if ($key !== false) {
-                return $mime;
+        foreach ($this->package->config('mime.media') as $mediaType => $mimes) {
+            if (in_array($mime, $mimes)) {
+                return $mediaType;
             }
         }
 
-        return 'file';
+        return 'dir';
     }
 
     /**
-     * Get file/dir thumb URL.
+     * Get 'thumb' size thumbnail url.
+     * @param string $size
      * @return string
      * @throws \Exception
      */
-    public function getThumb()
+    public function getThumbUrl($size = 'thumb')
     {
         $url = $this->package->config('icons.url');
         $icons = $this->package->config('icons.files');
 
-        if (!$this->file->isDefined()) {
+        if (!$this->metadata->isFile()) {
             return $url . $icons['dir'];
         }
 
-        if ($this->file->isImage()) {
-            $thumbs = $this->file->getThumbs();
+        if ($this->isImage()) {
+            $thumbs = $this->getThumbsDetails();
 
-            if (!array_key_exists('thumb', $thumbs)) {
+            if (!array_key_exists($size, $thumbs)) {
                 return $url . $icons['img'];
             }
 
-            return $thumbs['thumb']['url'];
+            return $thumbs[$size]['url'];
         }
 
         $mime = $this->getMime();
@@ -162,31 +130,109 @@ class Blob implements ICripObject
     }
 
     /**
-     * Get media type of current mime
+     * Get 'xs' size thumbnail url.
      * @return string
      */
-    public function getMediatype()
+    public function getXsThumbUrl()
     {
-        $mime = $this->getMime();
-        foreach ($this->package->config('mime.media') as $mediatype => $mimes) {
-            if (in_array($mime, $mimes)) {
-                return $mediatype;
+        return $this->getThumbUrl('xs');
+    }
+
+    /**
+     * Generates url to a file.
+     * @param null $path
+     * @return string
+     */
+    public function getUrl($path = null)
+    {
+        $path = $path ?: $this->path;
+        // If file has public access enabled, we simply can return storage url
+        // to file
+        if ($this->metadata->getVisibility() === 'public') {
+            try {
+                return '/' . $this->storage->url($path);
+            } catch (\Exception $ex) {
+                // Some drivers does not support url method (like ftp), so we
+                // simply continue and generate crip url to our controller
             }
         }
 
-        if ($mime == 'file') {
-            return $mime;
+        $service = new UrlService($this->package);
+        if ($this->metadata->isFile()) {
+            return $service->file($path);
+        }
+
+        return $service->folder($path);
+    }
+
+    /**
+     * Get blob mime.
+     * @return int|string
+     */
+    public function getMime()
+    {
+        if ($this->metadata->isFile()) {
+            $mimes = $this->package->config('mime.types');
+            foreach ($mimes as $mime => $mimeValues) {
+                $key = collect($mimeValues)->search(function ($mimeValue) {
+                    return preg_match($mimeValue, $this->metadata->getMimeType());
+                });
+
+                if ($key !== false) {
+                    return $mime;
+                }
+            }
+
+            return 'file';
         }
 
         return 'dir';
     }
 
     /**
-     * Get dir size in bytes
-     * @return int
+     * Get thumbs details.
+     * @return array
      */
-    public function getBytes()
+    public function getThumbsDetails()
     {
-        return FileSystem::dirSize($this->systemPath());
+        if ($this->thumbsDetails === null) {
+            $this->setThumbsDetails();
+        }
+
+        return $this->thumbsDetails;
+    }
+
+    /**
+     * Determines is the current blob an image.
+     * @return bool
+     */
+    private function isImage()
+    {
+        if ($this->metadata->isFile() &&
+            mb_strpos($this->metadata->getMimeType(), 'image/') === 0
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Set thumb sizes details for current file.
+     */
+    private function setThumbsDetails()
+    {
+        $this->thumbsDetails = [];
+        if ($this->isImage()) {
+            $service = new ThumbService($this->package);
+            collect($service->getSizes())->each(function ($size, $key) {
+                $this->thumbsDetails[$key] = [
+                    'size' => $key,
+                    'width' => $size[0],
+                    'height' => $size[1],
+                    'url' => $this->getUrl($key . '/' . $this->path)
+                ];
+            });
+        }
     }
 }

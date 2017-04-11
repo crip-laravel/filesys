@@ -1,13 +1,14 @@
 {
   "name": "crip-laravel_filesys",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Laravel - Filesystem manager extension",
   "main": "src/resources/assets/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack -w --devtool source-map",
-    "build": "webpack --config webpack.config.js --env.minimize"
-  },
+    "build": "webpack"
+    "dev": "webpack -w --devtool source-map",
+    "build": "webpack --config webpack.config.js --env.minimize"  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/crip-laravel/filesys.git"

@@ -1,5 +1,7 @@
 // actions.js getters
 export const isEditEnabled = 'isEditEnabled'
+export const uploads = 'uploads'
+export const uploadsCount = 'uploadsCount'
 
 // content.js getters
 export const blobs = 'blobs'

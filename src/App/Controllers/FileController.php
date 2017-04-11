@@ -1,6 +1,7 @@
 <?php namespace Crip\Filesys\App\Controllers;
 
 use Crip\Filesys\App\File;
+use Crip\Filesys\Services\FilesysManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -19,45 +20,32 @@ class FileController extends BaseController
     public function store(Request $request)
     {
         if ($request->hasFile('file')) {
-            // Configure manager path where file should be uploaded
-            // and make sure that directory exists in file system
-            $blob = $this->manager->parsePath($request->path);
             $file = $request->file('file');
+            $this->manager->resetPath($request->path);
 
             if (!$this->manager->isSafe($file->getClientOriginalExtension(), $file->getMimeType())) {
                 return $this->json(['Uploading file is not safe and could not be uploaded.'], 422);
             }
 
-            // Upload file to the server
-            $this->manager->upload($blob, $request->file('file'));
+            $blob = $this->manager->upload($file);
 
-            // If file is image, create all configured sizer for it
-            if ($blob->file->isImage()) {
-                $this->manager->resizeImage($blob);
-                // Update file details after creating thumbs
-                $blob->file->update();
-            }
-
-            // Return file public url to the uploaded file
-            return $this->json(new File($blob));
+            return $this->json($blob);
         }
 
         return $this->json(['File not presented for upload.'], 422);
     }
 
     /**
-     * Get file
-     * @param Request $request
+     * Get file content.
      * @param string $file Path to the requested file
      * @return JsonResponse|Response
      */
-    public function show(Request $request, $file)
+    public function show($file)
     {
-        $blob = $this->manager->parsePath($file, $request->all());
-
-        if ($blob->file->isDefined() && $this->manager->exists($blob)) {
-            return new Response($this->manager->fileContent($blob), 200, [
-                'Content-Type' => $blob->file->getMimeType(),
+        $this->manager->resetPath($file);
+        if ($this->manager->isFile()) {
+            return new Response($this->manager->fileContent(), 200, [
+                'Content-Type' => $this->manager->fileMimeType(),
                 'Cache-Control' => 'private, max-age=31536000'
             ]);
         }
@@ -77,15 +65,15 @@ class FileController extends BaseController
             return $this->json('Name property is required.', 422);
         }
 
-        $blob = $this->manager->parsePath($file);
+        $this->manager->resetPath($file);
 
-        if (!$this->manager->exists($blob)) {
+        if (!$this->manager->getMetaData()->isFile()) {
             return $this->json('File not found.', 404);
         }
 
-        $this->manager->rename($blob, $request->name);
+        $blob = $this->manager->rename($request->name);
 
-        return $this->json(new File($blob));
+        return $this->json($blob);
     }
 
     /**
@@ -95,13 +83,13 @@ class FileController extends BaseController
      */
     public function destroy($file)
     {
-        $blob = $this->manager->parsePath($file);
+        $this->manager->resetPath($file);
 
-        if (!$this->manager->exists($blob)) {
+        if (!$this->manager->blobExists()) {
             return $this->json('File not found.', 404);
         }
 
-        $isRemoved = $this->manager->delete($blob);
+        $isRemoved = $this->manager->delete();
 
         return $this->json($isRemoved, $isRemoved ? 200 : 500);
     }

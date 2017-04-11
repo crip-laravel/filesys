@@ -1,4 +1,4 @@
-# CRIP Filesystem manager (v1.0.0)
+# CRIP Filesystem manager (v.1.1.0)
 
 This package easily integrates filesystem manager in to your website. You can 
 use it with TinyMCE editor or just stand alone popup for your input fields. CRIP
@@ -140,7 +140,7 @@ correctly allocate file location in server filesystem.
 
 ### TinyMCE
 
-Download and set up TinyMCE editor. Copy `plugins` folder from published 
+Download and set up TinyMCE editor. Copy `plugins` folder from published
 resources `\public\vendor\crip\cripfilesys\tinymce\plugins` to installed TinyMCE 
 editor `plugins` directory. Configure TinyMCE to enable `cripfilesys` plugin in 
 it:

@@ -23,7 +23,7 @@ const actions = {
    */
   [changePath]: ({commit, getters}, path) => {
     if (getters.path !== path && !getters.isLoading) {
-      let pathUp = path.split('/')
+      let pathUp = path.trim('/').split('/')
       pathUp.splice(-1, 1)
       pathUp = pathUp.join('/')
 

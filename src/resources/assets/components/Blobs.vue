@@ -1,14 +1,23 @@
 <template>
   <div id="blobs">
+
     <div class="row clearfix" :class="[displayType]">
-      <div v-for="(blob, index) in content" class="blob-container">
-        <div @contextmenu.prevent="openMenu($event, index)" class="context-wrapp">
+      <uploads></uploads>
+    </div>
+
+    <div class="row clearfix" :class="[displayType]">
+      <div v-for="blob in content" track-by="blob.$id"
+           class="blob-container">
+        <div @contextmenu.prevent="openMenu($event, blob.$id)"
+             class="context-wrapp">
           <blob :blob="blob"></blob>
-          <blob-context-menu :is-visible="isVisible(index)" :index="index" :blob="blob"
-                             :top="top" :left="left" @close="closeMenu"></blob-context-menu>
+          <blob-context-menu :is-visible="isVisible(blob.$id)"
+                             :blob="blob" :top="top" :left="left"
+                             @close="closeMenu"></blob-context-menu>
         </div>
       </div>
     </div>
+
   </div>
 </template>
 
@@ -17,6 +26,7 @@
   import blob from './Blob.vue'
   import blobContextMenu from './BlobContextMenu.vue'
   import settings from './../settings'
+  import uploads from './Uploads.vue'
   import Vue from 'vue'
   import { mapGetters } from 'vuex'
 
@@ -45,7 +55,9 @@
 
         return filtered.sort((a, b) => {
           if ((a.isDir && b.isDir) || (!a.isDir && !b.isDir)) {
-            return a.name > b.name
+            if (a.name < b.name) return -1
+            if (a.name > b.name) return 1
+            return 0
           }
 
           // if types are different, make sure that dir always is first
@@ -71,37 +83,39 @@
     methods: {
       /**
        * Determines is context menu visible for this index blob.
-       * @param {Number} index
+       * @param {string} id
        * @return {Boolean}
        */
-      isVisible (index) {
-        return !!this.viewMenu[index]
+      isVisible (id) {
+        return !!this.viewMenu[id]
       },
 
       /**
        * Close menu for blob with index.
-       * @param {Number} index
+       * @param {String} id
        */
-      closeMenu (index) {
-        Vue.set(this.viewMenu, index, false)
+      closeMenu (id) {
+        Vue.set(this.viewMenu, id, false)
       },
 
       /**
        * @param {MouseEvent} e
-       * @param {Number} index
+       * @param {String} id
        */
-      openMenu (e, index) {
+      openMenu (e, id) {
         this.top = e.y
         this.left = e.x
 
         // before open, make sure all other are closed
-        Object.keys(this.viewMenu).forEach(key => Vue.set(this.viewMenu, key, false))
+        Object.keys(this.viewMenu).forEach((key) => {
+          return !this.viewMenu[key] || Vue.set(this.viewMenu, key, false)
+        })
 
-        Vue.set(this.viewMenu, index, true)
+        Vue.set(this.viewMenu, id, true)
       }
     },
 
-    components: {blob, blobContextMenu}
+    components: {blob, blobContextMenu, uploads}
   }
 </script>
 
@@ -117,5 +131,38 @@
 
   #blobs {
     border-top: 1px solid $menu-border-color;
+  }
+
+  .blob {
+    overflow: hidden;
+
+    .thumb {
+      height: 105px;
+      margin-bottom: 8px;
+      overflow: hidden;
+
+      img {
+        display: block;
+        margin: 0 auto 6px auto;
+        max-height: 100px;
+      }
+    }
+  }
+
+  .list .blob {
+    .thumb {
+      border: none;
+      float: left;
+      height: auto;
+      margin: 4px 0 4px 4px;
+      padding: 0;
+      text-align: center;
+      width: 50px;
+
+      img {
+        height: 25px;
+        margin: 0 auto;
+      }
+    }
   }
 </style>

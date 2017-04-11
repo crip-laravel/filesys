@@ -6,7 +6,7 @@ import {
   blobs, selectedBlob, displayType, isGridView, isListView, pathUp,
   path, creating
 } from '../getters'
-import { fetchContent, refreshContent } from '../actions'
+import { fetchContent, refreshContent, fetchTree } from '../actions'
 import {
   removeSelectedBlob, removeBlob, setBlobs, setNewBlob, setSelectedBlob,
   setGridView, setListView, setLoadingStarted, setLoadingCompleted,
@@ -41,7 +41,10 @@ const actions = {
    * @param dispatch
    */
   [refreshContent]: ({dispatch}) => {
+    // When refresh requested, update content of the blobs area nad tree
+    // component items.
     dispatch(fetchContent)
+    dispatch(fetchTree)
   }
 }
 
@@ -61,7 +64,7 @@ const mutations = {
    */
   [removeBlob]: (state, id) => {
     let toRemove = state.blobs.filter(b => b.$id === id)[0]
-    state.items.splice(state.blobs.indexOf(toRemove), 1)
+    state.blobs.splice(state.blobs.indexOf(toRemove), 1)
   },
 
   /**
@@ -76,7 +79,7 @@ const mutations = {
       let blobUp = new Blob({
         name: '..',
         type: 'dir',
-        full_name: pathUp,
+        path: pathUp,
         thumb: settings.dirIcon,
         mediatype: settings.mediaTypes.dir,
         $isSystem: true

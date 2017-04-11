@@ -1,3 +1,9 @@
+// actions.js actions
+export const filesForUploadAdded = 'filesForUploadAdded'
+export const openCreateFolderDialog = 'openCreateFolderDialog'
+export const startUpload = 'startUpload'
+export const uploadFile = 'uploadFile'
+
 // blob.js actions
 export const deleteBlob = 'deleteBlob'
 export const openBlob = 'openBlob'

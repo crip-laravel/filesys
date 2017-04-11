@@ -18,6 +18,8 @@
 
   export default {
     mounted () {
+      // When tree component is mounted, fetch all data from the server and
+      // apply it to the current component content.
       this[actions.fetchTree]()
     },
 

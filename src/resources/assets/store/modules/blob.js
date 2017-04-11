@@ -21,7 +21,7 @@ const actions = {
     commit(setLoadingStarted)
     let selected = getters.selectedBlob
     selected.delete().then(() => {
-      commit(removeBlob, selected)
+      commit(removeBlob, selected.$id)
       commit(setLoadingCompleted)
 
       if (selected.isDir) {
@@ -62,7 +62,7 @@ const actions = {
    */
   [openBlob]: ({dispatch}, {blob, url}) => {
     if (blob.isDir) {
-      return dispatch(changePath, blob.full_name)
+      return dispatch(changePath, blob.path)
     }
 
     let action = 'selectCallback'

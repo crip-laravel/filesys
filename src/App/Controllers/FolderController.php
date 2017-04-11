@@ -1,6 +1,7 @@
 <?php namespace Crip\Filesys\App\Controllers;
 
 use Crip\Filesys\App\Folder;
+use Crip\Filesys\Services\FilesysManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -26,19 +27,19 @@ class FolderController extends BaseController
      */
     public function store(Request $request)
     {
-        $blob = $this->manager->parsePath($request->folder);
-
-        if (!$this->manager->exists($blob)) {
-            return $this->json('Folder not found.', 404);
-        }
+        $this->manager->resetPath($request->folder);
 
         if (empty($request->name)) {
             return $this->json('Name property is required.', 422);
         }
 
-        $this->manager->mkdir($blob, $request->name);
+        if (!$this->manager->blobExists()) {
+            return $this->json('Folder not found.', 404);
+        }
 
-        return $this->json(new Folder($blob));
+        $result = $this->manager->makeDirectory($request->name)->fullDetails();
+
+        return $this->json($result);
     }
 
     /**
@@ -48,13 +49,13 @@ class FolderController extends BaseController
      */
     public function show($folder)
     {
-        $blob = $this->manager->parsePath($folder);
+        $this->manager->resetPath($folder);
 
-        if (!$this->manager->exists($blob)) {
+        if (!$this->manager->blobExists()) {
             return $this->json('File not found.', 404);
         }
 
-        $list = $this->manager->folderContent($blob);
+        $list = $this->manager->folderContent();
 
         return $this->json($list);
     }
@@ -71,15 +72,15 @@ class FolderController extends BaseController
             return $this->json('Name property is required.', 422);
         }
 
-        $blob = $this->manager->parsePath($folder);
+        $this->manager->resetPath($folder);
 
-        if (!$this->manager->exists($blob)) {
+        if (!$this->manager->blobExists()) {
             return $this->json('Folder not found.', 404);
         }
 
-        $this->manager->rename($blob, $request->name);
+        $details = $this->manager->rename($request->name);
 
-        return $this->json(new Folder($blob));
+        return $this->json($details);
     }
 
     /**
@@ -89,13 +90,13 @@ class FolderController extends BaseController
      */
     public function destroy($folder)
     {
-        $blob = $this->manager->parsePath($folder);
+        $this->manager->resetPath($folder);
 
-        if (!$this->manager->exists($blob)) {
+        if (!$this->manager->blobExists()) {
             return $this->json('Folder not found.', 404);
         }
 
-        $isRemoved = $this->manager->delete($blob);
+        $isRemoved = $this->manager->delete();
 
         return $this->json($isRemoved, $isRemoved ? 200 : 500);
     }

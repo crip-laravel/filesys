@@ -31,11 +31,11 @@
         <div class="col">
           <btn title="Rename" size="lg" icon="rename" :active="isEditEnabled"
                :on-click="startEditBlob"
-               :disabled="!selectedBlob"></btn>
+               :disabled="isRenameDisabled"></btn>
         </div>
         <div class="col">
           <btn title="Delete" size="lg" icon="delete" :on-click="deleteBlob"
-               :disabled="!selectedBlob"></btn>
+               :disabled="isDeleteDisabled"></btn>
         </div>
       </div>
     </div>
@@ -66,7 +66,15 @@
         getters.isListView,
         getters.selectedBlob,
         getters.uploadsCount
-      ])
+      ]),
+
+      isDeleteDisabled () {
+        return !this.selectedBlob || this.creating
+      },
+
+      isRenameDisabled () {
+        return !this.selectedBlob || this.creating
+      }
     },
 
     methods: {
@@ -78,10 +86,26 @@
       ...mapActions([
         actions.openCreateFolderDialog,
         actions.filesForUploadAdded,
-        actions.startEditBlob,
-        actions.deleteBlob,
         actions.startUpload
       ]),
+
+      /**
+       * Initialize state to make available blob rename functionality.
+       */
+      startEditBlob () {
+        if (!this.isRenameDisabled) {
+          this.$store.dispatch(actions.startEditBlob)
+        }
+      },
+
+      /**
+       * Delete selected blob.
+       */
+      deleteBlob () {
+        if (!this.isDeleteDisabled) {
+          this.$store.dispatch(actions.deleteBlob)
+        }
+      },
 
       /**
        * Do nothing.

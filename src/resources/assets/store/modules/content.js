@@ -6,7 +6,7 @@ import {
   blobs, selectedBlob, displayType, isGridView, isListView, pathUp,
   path, creating
 } from '../getters'
-import { fetchContent, refreshContent } from '../actions'
+import { fetchContent, refreshContent, fetchTree } from '../actions'
 import {
   removeSelectedBlob, removeBlob, setBlobs, setNewBlob, setSelectedBlob,
   setGridView, setListView, setLoadingStarted, setLoadingCompleted,
@@ -41,7 +41,10 @@ const actions = {
    * @param dispatch
    */
   [refreshContent]: ({dispatch}) => {
+    // When refresh requested, update content of the blobs area nad tree
+    // component items.
     dispatch(fetchContent)
+    dispatch(fetchTree)
   }
 }
 

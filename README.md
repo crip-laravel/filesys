@@ -5,6 +5,12 @@ use it with TinyMCE editor or just stand alone popup for your input fields. CRIP
 Filesys Manager is based on Vue.js framework and is stand alone single page 
 application for your filesystem control on server side. 
 
+Manager is using [Laravel Filesystem](https://laravel.com/api/5.4/Illuminate/Contracts/Filesystem/Filesystem.html)
+to read and write files on the server side. This means that you can configure 
+your [Laravel driver](https://laravel.com/docs/5.4/filesystem#configuration) 
+and manager will fit to it. Amazon S3, FTP or local storage - your choice where keep 
+files.
+
 
 ![Screenshoot](https://raw.githubusercontent.com/crip-laravel/filesys/master/src/public/images/screenshoot.png)
 
@@ -141,7 +147,7 @@ correctly allocate file location in server filesystem.
 ### TinyMCE
 
 Download and set up TinyMCE editor. Copy `plugins` folder from published 
-resources `\public\vendor\crip\filesys\tinymce\plugins` to installed TinyMCE 
+resources `\public\vendor\crip\cripfilesys\tinymce\plugins` to installed TinyMCE 
 editor `plugins` directory. Configure TinyMCE to enable `filesys` plugin in it:
 ```javascript
 if (tinymce) {

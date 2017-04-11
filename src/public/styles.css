@@ -5814,6 +5814,9 @@ button.close {
   .hidden-print {
     display: none !important; } }
 
+.no-margin {
+  margin: 0 !important; }
+
 .inte-item {
   /* .interaction-item */
   border: 1px solid transparent;

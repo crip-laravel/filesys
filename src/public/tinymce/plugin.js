@@ -74,7 +74,7 @@
 "use strict";
 
 
-var _helpers = __webpack_require__(8);
+var _helpers = __webpack_require__(9);
 
 tinymce.PluginManager.add('filemanager', function (editor) {
   function CripFileBrowser(fieldName, url, type, win) {
@@ -114,7 +114,7 @@ module.exports = __webpack_require__(11);
 
 /***/ }),
 
-/***/ 8:
+/***/ 9:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

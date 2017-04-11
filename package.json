@@ -5,10 +5,9 @@
   "main": "src/resources/assets/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack -w --devtool source-map",
-    "build": "webpack"
-    "dev": "webpack -w --devtool source-map",
-    "build": "webpack --config webpack.config.js --env.minimize"  },
+    "dev": "webpack -w --devtool source-map --env.dev",
+    "build": "webpack --config webpack.config.js --env.minimize"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/crip-laravel/filesys.git"

@@ -8,7 +8,6 @@ const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin
 let plugins = [
   new CopyWebpackPlugin([
     {from: 'tinymce/plugins/cripfilesys/langs/**/*'}
-  ])
   ]),
   new WebpackShellPlugin({onBuildEnd: ['node copy-to-output.js']})
 ]
@@ -28,7 +27,6 @@ module.exports = (env) => {
       compress: {warnings: false}
     }))
   }
-
 
   return {
     context: path.join(__dirname, 'src/resources/assets'),

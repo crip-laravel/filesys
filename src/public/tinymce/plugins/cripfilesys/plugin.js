@@ -74,7 +74,7 @@
 "use strict";
 
 
-var _helpers = __webpack_require__(8);
+var _helpers = __webpack_require__(9);
 
 tinymce.PluginManager.requireLangPack('cripfilesys', 'en_GB,lv,ru');
 
@@ -124,7 +124,7 @@ module.exports = __webpack_require__(12);
 
 /***/ }),
 
-/***/ 8:
+/***/ 9:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

@@ -44,7 +44,16 @@ class FilesysManager implements ICripObject
     }
 
     /**
-     * Write the contents of a file.
+     * Reset current blob instance to the new path.
+     * @param string $path
+     */
+    public function resetPath($path = '')
+    {
+        $this->blob = new Blob($this->package, $path);
+    }
+
+    /**
+     * Write the contents of a file on storage.
      * @param UploadedFile $uploadedFile
      * @return array|File|Folder
      * @throws \Exception
@@ -94,6 +103,7 @@ class FilesysManager implements ICripObject
     }
 
     /**
+     * Delete blob from storage.
      * @return bool
      */
     public function delete()
@@ -146,6 +156,10 @@ class FilesysManager implements ICripObject
         return $this->storage->get($this->blob->path);
     }
 
+    /**
+     * Fetch folder content of the storage directory.
+     * @return array
+     */
     public function folderContent()
     {
         $result = [];
@@ -174,13 +188,18 @@ class FilesysManager implements ICripObject
         return $result;
     }
 
+    /**
+     * Fetch folder tree from the storage root directory.
+     * @return array
+     */
     public function folderTree()
     {
         $exclude = (new ThumbService($this->package))->getSizes()->keys()->all();
         $dirs = collect($this->storage->allDirectories(''));
 
         $results = [];
-        $dirs = $dirs->filter(function ($dir) use ($exclude) {
+
+        $dirs->filter(function ($dir) use ($exclude) {
             $parts = explode('/', Str::normalizePath($dir));
             return !in_array($parts[0], $exclude);
         })->each(function ($dir) use (&$results) {
@@ -202,10 +221,11 @@ class FilesysManager implements ICripObject
             }
         });
 
-       return $results;
+        return $results;
     }
 
     /**
+     * Determines is current blob path is existing in storage.
      * @return bool
      */
     public function blobExists()
@@ -218,6 +238,7 @@ class FilesysManager implements ICripObject
     }
 
     /**
+     * Determines is the current blob of file type.
      * @return bool
      */
     public function isFile()
@@ -266,6 +287,7 @@ class FilesysManager implements ICripObject
     }
 
     /**
+     * Get blob meta data object.
      * @return BlobMetadata
      */
     public function getMetaData()
@@ -278,6 +300,7 @@ class FilesysManager implements ICripObject
     }
 
     /**
+     * Get full details of the current blob.
      * @param bool $reset
      * @return File|Folder
      */

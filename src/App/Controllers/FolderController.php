@@ -27,17 +27,17 @@ class FolderController extends BaseController
      */
     public function store(Request $request)
     {
-        $manager = new FilesysManager($this->package, $request->folder);
+        $this->manager->resetPath($request->folder);
 
         if (empty($request->name)) {
             return $this->json('Name property is required.', 422);
         }
 
-        if (!$manager->blobExists()) {
+        if (!$this->manager->blobExists()) {
             return $this->json('Folder not found.', 404);
         }
 
-        $result = $manager->makeDirectory($request->name)->fullDetails();
+        $result = $this->manager->makeDirectory($request->name)->fullDetails();
 
         return $this->json($result);
     }
@@ -49,13 +49,13 @@ class FolderController extends BaseController
      */
     public function show($folder)
     {
-        $manager = new FilesysManager($this->package, $folder);
+        $this->manager->resetPath($folder);
 
-        if (!$manager->blobExists()) {
+        if (!$this->manager->blobExists()) {
             return $this->json('File not found.', 404);
         }
 
-        $list = $manager->folderContent();
+        $list = $this->manager->folderContent();
 
         return $this->json($list);
     }
@@ -72,13 +72,13 @@ class FolderController extends BaseController
             return $this->json('Name property is required.', 422);
         }
 
-        $manager = new FilesysManager($this->package, $folder);
+        $this->manager->resetPath($folder);
 
-        if (!$manager->blobExists()) {
+        if (!$this->manager->blobExists()) {
             return $this->json('Folder not found.', 404);
         }
 
-        $details = $manager->rename($request->name);
+        $details = $this->manager->rename($request->name);
 
         return $this->json($details);
     }
@@ -90,13 +90,13 @@ class FolderController extends BaseController
      */
     public function destroy($folder)
     {
-        $manager = new FilesysManager($this->package, $folder);
+        $this->manager->resetPath($folder);
 
-        if (!$manager->blobExists()) {
+        if (!$this->manager->blobExists()) {
             return $this->json('Folder not found.', 404);
         }
 
-        $isRemoved = $manager->delete();
+        $isRemoved = $this->manager->delete();
 
         return $this->json($isRemoved, $isRemoved ? 200 : 500);
     }

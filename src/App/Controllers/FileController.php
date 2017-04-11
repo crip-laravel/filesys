@@ -21,13 +21,13 @@ class FileController extends BaseController
     {
         if ($request->hasFile('file')) {
             $file = $request->file('file');
-            $manager = new FilesysManager($this->package, $request->path);
+            $this->manager->resetPath($request->path);
 
-            if (!$manager->isSafe($file->getClientOriginalExtension(), $file->getMimeType())) {
+            if (!$this->manager->isSafe($file->getClientOriginalExtension(), $file->getMimeType())) {
                 return $this->json(['Uploading file is not safe and could not be uploaded.'], 422);
             }
 
-            $blob = $manager->upload($file);
+            $blob = $this->manager->upload($file);
 
             return $this->json($blob);
         }
@@ -42,10 +42,10 @@ class FileController extends BaseController
      */
     public function show($file)
     {
-        $manager = new FilesysManager($this->package, $file);
-        if ($manager->isFile()) {
-            return new Response($manager->fileContent(), 200, [
-                'Content-Type' => $manager->fileMimeType(),
+        $this->manager->resetPath($file);
+        if ($this->manager->isFile()) {
+            return new Response($this->manager->fileContent(), 200, [
+                'Content-Type' => $this->manager->fileMimeType(),
                 'Cache-Control' => 'private, max-age=31536000'
             ]);
         }
@@ -65,13 +65,13 @@ class FileController extends BaseController
             return $this->json('Name property is required.', 422);
         }
 
-        $manager = new FilesysManager($this->package, $file);
+        $this->manager->resetPath($file);
 
-        if (!$manager->getMetaData()->isFile()) {
+        if (!$this->manager->getMetaData()->isFile()) {
             return $this->json('File not found.', 404);
         }
 
-        $blob = $manager->rename($request->name);
+        $blob = $this->manager->rename($request->name);
 
         return $this->json($blob);
     }
@@ -83,13 +83,13 @@ class FileController extends BaseController
      */
     public function destroy($file)
     {
-        $manager = new FilesysManager($this->package, $file);
+        $this->manager->resetPath($file);
 
-        if (!$manager->blobExists()) {
+        if (!$this->manager->blobExists()) {
             return $this->json('File not found.', 404);
         }
 
-        $isRemoved = $manager->delete();
+        $isRemoved = $this->manager->delete();
 
         return $this->json($isRemoved, $isRemoved ? 200 : 500);
     }

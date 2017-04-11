@@ -18,11 +18,17 @@ class BaseController extends Controller
     protected $package;
 
     /**
+     * @var FilesysManager
+     */
+    protected $manager;
+
+    /**
      * BaseController constructor.
      */
     public function __construct()
     {
         $this->package = new PackageBase('cripfilesys', __DIR__ . '/../..');
+        $this->manager = new FilesysManager($this->package);
     }
 
     /**

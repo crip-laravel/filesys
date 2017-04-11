@@ -15,8 +15,6 @@ class TreeController extends BaseController
      */
     public function __invoke()
     {
-        $manager = new FilesysManager($this->package);
-
-        return $this->json($manager->folderTree());
+        return $this->json($this->manager->folderTree());
     }
 }

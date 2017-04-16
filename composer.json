@@ -7,16 +7,33 @@
     "intervention/image": "^2.3",
     "crip/core": "^1.0"
   },
+  "require-dev": {
+    "league/flysystem-vfs": "^1.0",
+    "orchestra/testbench": "^3.4",
+    "phpunit/phpunit": "~5.7"
+  },
   "autoload": {
     "psr-4": {
       "Crip\\Filesys\\": "src"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "Crip\\Filesys\\": "tests"
+    }
+  },
+  "scripts": {
+    "test": "phpunit",
+    "format": "phpcbf --standard=psr2 src/"
+  },
+  "homepage": "https://github.com/crip-laravel/filesys",
   "license": "MIT",
   "authors": [
     {
       "name": "Igors Krasjukovs",
-      "email": "tahq69@gmail.com"
+      "email": "tahq69@gmail.com",
+      "homepage": "http://crip.lv",
+      "role": "Lead Developer"
     }
   ],
   "minimum-stability": "dev"

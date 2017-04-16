@@ -1,3 +1,5 @@
-node_modules
 .idea
-/.idea
+build
+vendor
+node_modules
+composer.lock

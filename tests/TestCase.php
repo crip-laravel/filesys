@@ -2,6 +2,7 @@
 
 use Crip\Core\Support\PackageBase;
 use League\Flysystem\Vfs\VfsAdapter;
+use phpDocumentor\Reflection\Types\Object_;
 use VirtualFileSystem\FileSystem as Vfs;
 use League\Flysystem\Filesystem;
 
@@ -31,7 +32,9 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
         $adapter = new VfsAdapter($vfs);
 
         $this->filesystem = new Filesystem($adapter);
-        $this->package = new PackageBase('cripfilesys', '');
+        $this->package = \Mockery::mock(PackageBase::class, [
+            'config' => ['dir' => 'dir.icon.png']
+        ]);
 
         parent::setUp();
     }

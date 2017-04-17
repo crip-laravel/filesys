@@ -37,11 +37,22 @@ class Blob implements ICripObject
      * @param PackageBase $package
      * @param string $path
      */
-    public function __construct(PackageBase $package, $path = '')
+    public function __construct(PackageBase $package)
     {
         $this->package = $package;
-        $this->path = Str::normalizePath($path);
         $this->storage = app()->make('filesystem');
+    }
+
+    /**
+     * Set current blob path property.
+     * @param string $path
+     * @return Blob $this
+     */
+    public function setPath($path = '')
+    {
+        $this->path = Str::normalizePath($path);
+
+        return $this;
     }
 
     /**
@@ -56,11 +67,9 @@ class Blob implements ICripObject
             throw new \Exception('File not found');
         }
 
-        if ($this->metadata->isFile()) {
-            $result = new File($this);
-        } else {
-            $result = new Folder($this);
-        }
+        $result = $this->metadata->isFile() ?
+            new File($this) :
+            new Folder($this);
 
         return $result;
     }
@@ -78,7 +87,7 @@ class Blob implements ICripObject
      * Get blob media type.
      * @return string
      */
-    public function getMediatype()
+    public function getMediaType()
     {
         $mime = $this->getMime();
 

@@ -27,10 +27,10 @@ class BlobMetadata implements ICripObject
     private $type;
 
     /**
-     * BlobMetadata constructor.
+     * BlobMetadata initializer.
      * @param $path
      */
-    public function __construct($path)
+    public function init($path)
     {
         $this->storage = app()->make('filesystem');
         $this->path = $path;

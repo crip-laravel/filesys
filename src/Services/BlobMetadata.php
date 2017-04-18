@@ -2,6 +2,7 @@
 
 use Crip\Core\Contracts\ICripObject;
 use Crip\Core\Helpers\FileSystem;
+use League\Flysystem\Util;
 
 /**
  * Class BlobMetadata
@@ -10,7 +11,7 @@ use Crip\Core\Helpers\FileSystem;
 class BlobMetadata implements ICripObject
 {
     /**
-     * @var \Illuminate\Filesystem\FilesystemAdapter
+     * @var \Illuminate\Contracts\Filesystem\Filesystem
      */
     private $storage;
 
@@ -22,9 +23,9 @@ class BlobMetadata implements ICripObject
     private $dir;
     private $mimeType = 'dir';
     private $extension = null;
-    private $visibility;
     private $size;
     private $type;
+    private $content;
 
     /**
      * BlobMetadata initializer.
@@ -41,21 +42,16 @@ class BlobMetadata implements ICripObject
 
             $metadata = $this->storage->getMetaData($path);
             $this->path = $metadata['path'];
-
-            $this->visibility = array_key_exists('visibility', $metadata) ?
-                $metadata['visibility'] :
-                'public';
-
             $this->size = array_key_exists('size', $metadata) ?
-                $metadata['size'] :
-                0;
+                $metadata['size'] : 0;
 
             $this->type = $metadata['type'];
 
             if ($this->isFile()) {
                 list($this->name, $this->extension) = $this->splitNameAndExtension($this->name);
 
-                $this->mimeType = $this->storage->mimeType($this->path);
+                $this->content = $this->storage->get($this->path);
+                $this->mimeType = Util::guessMimeType($this->path, $this->content);
             }
         }
     }
@@ -78,6 +74,7 @@ class BlobMetadata implements ICripObject
      */
     public function isFile()
     {
+        dd($this->storage->getMetaData($this->path));
         return $this->type === 'file';
     }
 
@@ -139,14 +136,6 @@ class BlobMetadata implements ICripObject
     public function getExtension()
     {
         return $this->extension;
-    }
-
-    /**
-     * @return string
-     */
-    public function getVisibility()
-    {
-        return $this->visibility;
     }
 
     /**

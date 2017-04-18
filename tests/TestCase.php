@@ -1,10 +1,9 @@
 <?php namespace Crip\Filesys;
 
 use Crip\Core\Support\PackageBase;
-use League\Flysystem\Vfs\VfsAdapter;
-use phpDocumentor\Reflection\Types\Object_;
-use VirtualFileSystem\FileSystem as Vfs;
 use League\Flysystem\Filesystem;
+use League\Flysystem\Vfs\VfsAdapter;
+use VirtualFileSystem\FileSystem as Vfs;
 
 /**
  * Class TestCase
@@ -29,6 +28,9 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
     public function setUp()
     {
         $vfs = new Vfs();
+        $vfs->createStructure(['path' => ['to' => []]]);
+        $vfs->createFile('path/to/file.txt', 'Text File Data');
+
         $adapter = new VfsAdapter($vfs);
 
         $this->filesystem = new Filesystem($adapter);

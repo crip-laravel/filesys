@@ -1,6 +1,7 @@
 <?php namespace Crip\Filesys;
 
 use Crip\Core\Support\PackageBase;
+use Illuminate\Http\UploadedFile;
 use League\Flysystem\Filesystem;
 use League\Flysystem\Vfs\VfsAdapter;
 use VirtualFileSystem\FileSystem as Vfs;
@@ -66,5 +67,27 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
     protected function getPackageProviders($app)
     {
         return [CripFilesysServiceProvider::class];
+    }
+
+    /**
+     * @param string $dir
+     * @param string $relativePath
+     * @return \Illuminate\Http\Request
+     */
+    protected function createUploadRequest($dir, $relativePath)
+    {
+        $stub = __DIR__ . '/' . $relativePath;
+        $name = str_random(8) . '.' . pathinfo($relativePath, PATHINFO_EXTENSION);
+        $path = sys_get_temp_dir() . '/' . $name;
+
+        copy($stub, $path);
+
+        $request = new \Illuminate\Http\Request([
+            'path' => $dir
+        ], [], [], [], [
+            'file' => new UploadedFile($path, $relativePath, null, null, null, true)
+        ]);
+
+        return $request;
     }
 }

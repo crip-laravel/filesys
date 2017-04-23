@@ -168,23 +168,6 @@ class FileControllerTest extends TestCase
         return app()->make(FileController::class);
     }
 
-    private function createUploadRequest($dir, $relativePath)
-    {
-        $stub = __DIR__ . '/../' . $relativePath;
-        $name = str_random(8) . '.' . pathinfo($relativePath, PATHINFO_EXTENSION);
-        $path = sys_get_temp_dir() . '/' . $name;
-
-        copy($stub, $path);
-
-        $request = new \Illuminate\Http\Request([
-            'path' => $dir
-        ], [], [], [], [
-            'file' => new UploadedFile($path, $relativePath, null, null, null, true)
-        ]);
-
-        return $request;
-    }
-
     private function assertThumbs($thumbs, $fileName = 'test-colors.png')
     {
         self::assertTrue(isset($thumbs['thumb']), 'Thumb with size "thumb" is not presented.');

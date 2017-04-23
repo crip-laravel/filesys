@@ -53,7 +53,7 @@ class BlobMetadata implements ICripObject
                 try {
                     $this->mimeType = $this->storage->mimeType($this->path);
                 } catch (\Exception $ex) {
-                    $this->mimeType = $this->guessMimeType();
+                    $this->mimeType = self::guessMimeType($this->extension, $this->isFile());
                 }
             }
         }
@@ -206,14 +206,16 @@ class BlobMetadata implements ICripObject
 
     /**
      * Try guess mime type from path
+     * @param string $extension
+     * @param bool $isFile
      * @return string
      */
-    private function guessMimeType()
+    public static function guessMimeType($extension = '', $isFile = true)
     {
-        if ($this->isFile()) {
+        if ($isFile) {
             $map = config('cripfilesys.mime.map');
-            return isset($map[$this->extension]) ?
-                $map[$this->extension] : 'text/plain';
+            return isset($map[$extension]) ?
+                $map[$extension] : 'text/plain';
         }
 
         return 'dir';

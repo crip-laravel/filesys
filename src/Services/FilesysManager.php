@@ -259,7 +259,14 @@ class FilesysManager implements ICripObject
      */
     public function fileMimeType()
     {
-        return $this->storage->mimeType($this->blob->path);
+        try {
+            $mimeType = $this->storage->mimeType($this->blob->path);
+        } catch (\Exception $ex) {
+            $ext = pathinfo($this->blob->path, PATHINFO_EXTENSION);
+            $mimeType = BlobMetadata::guessMimeType($ext, !!$ext);
+        }
+
+        return $mimeType;
     }
 
     /**
@@ -350,7 +357,7 @@ class FilesysManager implements ICripObject
         $this->blob->path = $newPath;
         $this->storage->move($meta->getPath(), $newPath);
 
-        return $this->fullDetails();
+        return $this->fullDetails(true);
     }
 
     /**

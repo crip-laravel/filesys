@@ -1,6 +1,8 @@
 <?php namespace Crip\Filesys\App\Controllers;
 
 use Crip\Filesys\TestCase;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\UploadedFile;
 
 /**
@@ -9,9 +11,9 @@ use Illuminate\Http\UploadedFile;
 class FileControllerTest extends TestCase
 {
     /**
-     * @var FileController
+     * @var JsonResponse
      */
-    protected $ctrl;
+    private $response;
 
     /**
      * Setup the test environment.
@@ -21,7 +23,7 @@ class FileControllerTest extends TestCase
     {
         parent::setUp();
 
-        $this->ctrl = app()->make(FileController::class);
+        $this->response = $this->ctrl()->store($this->createUploadRequest('/test/dir/', 'stubs/test.colors.png'));
     }
 
     /**
@@ -29,7 +31,7 @@ class FileControllerTest extends TestCase
      */
     public function testCanUploadTxtFile()
     {
-        $response = $this->ctrl->store($this->createUploadRequest('', 'stubs/test_upload.txt'));
+        $response = $this->ctrl()->store($this->createUploadRequest('', 'stubs/test_upload.txt'));
 
         $info = $response->getData();
 
@@ -56,9 +58,7 @@ class FileControllerTest extends TestCase
      */
     public function testCanUploadPngFileAndCreateThumbs()
     {
-        $response = $this->ctrl->store($this->createUploadRequest('/test/dir/', 'stubs/test.colors.png'));
-
-        $info = $response->getData();
+        $info = $this->response->getData();
 
         self::assertEquals('png', $info->extension);
         self::assertEquals('img', $info->mime);
@@ -85,11 +85,87 @@ class FileControllerTest extends TestCase
      */
     public function testCouldNotUploadPhpFile()
     {
-        $response = $this->ctrl->store($this->createUploadRequest('/test/dir/', 'stubs/attack.php'));
+        $response = $this->ctrl()->store($this->createUploadRequest('/test/dir/', 'stubs/attack.php'));
 
         $info = $response->getData();
 
         self::assertEquals('Uploading file is not safe and could not be uploaded.', $info[0]);
+    }
+
+    /**
+     * Could Request Uploaded Image And Thumb
+     */
+    public function testCouldRequestUploadedImageAndThumb()
+    {
+        $response = $this->ctrl()->show('/test/dir/test-colors.png');
+
+        self::assertEquals(13351, mb_strlen($response->content()));
+        self::assertEquals('image/png', $response->headers->get('content-type'));
+
+        $response = $this->ctrl()->show('/thumb/test/dir/test-colors.png');
+
+        self::assertEquals(2150, mb_strlen($response->content()));
+        self::assertEquals('image/png', $response->headers->get('content-type'));
+    }
+
+    /**
+     * Could Not Request Unexisting File
+     */
+    public function testCouldNotRequestUnexistingFile()
+    {
+        $response = $this->ctrl()->show('/test/file.png');
+
+        self::assertEquals('application/json', $response->headers->get('content-type'));
+        self::assertEquals('"File not found."', $response->content());
+        self::assertEquals(404, $response->getStatusCode());
+    }
+
+    /**
+     * Can Rename File
+     */
+    public function testCanRenameFile()
+    {
+        $response = $this->ctrl()->update(new FormRequest(['name' => 'отхер наме']), '/test/dir/test-colors.png');
+        $info = $response->getData();
+
+        self::assertEquals('png', $info->extension);
+        self::assertEquals('img', $info->mime);
+        self::assertEquals('image/png', $info->mimeType);
+        self::assertEquals(5, count((array)$info->thumbs));
+
+        $this->assertThumbs((array)$info->thumbs, 'other-name.png');
+
+        self::assertEquals(17855, $info->bytes);
+        self::assertEquals('test/dir/', $info->dir);
+        self::assertEquals('other-name.png', $info->fullName);
+        self::assertEquals('image', $info->mediaType);
+        self::assertEquals('other-name', $info->name);
+        self::assertEquals('/storage/thumb/test/dir/other-name.png', $info->thumb);
+        self::assertEquals('file', $info->type);
+        self::assertTrue(time() >= $info->updatedAt && time() - 10000 < $info->updatedAt, 'Date of update is recent.');
+        self::assertEquals('/storage/test/dir/other-name.png', $info->url);
+        self::assertEquals('/storage/xs/test/dir/other-name.png', $info->xs);
+        self::assertEquals('test/dir/other-name.png', $info->path);
+    }
+
+    /**
+     * Can Delete File
+     */
+    public function testCanDeleteFile()
+    {
+        $response = $this->ctrl()->destroy('/test/dir/test-colors.png');
+
+        self::assertEquals('application/json', $response->headers->get('content-type'));
+        self::assertEquals('true', $response->content());
+        self::assertEquals(200, $response->getStatusCode());
+    }
+
+    /**
+     * @return FileController
+     */
+    private function ctrl()
+    {
+        return app()->make(FileController::class);
     }
 
     private function createUploadRequest($dir, $relativePath)
@@ -109,21 +185,21 @@ class FileControllerTest extends TestCase
         return $request;
     }
 
-    private function assertThumbs($thumbs)
+    private function assertThumbs($thumbs, $fileName = 'test-colors.png')
     {
         self::assertTrue(isset($thumbs['thumb']), 'Thumb with size "thumb" is not presented.');
-        self::assertEquals('/storage/thumb/test/dir/test-colors.png', $thumbs['thumb']->url);
+        self::assertEquals('/storage/thumb/test/dir/'. $fileName, $thumbs['thumb']->url);
 
         self::assertTrue(isset($thumbs['xs']), 'Thumb with size "xs" is not presented.');
-        self::assertEquals('/storage/xs/test/dir/test-colors.png', $thumbs['xs']->url);
+        self::assertEquals('/storage/xs/test/dir/'. $fileName, $thumbs['xs']->url);
 
         self::assertTrue(isset($thumbs['sm']), 'Thumb with size "sm" is not presented.');
-        self::assertEquals('/storage/sm/test/dir/test-colors.png', $thumbs['sm']->url);
+        self::assertEquals('/storage/sm/test/dir/'. $fileName, $thumbs['sm']->url);
 
         self::assertTrue(isset($thumbs['md']), 'Thumb with size "md" is not presented.');
-        self::assertEquals('/storage/md/test/dir/test-colors.png', $thumbs['md']->url);
+        self::assertEquals('/storage/md/test/dir/'. $fileName, $thumbs['md']->url);
 
         self::assertTrue(isset($thumbs['lg']), 'Thumb with size "lg" is not presented.');
-        self::assertEquals('/storage/lg/test/dir/test-colors.png', $thumbs['lg']->url);
+        self::assertEquals('/storage/lg/test/dir/'. $fileName, $thumbs['lg']->url);
     }
 }

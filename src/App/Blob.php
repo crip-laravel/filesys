@@ -12,12 +12,12 @@ class Blob implements ICripObject, Arrayable
 {
     public $bytes = 0;
     public $dir = '';
-    public $full_name = '';
+    public $fullName = '';
     public $mediaType = 'dir';
     public $name = '';
     public $thumb = '';
     public $type = 'dir';
-    public $updated_at = '';
+    public $updatedAt = '';
     public $url = '';
     public $xs = '';
     public $path = '';
@@ -46,12 +46,12 @@ class Blob implements ICripObject, Arrayable
     {
         $this->bytes = $blob->metadata->getSize();
         $this->dir = $blob->metadata->getDir();
-        $this->full_name = $blob->metadata->getFullName();
+        $this->fullName = $blob->metadata->getFullName();
         $this->mediaType = $blob->getMediaType();
         $this->name = $blob->metadata->getName();
         $this->thumb = $blob->getThumbUrl();
         $this->type = $blob->getType();
-        $this->updated_at = $blob->metadata->getLastModified();
+        $this->updatedAt = $blob->metadata->getLastModified();
         $this->url = $blob->getUrl();
         $this->xs = $blob->getXsThumbUrl();
         $this->path = $blob->metadata->getPath();

@@ -62,11 +62,10 @@ class Blob implements ICripObject
      */
     public function fullDetails($metadata = null)
     {
-        $this->metadata = $metadata ?: new BlobMetadata($this->path);
+        $this->metadata = $metadata ?: (new BlobMetadata())->init($this->path);
         if (!$this->metadata->exists()) {
             throw new \Exception('File not found');
         }
-
         $result = $this->metadata->isFile() ?
             new File($this) :
             new Folder($this);
@@ -155,15 +154,14 @@ class Blob implements ICripObject
     public function getUrl($path = null)
     {
         $path = $path ?: $this->path;
-        // If file has public access enabled, we simply can return storage url
-        // to file
-        if ($this->metadata->getVisibility() === 'public') {
-            try {
-                return '/' . $this->storage->url($path);
-            } catch (\Exception $ex) {
-                // Some drivers does not support url method (like ftp), so we
-                // simply continue and generate crip url to our controller
-            }
+
+        // If file has public access enabled, we simply can try return storage
+        // url to file.
+        try {
+            return '/' . trim($this->storage->url($path), '\\/');
+        } catch (\Exception $ex) {
+            // Some drivers does not support url method (like ftp), so we
+            // simply continue and generate crip url to our controller.
         }
 
         $service = new UrlService($this->package);

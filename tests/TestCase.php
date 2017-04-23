@@ -28,8 +28,8 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
     public function setUp()
     {
         $vfs = new Vfs();
-        $vfs->createStructure(['path' => ['to' => []]]);
-        $vfs->createFile('path/to/file.txt', 'Text File Data');
+        //$vfs->createStructure(['path' => ['to' => []]]);
+        //$vfs->createFile('path/to/file.txt', 'Text File Data');
 
         $adapter = new VfsAdapter($vfs);
 

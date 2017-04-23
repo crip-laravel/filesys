@@ -2,7 +2,6 @@
 
 use Crip\Core\Contracts\ICripObject;
 use Crip\Core\Helpers\FileSystem;
-use League\Flysystem\Util;
 
 /**
  * Class BlobMetadata
@@ -11,7 +10,7 @@ use League\Flysystem\Util;
 class BlobMetadata implements ICripObject
 {
     /**
-     * @var \Illuminate\Contracts\Filesystem\Filesystem
+     * @var \Illuminate\Filesystem\FilesystemAdapter
      */
     private $storage;
 
@@ -25,11 +24,11 @@ class BlobMetadata implements ICripObject
     private $extension = null;
     private $size;
     private $type;
-    private $content;
 
     /**
      * BlobMetadata initializer.
      * @param $path
+     * @return BlobMetadata $this
      */
     public function init($path)
     {
@@ -42,6 +41,7 @@ class BlobMetadata implements ICripObject
 
             $metadata = $this->storage->getMetaData($path);
             $this->path = $metadata['path'];
+
             $this->size = array_key_exists('size', $metadata) ?
                 $metadata['size'] : 0;
 
@@ -50,10 +50,37 @@ class BlobMetadata implements ICripObject
             if ($this->isFile()) {
                 list($this->name, $this->extension) = $this->splitNameAndExtension($this->name);
 
-                $this->content = $this->storage->get($this->path);
-                $this->mimeType = Util::guessMimeType($this->path, $this->content);
+                try {
+                    $this->mimeType = $this->storage->mimeType($this->path);
+                } catch (\Exception $ex) {
+                    $this->mimeType = $this->guessMimeType();
+                }
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * Get debug info of current metadata file.
+     * @return array
+     */
+    public function debugInfo()
+    {
+        return [
+            'exists' => $this->exists(),
+            'isFile' => $this->isFile(),
+            'isImage' => $this->isImage(),
+            'path' => $this->path,
+            'lastModified' => $this->lastModified,
+            'name' => $this->name,
+            'dir' => $this->dir,
+            'mimeType' => $this->mimeType,
+            'extension' => $this->extension,
+            'size' => $this->size,
+            'type' => $this->type,
+            'getFullName' => $this->getFullName()
+        ];
     }
 
     /**
@@ -74,7 +101,6 @@ class BlobMetadata implements ICripObject
      */
     public function isFile()
     {
-        dd($this->storage->getMetaData($this->path));
         return $this->type === 'file';
     }
 
@@ -173,10 +199,23 @@ class BlobMetadata implements ICripObject
      */
     private function splitNameAndExtension($fullName)
     {
-        $parts = explode('.', $fullName);
-        $ext = array_pop($parts);
-        $name = join('.', $parts);
+        $info = pathinfo($fullName);
 
-        return [$name, $ext];
+        return [$info['filename'], $info['extension']];
+    }
+
+    /**
+     * Try guess mime type from path
+     * @return string
+     */
+    private function guessMimeType()
+    {
+        if ($this->isFile()) {
+            $map = config('cripfilesys.mime.map');
+            return isset($map[$this->extension]) ?
+                $map[$this->extension] : 'text/plain';
+        }
+
+        return 'dir';
     }
 }

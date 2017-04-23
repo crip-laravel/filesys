@@ -38,7 +38,7 @@ class FilesysManager implements ICripObject
      */
     public function __construct(PackageBase $package, $path = '')
     {
-        $this->blob = new Blob($package, $path);
+        $this->blob = (new Blob($package))->setPath($path);
         $this->package = $package;
         $this->storage = app()->make('filesystem');
     }
@@ -49,7 +49,7 @@ class FilesysManager implements ICripObject
      */
     public function resetPath($path = '')
     {
-        $this->blob = new Blob($this->package, $path);
+        $this->blob = (new Blob($this->package))->setPath($path);
     }
 
     /**
@@ -152,7 +152,6 @@ class FilesysManager implements ICripObject
      */
     public function fileContent()
     {
-        // TODO: here should be placed validation on visibility
         return $this->storage->get($this->blob->path);
     }
 
@@ -182,7 +181,9 @@ class FilesysManager implements ICripObject
                 return;
             }
 
-            $result[] = (new Blob($this->package, $glob))->fullDetails();
+            $result[] = (new Blob($this->package))
+                ->setPath($glob)
+                ->fullDetails();
         });
 
         return $result;
@@ -293,7 +294,7 @@ class FilesysManager implements ICripObject
     public function getMetaData()
     {
         if (!$this->metadata) {
-            $this->metadata = new BlobMetadata($this->blob->path);
+            $this->metadata = (new BlobMetadata())->init($this->blob->path);
         }
 
         return $this->metadata;
@@ -306,7 +307,8 @@ class FilesysManager implements ICripObject
      */
     public function fullDetails($reset = false)
     {
-        return (new Blob($this->package, $this->blob->path))
+        return (new Blob($this->package))
+            ->setPath($this->blob->path)
             ->fullDetails($reset ? null : $this->getMetaData());
     }
 

@@ -104,6 +104,33 @@ class FolderControllerTest extends TestCase
     }
 
     /**
+     * Cant Rename Unexisting Dir
+     */
+    public function testCantRenameUnexistingDir()
+    {
+        $response = $this->ctrl()->update(new FormRequest(['name' => 'new']), 'unexisting');
+
+        self::assertEquals('application/json', $response->headers->get('content-type'));
+        self::assertEquals('"Folder not found."', $response->content());
+        self::assertEquals(404, $response->getStatusCode());
+    }
+
+    /**
+     * Can Delete Dir
+     */
+    public function testCanDeleteDir()
+    {
+        $response = $this->ctrl()->destroy('dir');
+
+        self::assertEquals('application/json', $response->headers->get('content-type'));
+        self::assertEquals('true', $response->content());
+        self::assertEquals(200, $response->getStatusCode());
+
+        $response = $this->ctrl()->show('');
+        self::assertEquals(0, count($response->getData()));
+    }
+
+    /**
      * @return FolderController
      */
     private function ctrl()

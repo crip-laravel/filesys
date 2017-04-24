@@ -57,7 +57,7 @@
   }
 </script>
 
-<style lang="sass" rel="stylesheet/scss">
+<style lang="sass" type="text/scss">
   .tree-link {
     display: block;
   }

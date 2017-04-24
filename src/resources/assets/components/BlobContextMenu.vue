@@ -168,7 +168,7 @@
   }
 </script>
 
-<style rel="stylesheet/scss" lang="sass">
+<style lang="sass" type="text/scss">
   @import "../sass/variables";
 
   .context-menu {

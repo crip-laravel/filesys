@@ -86,7 +86,7 @@
   }
 </script>
 
-<style rel="stylesheet/scss" lang="sass">
+<style lang="sass" type="text/scss">
   #breadcrumb {
     min-height: 38px;
 

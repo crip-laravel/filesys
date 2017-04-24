@@ -118,7 +118,7 @@
   }
 </script>
 
-<style lang="sass" rel="stylesheet/scss">
+<style lang="sass" type="text/scss">
   @import "../sass/variables";
 
   .manager-actions {

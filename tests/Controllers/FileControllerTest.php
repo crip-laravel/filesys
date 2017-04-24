@@ -3,7 +3,6 @@
 use Crip\Filesys\TestCase;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\UploadedFile;
 
 /**
  * Class FileControllerTest

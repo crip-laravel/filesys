@@ -48,14 +48,9 @@ const actions = {
   /**
    * Add new files for upload.
    * @param {Function} commit
-   * @param {Event} e
+   * @param {FileList} files
    */
-  [filesForUploadAdded]: ({commit}, e) => {
-    let files = e.target.files || e.dataTransfer.files
-    if (files.length < 1) {
-      return
-    }
-
+  [filesForUploadAdded]: ({commit}, files) => {
     for (let key in files) {
       if (files.hasOwnProperty(key)) {
         commit(setNewUpload, files[key])

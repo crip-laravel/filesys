@@ -2,13 +2,7 @@
   <div class="row">
     <div class="manager-actions clearfix">
       <div class="group">
-        <div class="col">
-          <label for="file-input" class="file-input">
-            <btn title="Add files" size="lg" icon="add" :on-click="noop"></btn>
-          </label>
-          <input id="file-input" type="file" multiple
-                 @change="filesForUploadAdded"/>
-        </div><!-- /.col Add files btn -->
+        <add-files-btn class="col" @upload="addUploadFiles"></add-files-btn>
         <div class="col" v-if="uploadsCount">
           <btn :title="`Upload ${uploadsCount} files`" size="lg"
                icon="upload" :on-click="startUpload"></btn>
@@ -48,6 +42,7 @@
   import * as mutations from '../store/mutations'
   import btn from './ActionButton.vue'
   import { mapGetters, mapMutations, mapActions } from 'vuex'
+  import addFilesBtn from './actions-bar/AddFilesBtn.vue'
 
   export default {
     name: 'actions',
@@ -90,6 +85,14 @@
       ]),
 
       /**
+       * Add upload files to Vuex queue.
+       * @param {FileList} files
+       */
+      addUploadFiles (files) {
+        this.filesForUploadAdded(files)
+      },
+
+      /**
        * Initialize state to make available blob rename functionality.
        */
       startEditBlob () {
@@ -114,7 +117,7 @@
       noop: _ => _
     },
 
-    components: {btn}
+    components: {btn, addFilesBtn}
   }
 </script>
 
@@ -138,14 +141,6 @@
           min-height: 88px;
         }
       }
-    }
-
-    #file-input {
-      display: none;
-    }
-
-    .file-input {
-      margin: 0;
     }
   }
 </style>

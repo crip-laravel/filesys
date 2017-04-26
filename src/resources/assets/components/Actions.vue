@@ -3,10 +3,8 @@
     <div class="manager-actions clearfix">
       <div class="group">
         <add-files-btn class="col" @upload="addUploadFiles"></add-files-btn>
-        <div class="col" v-if="uploadsCount">
-          <btn :title="`Upload ${uploadsCount} files`" size="lg"
-               icon="upload" :on-click="startUpload"></btn>
-        </div><!-- /.col Upload files btn -->
+        <start-upload-btn class="col" :count="uploadsCount"></start-upload-btn>
+
         <div class="col">
           <btn title="Create Folder" size="lg" icon="add-folder"
                :on-click="openCreateFolderDialog"
@@ -43,6 +41,7 @@
   import btn from './ActionButton.vue'
   import { mapGetters, mapMutations, mapActions } from 'vuex'
   import addFilesBtn from './actions-bar/AddFilesBtn.vue'
+  import startUploadBtn from './actions-bar/StartUploadBtn.vue'
 
   export default {
     name: 'actions',
@@ -117,7 +116,7 @@
       noop: _ => _
     },
 
-    components: {btn, addFilesBtn}
+    components: {btn, addFilesBtn, startUploadBtn}
   }
 </script>
 

@@ -15,7 +15,7 @@
   import btn from './Btn.vue'
 
   export default {
-    name: 'add-files--actions-bar-btn',
+    name: 'add-files_actions-bar-btn',
 
     components: {btn},
 

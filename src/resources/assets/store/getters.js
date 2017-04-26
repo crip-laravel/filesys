@@ -1,3 +1,6 @@
+// blobs nodules getters
+export const getCreateFolderBlobVisibility = 'getCreateFolderBlobVisibility'
+
 // actions.js getters
 export const isEditEnabled = 'isEditEnabled'
 export const uploads = 'uploads'

@@ -2,14 +2,9 @@
   <div class="row">
     <div class="manager-actions clearfix">
       <div class="group">
-        <add-files-btn class="col" @upload="addUploadFiles"></add-files-btn>
-        <start-upload-btn class="col" :count="uploadsCount"></start-upload-btn>
-
-        <div class="col">
-          <btn title="Create Folder" size="lg" icon="add-folder"
-               :on-click="openCreateFolderDialog"
-               :active="creating"></btn>
-        </div><!-- /.col Create folder btn -->
+        <add-files-btn class="col"></add-files-btn>
+        <start-upload-btn class="col"></start-upload-btn>
+        <create-folder-btn class="col"></create-folder-btn>
       </div>
       <div class="group">
         <div class="col">
@@ -42,6 +37,7 @@
   import { mapGetters, mapMutations, mapActions } from 'vuex'
   import addFilesBtn from './actions-bar/AddFilesBtn.vue'
   import startUploadBtn from './actions-bar/StartUploadBtn.vue'
+  import createFolderBtn from './actions-bar/CreateFolderBtn.vue'
 
   export default {
     name: 'actions',
@@ -58,8 +54,7 @@
         getters.isEditEnabled,
         getters.isGridView,
         getters.isListView,
-        getters.selectedBlob,
-        getters.uploadsCount
+        getters.selectedBlob
       ]),
 
       isDeleteDisabled () {
@@ -79,17 +74,8 @@
 
       ...mapActions([
         actions.openCreateFolderDialog,
-        actions.filesForUploadAdded,
         actions.startUpload
       ]),
-
-      /**
-       * Add upload files to Vuex queue.
-       * @param {FileList} files
-       */
-      addUploadFiles (files) {
-        this.filesForUploadAdded(files)
-      },
 
       /**
        * Initialize state to make available blob rename functionality.
@@ -116,7 +102,7 @@
       noop: _ => _
     },
 
-    components: {btn, addFilesBtn, startUploadBtn}
+    components: {btn, addFilesBtn, startUploadBtn, createFolderBtn}
   }
 </script>
 

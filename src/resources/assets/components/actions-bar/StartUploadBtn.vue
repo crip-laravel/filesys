@@ -6,6 +6,7 @@
 
 <script>
   import btn from './Btn.vue'
+  import { uploadsCount } from '../../store/getters'
   import { startUpload } from './../../store/actions'
 
   export default {
@@ -13,15 +14,15 @@
 
     components: {btn},
 
-    props: {
+    computed: {
       /**
        * Count of files to be uploaded.
        * @returns {Number}
        */
-      count: {type: Number, required: true}
-    },
+      count () {
+        return this.$store.getters[uploadsCount]
+      },
 
-    computed: {
       /**
        * Determines is in count property any file for upload.
        * @returns {Boolean} Returns <c>false</c> if there is no items in the

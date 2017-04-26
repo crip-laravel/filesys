@@ -1,3 +1,6 @@
+// blobs module mutations
+export const setCreateFolderBlobVisibility = 'setCreateFolderBlobVisibility'
+
 // actionsjs mutations
 export const removeUpload = 'removeUpload'
 export const setFileUploadLoading = 'setFileUploadLoading'

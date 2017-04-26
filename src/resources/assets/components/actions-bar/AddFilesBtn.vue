@@ -13,6 +13,7 @@
 
 <script>
   import btn from './Btn.vue'
+  import { filesForUploadAdded } from '../../store/actions'
 
   export default {
     name: 'add-files_actions-bar-btn',
@@ -36,7 +37,18 @@
           // Emit upload event only in case if we have at least one file for
           // upload selected.
           this.$emit('upload', files)
+
+          // Add files to vuex store state queue.
+          this.addUploadFiles(files)
         }
+      },
+
+      /**
+       * Add files to vuex store state queue.
+       * @param {FileList} files
+       */
+      addUploadFiles (files) {
+        this.$store.dispatch(filesForUploadAdded, files)
       }
     }
   }

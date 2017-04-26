@@ -15,11 +15,7 @@
         </div>
       </div>
       <div class="group">
-        <div class="col">
-          <btn title="Rename" size="lg" icon="rename" :active="isEditEnabled"
-               :on-click="startEditBlob"
-               :disabled="isRenameDisabled"></btn>
-        </div>
+        <rename-btn class="col"></rename-btn>
         <div class="col">
           <btn title="Delete" size="lg" icon="delete" :on-click="deleteBlob"
                :disabled="isDeleteDisabled"></btn>
@@ -38,6 +34,7 @@
   import addFilesBtn from './actions-bar/AddFilesBtn.vue'
   import startUploadBtn from './actions-bar/StartUploadBtn.vue'
   import createFolderBtn from './actions-bar/CreateFolderBtn.vue'
+  import renameBtn from './actions-bar/RenameBtn.vue'
 
   export default {
     name: 'actions',
@@ -61,7 +58,7 @@
         return !this.selectedBlob || this.creating
       },
 
-      isRenameDisabled () {
+      isRenameBlobDisabled () {
         return !this.selectedBlob || this.creating
       }
     },
@@ -81,7 +78,7 @@
        * Initialize state to make available blob rename functionality.
        */
       startEditBlob () {
-        if (!this.isRenameDisabled) {
+        if (!this.isRenameBlobDisabled) {
           this.$store.dispatch(actions.startEditBlob)
         }
       },
@@ -102,7 +99,7 @@
       noop: _ => _
     },
 
-    components: {btn, addFilesBtn, startUploadBtn, createFolderBtn}
+    components: {btn, addFilesBtn, startUploadBtn, createFolderBtn, renameBtn}
   }
 </script>
 

@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid">
-    <actions class="row"></actions>
+    <actions-bar class="row"></actions-bar>
     <breadcrumb class="row"></breadcrumb>
     <div class="row">
       <tree class="col-sm-4 col-md-3"></tree>
@@ -10,7 +10,7 @@
 </template>
 
 <script>
-  import actions from './components/Actions.vue'
+  import actionsBar from './components/actions-bar/ActionsBar.vue'
   import breadcrumb from './components/Breadcrumb.vue'
   import tree from './components/Tree.vue'
   import blobs from './components/Blobs.vue'
@@ -24,7 +24,7 @@
       this.$store.dispatch(fetchContent)
     },
 
-    components: {actions, breadcrumb, tree, blobs}
+    components: {actionsBar, breadcrumb, tree, blobs}
   }
 </script>
 

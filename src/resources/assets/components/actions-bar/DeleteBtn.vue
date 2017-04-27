@@ -1,37 +1,28 @@
 <template>
-  <btn size="lg" icon="rename"
-       :active="isRenameBlobActive"
-       :disabled="isRenameBlobDisabled"
-       @click="enableBlobRename">
-    Rename
+  <btn size="lg" icon="delete"
+       :disabled="isDeleteBlobDisabled"
+       @click="deleteBlob">
+    Delete
   </btn>
 </template>
 
 <script>
   import * as g from '../../store/getters'
   import btn from './Btn.vue'
-  import { setRename } from '../../store/mutations'
+  import { deleteBlob } from '../../store/actions'
 
   export default {
-    name: 'rename_actions-bar-btn',
+    name: 'delete_actions-bar-btn',
 
     components: {btn},
 
     computed: {
       /**
-       * Determines is any of blob state is in rename mode.
-       * @returns {Boolean}
-       */
-      isRenameBlobActive () {
-        return this.$store.getters[g.getIsAnyBlobInRenameMode]
-      },
-
-      /**
        * Determines is any of blob state is in selected mode and there is not
        * enabled create state.
        * @returns {Boolean}
        */
-      isRenameBlobDisabled () {
+      isDeleteBlobDisabled () {
         return !(this.isCreateFolderBlobHidden && this.isAnyBlobSelected)
       },
 
@@ -56,10 +47,10 @@
 
     methods: {
       /**
-       * Enable rename state for selected blob in vuex store.
+       * Call delete blob action in vuex store.
        */
-      enableBlobRename () {
-        return this.isRenameBlobDisabled || this.$store.commit(setRename)
+      deleteBlob () {
+        return this.isDeleteBlobDisabled || this.$store.dispatch(deleteBlob)
       }
     }
   }

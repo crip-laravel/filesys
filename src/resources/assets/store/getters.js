@@ -1,7 +1,8 @@
-// blobs nodules getters
+// blobs module getters
 export const getCreateFolderBlobVisibility = 'getCreateFolderBlobVisibility'
 export const getIsAnyBlobInRenameMode = 'getIsAnyBlobInRenameMode'
 export const getIsAnyBlobInSelectedMode = 'getIsAnyBlobInSelectedMode'
+export const getDisplayType = 'getDisplayType'
 
 // actions.js getters
 export const isEditEnabled = 'isEditEnabled'

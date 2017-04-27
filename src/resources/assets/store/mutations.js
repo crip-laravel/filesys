@@ -1,6 +1,7 @@
 // blobs module mutations
 export const setCreateFolderBlobVisibility = 'setCreateFolderBlobVisibility'
 export const setRename = 'setRename'
+export const setDisplayType = 'setDisplayType'
 
 // actionsjs mutations
 export const removeUpload = 'removeUpload'

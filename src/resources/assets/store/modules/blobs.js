@@ -6,6 +6,7 @@ import Vue from 'vue'
 
 const state = {
   isCreateFolderBlobVisible: false,
+  displayType: 'grid',
   blobs: []
 }
 
@@ -28,6 +29,15 @@ const mutations = {
   [m.setRename]: (state) => {
     let blob = state.blobs.find(b => b.$selected)
     return blob ? Vue.set(blob, '$rename', true) : false
+  },
+
+  /**
+   * Set state of current display type.
+   * @param {state} state
+   * @param {String} payload
+   */
+  [m.setDisplayType]: (state, payload) => {
+    Vue.set(state, 'displayType', payload)
   }
 }
 
@@ -54,7 +64,13 @@ const getters = {
    * @returns {Boolean} Returns <c>true</c> if any of blob is in state of
    * selected mode.
    */
-  [g.getIsAnyBlobInSelectedMode]: (state) => state.blobs.filter(b => b.$selected).length > 0
+  [g.getIsAnyBlobInSelectedMode]: (state) => state.blobs.filter(b => b.$selected).length > 0,
+
+  /**
+   * Gets current state of display type.
+   * @param {state} state
+   */
+  [g.getDisplayType]: (state) => state.displayType
 }
 
 export default {state, actions, mutations, getters}

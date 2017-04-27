@@ -16,7 +16,7 @@
     name: 'actions-bar-btn',
 
     props: {
-      icon: {type: String, required: false, 'default': () => false},
+      icon: {type: String, required: false, 'default': () => ''},
       size: {type: String, required: false, 'default': () => 'md'},
       active: {type: Boolean, required: false, 'default': () => false},
       disabled: {type: Boolean, required: false, 'default': () => false}

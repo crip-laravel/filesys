@@ -2,6 +2,8 @@
 export const setCreateFolderBlobVisibility = 'setCreateFolderBlobVisibility'
 export const setRename = 'setRename'
 export const setDisplayType = 'setDisplayType'
+export const setRenameBlob = 'setRenameBlob'
+export const setSelectedBlob = 'setSelectedBlob'
 
 // actionsjs mutations
 export const removeUpload = 'removeUpload'
@@ -22,7 +24,6 @@ export const setBlobs = 'setBlobs'
 export const setGridView = 'setGridView'
 export const setListView = 'setListView'
 export const setNewBlob = 'setNewBlob'
-export const setSelectedBlob = 'setSelectedBlob'
 
 // path.js mutations
 export const setLoadingCompleted = 'setLoadingCompleted'

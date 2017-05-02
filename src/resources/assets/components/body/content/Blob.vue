@@ -19,9 +19,9 @@
 </template>
 
 <script>
-  import * as a from '../../../store/actions'
-  import * as g from '../../../store/getters'
-  import * as m from '../../../store/mutations'
+  import * as actions from '../../../store/actions'
+  import * as getters from '../../../store/getters'
+  import * as mutations from '../../../store/mutations'
   import Blob from '../../../models/Blob'
 
   export default {
@@ -42,7 +42,7 @@
       classes () {
         return {
           'active': this.blob.$selected,
-          'disabled': this.$store.getters[g.isLoading]
+          'disabled': this.$store.getters[getters.isLoading]
         }
       }
     },
@@ -52,21 +52,21 @@
        * Sets selected blob state for current blob.
        */
       selectBlob () {
-        this.$store.commit(m.setSelectedBlob, this.blob.$id)
+        this.$store.commit(mutations.setSelectedBlob, this.blob.$id)
       },
 
       /**
        * Sets rename blob state for current blob.
        */
       setBlobRename () {
-        this.$store.commit(m.setRenameBlob, this.blob.$id)
+        this.$store.commit(mutations.setRenameBlob, this.blob.$id)
       },
 
       /**
        * Selects current blob for external use (editor or listener).
        */
       openBlob () {
-        this.$store.dispatch(a.openBlob, this.blob)
+        this.$store.dispatch(actions.openBlob, this.blob)
       },
 
       /**
@@ -75,7 +75,7 @@
        */
       renameBlob () {
         this.$store.dispatch(
-          m.renameBlob,
+          actions.renameBlob,
           {
             id: this.blob.$id,
             name: this.blob.$newName
@@ -84,3 +84,36 @@
     }
   }
 </script>
+
+<style lang="sass" type="text/scss">
+  @import "../../../sass/variables";
+
+  .blob {
+    input {
+      border-color: transparent;
+      outline: none;
+      padding: 0 5px;
+      width: 100%;
+    }
+
+    .blob-description {
+      height: 28px;
+      margin: 0 4px;
+      text-align: center;
+    }
+  }
+
+  .list .blob {
+    .blob-description {
+      margin: 5px 0 0 64px;
+      text-align: left;
+    }
+
+    form {
+      margin: 3px 0 0 10px;
+      min-width: 218px;
+      width: 50%;
+      float: left;
+    }
+  }
+</style>

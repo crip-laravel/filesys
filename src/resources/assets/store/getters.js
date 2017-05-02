@@ -3,6 +3,8 @@ export const getCreateFolderBlobVisibility = 'getCreateFolderBlobVisibility'
 export const getIsAnyBlobInRenameMode = 'getIsAnyBlobInRenameMode'
 export const getIsAnyBlobInSelectedMode = 'getIsAnyBlobInSelectedMode'
 export const getDisplayType = 'getDisplayType'
+export const getPathUp = 'getPathUp'
+export const getPath = 'getPath'
 
 // actions.js getters
 export const isEditEnabled = 'isEditEnabled'

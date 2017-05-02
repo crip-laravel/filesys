@@ -23,7 +23,7 @@
 
 <script>
   import * as getters from '../store/getters'
-  import blob from './Blob.vue'
+  import blob from './body/content/Blob.vue'
   import blobContextMenu from './BlobContextMenu.vue'
   import settings from './../settings'
   import uploads from './Uploads.vue'

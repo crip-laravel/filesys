@@ -1,15 +1,18 @@
 <template>
-  <ul class="context-menu" :id="blob.$id" tabindex="-1" v-if="isVisible"
-      :style="{top: posTop, left: posLeft}">
+  <ul class="context-menu"
+      tabindex="-1"
+      v-if="isVisible"
+      :id="'blob-context-' + blob.$id"
+      :style="{top: positionTop, left: positionLeft}">
 
     <li v-if="isDir">
-      <a class="content inte-item" href="#" @click.prevent="open(blob)">
-        Open folder <i>{{blob.name}}</i>
+      <a href class="content inte-item" @click.prevent="openBlob">
+        Open folder <i>{{ blob.fullName }}</i>
       </a>
     </li>
 
     <li v-if="!isDir && !blob.$isSystem">
-      <a href="#" class="content inte-item" @click.prevent="open(blob)">
+      <a href class="content inte-item" @click.prevent="openBlob">
         Select
         <span v-if="blob.mime === 'img'">image</span>
         <span v-else>file</span>
@@ -17,27 +20,27 @@
     </li>
 
     <li v-for="size in sizes">
-      <a class="content inte-item" href="#"
-         @click.prevent="open(blob, size.url)">
-        Select <i>{{size.name}}</i> image
-        <small>({{size.width}} x {{size.height}})</small>
+      <a class="content inte-item" href
+         @click.prevent="openBlob(size.url)">
+        Select <i>{{ size.name }}</i> image
+        <small>({{ size.width }} x {{ size.height }})</small>
       </a>
     </li>
 
     <li v-if="!blob.$isSystem">
-      <span class="content">Modified: <strong>{{blob.$date}}</strong></span>
+      <span class="content">Modified: <strong>{{ blob.$date }}</strong></span>
     </li>
+
     <li v-if="!blob.$isSystem">
-      <span class="content">Size: <strong>{{size}}</strong></span>
+      <span class="content">Size: <strong>{{ size }}</strong></span>
     </li>
   </ul>
 </template>
 
 <script>
-  import * as actions from '../store/actions'
-  import Blob from '../models/Blob'
+  import * as actions from '../../../store/actions'
+  import Blob from '../../../models/Blob'
   import Vue from 'vue'
-  import { mapActions } from 'vuex'
 
   export default {
     name: 'blob-context-menu',
@@ -53,12 +56,12 @@
       // context menu y position
       maxHeight () { return window.innerHeight - this.height - 25 },
       largestHeight () { return this.top > this.maxHeight ? this.maxHeight : this.top },
-      posTop () { return `${this.largestHeight}px` },
+      positionTop () { return `${this.largestHeight}px` },
 
       // context menu x position
       maxWidth () { return window.innerWidth - this.width - 25 },
       largestWidth () { return this.left > this.maxWidth ? this.maxWidth : this.left },
-      posLeft () { return `${this.largestWidth}px` },
+      positionLeft () { return `${this.largestWidth}px` },
 
       isDir () { return this.blob.isDir },
 
@@ -109,17 +112,13 @@
     },
 
     methods: {
-      ...mapActions([
-        actions.openBlob
-      ]),
-
       /**
-       * Open blob wrapper method to call hide on selecting blob.
-       * @param {Blob} blob
+       * Open blob and allow to do it with custom url as user may use any size
+       * of blob in context menu selection.
        * @param {String} url
        */
-      open (blob, url) {
-        this.openBlob({blob, url})
+      openBlob (url) {
+        this.$store.dispatch(actions.openBlob, url)
         this.hideMenu()
       },
 
@@ -169,7 +168,7 @@
 </script>
 
 <style lang="sass" type="text/scss">
-  @import "../sass/variables";
+  @import "../../../sass/variables";
 
   .context-menu {
     background: $menu-bg;

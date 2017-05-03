@@ -11,7 +11,7 @@
 
 <script>
   import uploadFile from './UploadFile.vue'
-  import * as getters from '../store/getters'
+  import * as getters from '../../../store/getters'
   import { mapGetters } from 'vuex'
 
   export default {

@@ -6,13 +6,16 @@
     </div>
 
     <div class="row clearfix" :class="[displayType]">
-      <div v-for="blob in content" track-by="blob.$id"
-           class="blob-container">
-        <div @contextmenu.prevent="openMenu($event, blob.$id)"
-             class="context-wrapp">
+      <div v-for="blob in content" :key="blob.$id" class="blob-container">
+        <div class="context-wrapp"
+             @contextmenu.prevent="openMenu($event, blob.$id)">
+
           <blob :blob="blob"></blob>
+
           <blob-context-menu :is-visible="isVisible(blob.$id)"
-                             :blob="blob" :top="top" :left="left"
+                             :blob="blob"
+                             :top="top"
+                             :left="left"
                              @close="closeMenu"></blob-context-menu>
         </div>
       </div>
@@ -22,23 +25,24 @@
 </template>
 
 <script>
-  import * as getters from '../store/getters'
-  import blob from './body/content/Blob.vue'
-  import blobContextMenu from './BlobContextMenu.vue'
-  import settings from './../settings'
-  import uploads from './Uploads.vue'
+  import * as getters from '../../../store/getters'
+  import blob from './Blob.vue'
+  import blobContextMenu from './ContextMenu.vue'
+  import settings from './../../../settings'
+  import uploads from './../uploads/Uploads.vue'
   import Vue from 'vue'
-  import { mapGetters } from 'vuex'
 
   export default {
     name: 'blobs',
 
     computed: {
-      ...mapGetters([
-        getters.path,
-        getters.blobs,
-        getters.displayType
-      ]),
+      blobs () {
+        return this.$store.getters[getters.getBlobs]
+      },
+
+      displayType () {
+        return this.$store.getters[getters.getDisplayType]
+      },
 
       /**
        * Compute actual content of blobs.
@@ -120,7 +124,7 @@
 </script>
 
 <style lang="sass" type="text/scss">
-  @import "../sass/variables";
+  @import "../../../sass/variables";
 
   .grid .blob-container {
     float: left;

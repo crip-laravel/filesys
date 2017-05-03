@@ -3,6 +3,7 @@ import * as g from '../getters'
 import * as m from '../mutations'
 import editors from '../../api/editors'
 import settings from '../../settings'
+import Blob from '../../models/Blob'
 import Vue from 'vue'
 
 const state = {
@@ -111,7 +112,17 @@ const mutations = {
   [m.setUpdatedBlob]: (state, {id, blob}) => {
     const toUpdate = findBlobById(state, id)
     state.blobs.splice(state.blobs.indexOf(toUpdate), 1)
-    state.blobs.push(blob)
+
+    state.commit(m.setNewBlob, blob)
+  },
+
+  /**
+   * Add new blob to store collection.
+   * @param {state} state
+   * @param {Blob} payload
+   */
+  [m.setNewBlob]: (state, payload) => {
+    state.blobs.push(payload)
   },
 
   /**
@@ -121,6 +132,8 @@ const mutations = {
    */
   [m.setBlobs]: (state, payload) => {
     state.blobs = payload
+
+    // If we are in root folder, we have no need to add folder up.
     if (state.getters[g.getPath] === '') { return }
 
     let blob = new Blob({

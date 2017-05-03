@@ -17,9 +17,9 @@
 </template>
 
 <script>
-  import FileUpload from '../models/FileUpload'
-  import * as mutations from '../store/mutations'
-  import * as actions from '../store/actions'
+  import FileUpload from '../../../models/FileForUpload'
+  import * as mutations from '../../../store/mutations'
+  import * as actions from '../../../store/actions'
   import { mapActions, mapMutations } from 'vuex'
 
   export default {
@@ -42,7 +42,7 @@
 </script>
 
 <style lang="sass" type="text/scss">
-  @import "../sass/variables";
+  @import "../../../sass/variables";
 
   .file-upload {
     border: 1px solid $panel-default-border;

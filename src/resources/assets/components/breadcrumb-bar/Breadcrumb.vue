@@ -20,9 +20,9 @@
 </template>
 
 <script>
-  import * as actions from '../store/actions'
-  import * as getters from '../store/getters'
-  import settings from '../settings'
+  import * as actions from '../../store/actions'
+  import * as getters from '../../store/getters'
+  import settings from '../../settings'
   import { mapGetters, mapActions } from 'vuex'
 
   export default {

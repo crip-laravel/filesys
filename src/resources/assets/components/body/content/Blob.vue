@@ -9,7 +9,7 @@
 
     <div v-if="blob.$rename">
       <form @submit.prevent="renameBlob">
-        <input name="name" :id="blob.$id" v-model="blob.$newName">
+        <input name="name" :id="'blob-' + blob.$id" v-model="blob.$newName">
       </form>
     </div>
     <div v-else="" class="blob-description" @dblclick="setBlobRename">

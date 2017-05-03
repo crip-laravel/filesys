@@ -2,11 +2,16 @@
   <div>
     <div class="clearfix">
 
-      <a href="#" class="toggle inte-item"
-         v-if="item.children.length" :class="{disabled: isLoading}" @click="toggle()">{{sign}}</a>
+      <a href
+         class="toggle inte-item"
+         v-if="item.children.length"
+         :class="{disabled: isLoading}"
+         @click="toggle">{{ sign }}</a>
 
-      <a href="#" class="tree-link inte-item"
-         :class="{disabled: isLoading}" @click="changePath(item.path)">{{item.name}}</a>
+      <a href
+         class="tree-link inte-item"
+         :class="{disabled: isLoading}"
+         @click="changePath(item.path)">{{ item.name }}</a>
 
     </div>
 
@@ -19,9 +24,9 @@
 </template>
 
 <script>
-  import TreeItem from '../models/TreeItem'
-  import { changePath } from '../store/actions'
-  import { isLoading } from '../store/getters'
+  import TreeItem from '../../../models/TreeItem'
+  import { changePath } from '../../../store/actions'
+  import { isLoading } from '../../../store/getters'
   import { mapActions, mapGetters } from 'vuex'
 
   export default {

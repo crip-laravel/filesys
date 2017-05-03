@@ -1,36 +1,27 @@
-import { fetchTree } from '../actions'
-import { treeFolders } from '../getters'
-import { setTreeFolders } from '../mutations'
-import treeApi from '../../api/tree'
+import * as a from '../actions'
+import * as m from '../mutations'
+import * as g from '../getters'
+import api from '../../api/tree'
 
-const state = {
-  folders: []
+let state = {
+  items: []
 }
 
-const actions = {
-  /**
-   * Fetch tree folders from server.
-   * @param commit
-   */
-  [fetchTree]: ({commit}) => {
-    treeApi.getAll()
-      .then(tree => commit(setTreeFolders, tree.items))
+let actions = {
+  [a.fetchTree]: (state) => {
+    api.getAll()
+      .then(tree => { state.commit(m.setTree, tree.items) })
   }
 }
 
-const mutations = {
-  /**
-   * Mutate folders with new items.
-   * @param state
-   * @param folders
-   */
-  [setTreeFolders]: (state, folders) => {
-    state.folders = folders
+let mutations = {
+  [m.setTree]: (state, payload) => {
+    state.items = payload
   }
 }
 
-const getters = {
-  [treeFolders]: (state) => state.folders
+let getters = {
+  [g.getTree]: (state) => state.items
 }
 
 export default {state, actions, mutations, getters}

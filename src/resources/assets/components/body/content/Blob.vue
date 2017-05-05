@@ -100,12 +100,8 @@
         // Reset any of error to empty as we now requesting new update of the
         // file.
         this.errorMessage = ''
-        let blob = {
-          id: this.blob.$id,
-          name: this.blob.$newName
-        }
 
-        this.$store.dispatch(actions.saveBlob, blob)
+        this.$store.dispatch(actions.saveBlob, this.blob)
           .catch(error => { this.errorMessage = error })
       }
     },

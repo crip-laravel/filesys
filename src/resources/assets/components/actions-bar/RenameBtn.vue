@@ -1,16 +1,18 @@
 <template>
-  <btn size="lg" icon="rename"
+  <btn size="lg"
+       icon="rename"
        :active="isRenameBlobActive"
        :disabled="isRenameBlobDisabled"
        @click="enableBlobRename">
-    Rename
+    {{ content }}
   </btn>
 </template>
 
 <script>
-  import * as g from '../../store/getters'
+  import * as actions from '../../store/actions'
+  import * as getters from '../../store/getters'
+  import * as mutations from '../../store/mutations'
   import btn from './Btn.vue'
-  import { setRename } from '../../store/mutations'
 
   export default {
     name: 'rename_actions-bar-btn',
@@ -23,7 +25,7 @@
        * @returns {Boolean}
        */
       isRenameBlobActive () {
-        return this.$store.getters[g.getIsAnyBlobInRenameMode]
+        return this.$store.getters[getters.getIsAnyBlobInRenameMode]
       },
 
       /**
@@ -32,7 +34,8 @@
        * @returns {Boolean}
        */
       isRenameBlobDisabled () {
-        return !(this.isCreateFolderBlobHidden && this.isAnyBlobSelected)
+        return !(this.isCreateFolderBlobHidden && this.isAnyBlobSelected) ||
+          this.isRenameBlobActive && this.blob.name === this.blob.$newName
       },
 
       /**
@@ -41,7 +44,7 @@
        * visible on the UI.
        */
       isCreateFolderBlobHidden () {
-        return !this.$store.getters[g.getCreateFolderBlobVisibility]
+        return !this.$store.getters[getters.getCreateFolderBlobVisibility]
       },
 
       /**
@@ -50,7 +53,21 @@
        * selected.
        */
       isAnyBlobSelected () {
-        return this.$store.getters[g.getIsAnyBlobInSelectedMode]
+        return this.$store.getters[getters.getIsAnyBlobInSelectedMode]
+      },
+
+      /**
+       * Get button content depending on the rename state.
+       */
+      content () {
+        return this.isRenameBlobActive ? 'Save' : 'Rename'
+      },
+
+      /**
+       * Gets selected blob instance.
+       */
+      blob () {
+        return this.$store.getters[getters.getSelectedBlob]
       }
     },
 
@@ -59,7 +76,11 @@
        * Enable rename state for selected blob in vuex store.
        */
       enableBlobRename () {
-        return this.isRenameBlobDisabled || this.$store.commit(setRename)
+        if (this.isRenameBlobActive) {
+          return this.$store.dispatch(actions.saveBlob, this.blob)
+        }
+
+        return this.isRenameBlobDisabled || this.$store.commit(mutations.setRename)
       }
     }
   }

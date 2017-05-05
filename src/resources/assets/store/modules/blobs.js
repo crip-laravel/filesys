@@ -39,19 +39,17 @@ const actions = {
   /**
    * Save blob on the server side.
    * @param {Store} store Vuex store instance.
-   * @param {String} id Blob identifier value.
-   * @param {String} name New name for blob.
+   * @param {Blob} blob Blob instance to be saved.
    * @returns {Promise}
    */
-  [a.saveBlob]: (store, {id, name}) => {
+  [a.saveBlob]: (store, blob) => {
     return new Promise((resolve, reject) => {
-      let blob = findBlobById(store.state, id)
-      if (blob.name !== name) {
+      if (blob.name !== blob.$newName) {
         store.commit(m.setLoadingStarted)
 
         return blob.save()
           .then(newBlob => {
-            store.commit(m.setUpdatedBlob, {id, blob: newBlob})
+            store.commit(m.setUpdatedBlob, {id: blob.$id, blob: newBlob})
             store.commit(m.setSelectedBlob, newBlob.$id)
             store.commit(m.setLoadingCompleted)
 
@@ -63,7 +61,7 @@ const actions = {
           })
       }
 
-      reject('Save action is not completed due to incorrect input.')
+      resolve()
     })
   },
 

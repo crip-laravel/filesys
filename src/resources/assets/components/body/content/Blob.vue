@@ -1,9 +1,9 @@
 <template>
   <div class="blob inte-item"
        :class="classes"
-       :title="blob.fullName"
-       @click="selectBlob">
-    <div class="thumb" @dblclick="openBlob">
+       :title="title"
+       @click.prevent="selectBlob">
+    <div class="thumb" @dblclick.prevent="openBlob">
       <img :src="blob.thumb">
     </div>
 
@@ -16,7 +16,7 @@
                v-model="blob.$newName">
       </form>
     </div>
-    <div v-else="" class="blob-description" @dblclick="setBlobRename">
+    <div v-else="" class="blob-description" @dblclick.prevent="enableRename">
       {{ blob.fullName }}
     </div>
   </div>
@@ -47,8 +47,22 @@
       classes () {
         return {
           'active': this.blob.$selected,
-          'disabled': this.$store.getters[getters.isLoading]
+          'disabled': this.$store.getters[getters.isLoading],
+          'has-error': this.errorMessage !== ''
         }
+      },
+
+      /**
+       * Gets title for current blob.
+       */
+      title () {
+        return this.errorMessage || this.blob.fullName
+      }
+    },
+
+    data () {
+      return {
+        errorMessage: ''
       }
     },
 
@@ -67,7 +81,7 @@
       /**
        * Sets rename blob state for current blob.
        */
-      setBlobRename () {
+      enableRename () {
         this.$store.commit(mutations.setRenameBlob, this.blob.$id)
       },
 
@@ -83,12 +97,16 @@
        * actual data in vuex store.
        */
       saveBlob () {
-        this.$store.dispatch(
-          actions.saveBlob,
-          {
-            id: this.blob.$id,
-            name: this.blob.$newName
-          })
+        // Reset any of error to empty as we now requesting new update of the
+        // file.
+        this.errorMessage = ''
+        let blob = {
+          id: this.blob.$id,
+          name: this.blob.$newName
+        }
+
+        this.$store.dispatch(actions.saveBlob, blob)
+          .catch(error => { this.errorMessage = error })
       }
     },
 

@@ -41,21 +41,30 @@ const actions = {
    * @param {Store} store Vuex store instance.
    * @param {String} id Blob identifier value.
    * @param {String} name New name for blob.
+   * @returns {Promise}
    */
   [a.saveBlob]: (store, {id, name}) => {
-    let blob = findBlobById(store.state, id)
-    if (blob.name !== name) {
-      store.commit(m.setLoadingStarted)
+    return new Promise((resolve, reject) => {
+      let blob = findBlobById(store.state, id)
+      if (blob.name !== name) {
+        store.commit(m.setLoadingStarted)
 
-      blob.save()
-        .then(newBlob => {
-          store.commit(m.setUpdatedBlob, {id, blob: newBlob})
-          store.commit(m.setSelectedBlob, id)
-          store.commit(m.setLoadingCompleted)
+        return blob.save()
+          .then(newBlob => {
+            store.commit(m.setUpdatedBlob, {id, blob: newBlob})
+            store.commit(m.setSelectedBlob, newBlob.$id)
+            store.commit(m.setLoadingCompleted)
 
-          if (newBlob.isDir) { store.dispatch(a.fetchTree) }
-        })
-    }
+            if (newBlob.isDir) { store.dispatch(a.fetchTree) }
+            resolve()
+          }).catch(err => {
+            store.commit(m.setLoadingCompleted)
+            reject(err)
+          })
+      }
+
+      reject('Save action is not completed due to incorrect input.')
+    })
   },
 
   /**
@@ -140,8 +149,7 @@ const mutations = {
   [m.setUpdatedBlob]: (state, {id, blob}) => {
     const toUpdate = findBlobById(state, id)
     state.blobs.splice(state.blobs.indexOf(toUpdate), 1)
-
-    state.commit(m.setNewBlob, blob)
+    state.blobs.push(blob)
   },
 
   /**

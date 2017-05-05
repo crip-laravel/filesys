@@ -55,7 +55,9 @@ export default class Blob {
 
     return new Promise((resolve, reject) => {
       this.api[action](this, this.$newName)
-        .then(blob => resolve(blob), reject)
+        .then(
+          blob => resolve(blob),
+          err => reject(err.data))
     })
   }
 

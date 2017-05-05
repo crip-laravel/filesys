@@ -1,9 +1,6 @@
-// import settings from '../../settings'
 import * as a from '../actions'
 import * as g from '../getters'
 import * as m from '../mutations'
-import api from '../../api/folder'
-// import Vue from 'vue'
 
 const state = {
   loading: 0,
@@ -18,17 +15,14 @@ const actions = {
    */
   [a.changePath]: (store, payload) => {
     const path = payload.trim('/')
+
+    // Avoid any mutation if path already loaded or some loading is not
+    // completed yet.
     if (store.path === path || store.getters[g.isLoading]) return
 
-    store.commit(m.removeSelectedBlob)
-    store.commit(m.setLoadingStarted)
+    store.commit(m.setPath, path)
 
-    api.content(path)
-      .then(blobs => {
-        store.commit(m.setPath, path)
-        store.commit(m.setBlobs, blobs)
-        store.commit(m.setLoadingCompleted)
-      })
+    store.dispatch(a.fetchContent)
   }
 }
 

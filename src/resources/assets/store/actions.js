@@ -1,7 +1,7 @@
 // blobs module actions list
 export const fetchContent = 'fetchContent'
 export const openBlob = 'openBlob'
-export const renameBlob = 'renameBlob'
+export const saveBlob = 'renameBlob'
 
 // breadcrumb module actions list
 export const changePath = 'changePath'

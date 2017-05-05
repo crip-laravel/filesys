@@ -12,6 +12,7 @@ export const setUpdatedBlob = 'setUpdatedBlob'
 export const setLoadingStarted = 'setLoadingStarted'
 export const setLoadingCompleted = 'setLoadingCompleted'
 export const setPath = 'setPath'
+export const removeSelectedBlob = 'removeSelectedBlob'
 
 // tree module mutations list
 export const setTree = 'setTree'

@@ -6,6 +6,11 @@
     </div>
 
     <div class="row clearfix" :class="[displayType]">
+
+      <blob-new-folder></blob-new-folder>
+
+      <blob-up></blob-up>
+
       <div v-for="blob in content" :key="blob.$id" class="blob-container">
         <div class="context-wrapp"
              @contextmenu.prevent="openMenu($event, blob.$id)">
@@ -27,13 +32,15 @@
 <script>
   import * as getters from '../../../store/getters'
   import blob from './Blob.vue'
+  import blobUp from './BlobUp.vue'
+  import blobNewFolder from './BlobNewFolder.vue'
   import blobContextMenu from './ContextMenu.vue'
   import settings from './../../../settings'
   import uploads from './../uploads/Uploads.vue'
   import Vue from 'vue'
 
   export default {
-    name: 'blobs',
+    name: 'content-section',
 
     computed: {
       blobs () {
@@ -119,7 +126,7 @@
       }
     },
 
-    components: {blob, blobContextMenu, uploads}
+    components: {blob, blobUp, blobNewFolder, blobContextMenu, uploads}
   }
 </script>
 

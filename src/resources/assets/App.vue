@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid">
     <actions-bar class="row"></actions-bar>
-    <breadcrumb class="row"></breadcrumb>
+    <!--<breadcrumb class="row"></breadcrumb>-->
     <div class="row">
       <tree class="col-sm-4 col-md-3"></tree>
       <content-section class="col-sm-8 col-md-9 position-inherit">
@@ -16,13 +16,14 @@
   import tree from './components/body/tree/Tree.vue'
   import contentSection from './components/body/content/Content.vue'
 
-  import { setPath } from './store/mutations'
+  import { fetchTree, fetchContent } from './store/actions'
 
   export default {
     name: 'app',
 
     mounted () {
-      this.$store.commit(setPath, '')
+      this.$store.dispatch(fetchContent)
+      this.$store.dispatch(fetchTree)
     },
 
     components: {actionsBar, breadcrumb, tree, contentSection}

@@ -8,8 +8,12 @@
     </div>
 
     <div v-if="blob.$rename">
-      <form @submit.prevent="renameBlob">
-        <input name="name" :id="'blob-' + blob.$id" v-model="blob.$newName">
+      <form @submit.prevent="saveBlob">
+        <input name="name"
+               :id="'blob-input-' + blob.$id"
+               @focus="$event.target.select()"
+               v-focus="true"
+               v-model="blob.$newName">
       </form>
     </div>
     <div v-else="" class="blob-description" @dblclick="setBlobRename">
@@ -23,6 +27,7 @@
   import * as getters from '../../../store/getters'
   import * as mutations from '../../../store/mutations'
   import Blob from '../../../models/Blob'
+  import { focus } from 'vue-focus'
 
   export default {
     name: 'blob',
@@ -73,15 +78,17 @@
        * Send new name of blob to the server and set response as current blob
        * actual data in vuex store.
        */
-      renameBlob () {
+      saveBlob () {
         this.$store.dispatch(
-          actions.renameBlob,
+          actions.saveBlob,
           {
             id: this.blob.$id,
             name: this.blob.$newName
           })
       }
-    }
+    },
+
+    directives: {focus}
   }
 </script>
 

@@ -1,27 +1,39 @@
 <template>
   <div id="uploads">
     <div class="clearfix">
-      <upload-file :file="file" class="blob-container"
+      <upload-file class="blob-container"
+                   :file="file"
                    :key="key"
-                   v-for="(file, key) in uploads"></upload-file>
+                   v-for="(file, key) in uploads">
+      </upload-file>
     </div>
-    <hr v-if="!!uploadsCount">
+    <hr v-if="count > 0">
   </div>
 </template>
 
 <script>
-  import uploadFile from './UploadFile.vue'
   import * as getters from '../../../store/getters'
-  import { mapGetters } from 'vuex'
+  import uploadFile from './UploadFile.vue'
 
   export default {
     name: 'uploads',
 
     computed: {
-      ...mapGetters([
-        getters.uploads,
-        getters.uploadsCount
-      ])
+      /**
+       * Store uploads queue files.
+       * @return {Array}
+       */
+      uploads () {
+        return this.$store.getters[getters.getUploads]
+      },
+
+      /**
+       * Number of uploads in the queue.
+       * @return {Number}
+       */
+      count () {
+        return this.uploads.length
+      }
     },
 
     components: {uploadFile}

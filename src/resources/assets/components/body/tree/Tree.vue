@@ -10,19 +10,18 @@
 </template>
 
 <script>
-  import * as actions from '../../../store/actions'
   import * as getters from '../../../store/getters'
   import TreeItem from '../../../models/TreeItem'
   import treeItem from './TreeItem.vue'
 
   export default {
-    mounted () {
-      // When tree component is mounted, fetch all data from the server and
-      // apply it to the current component content.
-      this.$store.dispatch(actions.fetchTree)
-    },
+    name: 'folder-tree',
 
     computed: {
+      /**
+       * Tree items collection from vuex store.
+       * @return {Array}
+       */
       tree () {
         return this.$store.getters[getters.getTree]
       }

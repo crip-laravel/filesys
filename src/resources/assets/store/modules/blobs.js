@@ -3,7 +3,7 @@ import * as g from '../getters'
 import * as m from '../mutations'
 import editors from '../../api/editors'
 import settings from '../../settings'
-import Blob from '../../models/Blob'
+import api from '../../api/folder'
 import Vue from 'vue'
 
 const state = {
@@ -17,8 +17,10 @@ const actions = {
    * Open currently selected blob by its identifier.
    * @param {Function} dispatch Store dispatch action.
    * @param {Boolean} isDir Blob instance.
+   * @param {String} customUrl Custom url to be used if we wan`t use custom size
+   * of image.
    */
-  [a.openBlob]: ({dispatch}, {isDir, path, url}) => {
+  [a.openBlob]: ({dispatch}, {isDir, path, url}, customUrl = '') => {
     if (isDir) {
       return dispatch(a.changePath, path)
     }
@@ -31,21 +33,21 @@ const actions = {
 
     // TODO: add more editors for FileSysManager
 
-    return editors[action](url)
+    return editors[action](customUrl || url)
   },
 
   /**
-   * Rename blob on the server side.
+   * Save blob on the server side.
    * @param {store} store State of the store.
    * @param {String} id Blob identifier value.
    * @param {String} name New name for blob.
    */
-  [a.renameBlob]: (store, {id, name}) => {
+  [a.saveBlob]: (store, {id, name}) => {
     let blob = findBlobById(store, id)
     if (blob.name !== name) {
       store.commit(m.setLoadingStarted)
 
-      blob.reaname(name)
+      blob.save()
         .then(newBlob => {
           store.commit(m.setUpdatedBlob, {id, blob: newBlob})
           store.commit(m.setSelectedBlob, id)
@@ -54,6 +56,21 @@ const actions = {
           if (newBlob.isDir) { store.dispatch(a.fetchTree) }
         })
     }
+  },
+
+  /**
+   * Fetch blob content from the server.
+   * @param {state} state State of the store.
+   */
+  [a.fetchContent]: (state) => {
+    state.commit(m.removeSelectedBlob)
+    state.commit(m.setLoadingStarted)
+
+    api.content(state.getters[g.getPath])
+      .then(blobs => {
+        state.commit(m.setBlobs, blobs)
+        state.commit(m.setLoadingCompleted)
+      })
   }
 }
 
@@ -95,6 +112,14 @@ const mutations = {
   },
 
   /**
+   * Remove selection of any blob in a collection.
+   * @param {state} state State of the store.
+   */
+  [m.removeSelectedBlob]: (state) => {
+    setBlobPropertyById(state, '', '$selected', false, false)
+  },
+
+  /**
    * Set rename state of blob by its identifier.
    * @param {state} state State of the store.
    * @param {String} payload Blob identifier value.
@@ -132,20 +157,6 @@ const mutations = {
    */
   [m.setBlobs]: (state, payload) => {
     state.blobs = payload
-
-    // If we are in root folder, we have no need to add folder up.
-    if (state.getters[g.getPath] === '') { return }
-
-    let blob = new Blob({
-      fullName: '..',
-      type: 'dir',
-      path: state.getters[g.getPathUp],
-      thumb: settings.dirIcon,
-      mediaType: settings.mediaTypes.dir,
-      $isSystem: true
-    })
-
-    state.blobs.push(blob)
   }
 }
 
@@ -178,7 +189,13 @@ const getters = {
    * Gets current state of display type.
    * @param {state} state State of the store.
    */
-  [g.getDisplayType]: (state) => state.displayType
+  [g.getDisplayType]: (state) => state.displayType,
+
+  /**
+   * Gets current state blobs.
+   * @param state
+   */
+  [g.getBlobs]: (state) => state.blobs
 }
 
 /**
@@ -194,7 +211,7 @@ const getters = {
 function setBlobPropertyById (state, id, property, value, defaultVal) {
   state.blobs.forEach(blob => Vue.set(blob, property, defaultVal))
 
-  let blob = findBlobById(id)
+  let blob = findBlobById(state, id)
 
   return blob ? Vue.set(blob, property, value) || true : false
 }

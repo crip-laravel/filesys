@@ -6,12 +6,12 @@
          class="toggle inte-item"
          v-if="item.children.length"
          :class="{disabled: isLoading}"
-         @click="toggle">{{ sign }}</a>
+         @click.prevent="toggle">{{ stateSign }}</a>
 
       <a href
          class="tree-link inte-item"
          :class="{disabled: isLoading}"
-         @click="changePath(item.path)">{{ item.name }}</a>
+         @click.prevent="changePath">{{ item.name }}</a>
 
     </div>
 
@@ -25,15 +25,35 @@
 
 <script>
   import TreeItem from '../../../models/TreeItem'
-  import { changePath } from '../../../store/actions'
-  import { isLoading } from '../../../store/getters'
-  import { mapActions, mapGetters } from 'vuex'
+  import * as actions from '../../../store/actions'
+  import * as getters from '../../../store/getters'
 
   export default {
     name: 'tree-item',
 
     props: {
+      /**
+       * Tree item instance.
+       */
       item: {type: TreeItem, required: true}
+    },
+
+    computed: {
+      /**
+       * Gets page loading state.
+       * @return {Boolean}
+       */
+      isLoading () {
+        return this.$store.getters[getters.isLoading]
+      },
+
+      /**
+       * State sign indicating to open or close current item tree.
+       * @return {string}
+       */
+      stateSign () {
+        return this.isOpen ? '+' : '-'
+      }
     },
 
     data () {
@@ -42,19 +62,17 @@
       }
     },
 
-    computed: {
-      ...mapGetters([
-        isLoading
-      ]),
-
-      sign () { return this.isOpen ? '+' : '-' }
-    },
-
     methods: {
-      ...mapActions([
-        changePath
-      ]),
+      /**
+       * Open folder content of current tree item.
+       */
+      changePath () {
+        this.$store.dispatch(actions.changePath, this.item.path)
+      },
 
+      /**
+       * Toggle current tree item open state.
+       */
       toggle () {
         this.isOpen = !this.isOpen
       }

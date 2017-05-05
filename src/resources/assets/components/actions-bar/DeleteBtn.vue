@@ -7,9 +7,9 @@
 </template>
 
 <script>
-  import * as g from '../../store/getters'
+  import * as actions from '../../store/actions'
+  import * as getters from '../../store/getters'
   import btn from './Btn.vue'
-  import { deleteBlob } from '../../store/actions'
 
   export default {
     name: 'delete_actions-bar-btn',
@@ -32,7 +32,7 @@
        * visible on the UI.
        */
       isCreateFolderBlobHidden () {
-        return !this.$store.getters[g.getCreateFolderBlobVisibility]
+        return !this.$store.getters[getters.getCreateFolderBlobVisibility]
       },
 
       /**
@@ -41,7 +41,14 @@
        * selected.
        */
       isAnyBlobSelected () {
-        return this.$store.getters[g.getIsAnyBlobInSelectedMode]
+        return this.$store.getters[getters.getIsAnyBlobInSelectedMode]
+      },
+
+      /**
+       * Gets selected blob instance.
+       */
+      blob () {
+        return this.$store.getters[getters.getSelectedBlob]
       }
     },
 
@@ -50,7 +57,8 @@
        * Call delete blob action in vuex store.
        */
       deleteBlob () {
-        return this.isDeleteBlobDisabled || this.$store.dispatch(deleteBlob)
+        return this.isDeleteBlobDisabled ||
+          this.$store.dispatch(actions.deleteBlob, this.blob)
       }
     }
   }

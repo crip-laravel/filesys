@@ -78,6 +78,27 @@ const actions = {
         store.commit(m.setBlobs, blobs)
         store.commit(m.setLoadingCompleted)
       })
+  },
+
+  /**
+   * Delete blob on the server side and mutate state to remove it from UI.
+   * @param {Store} store Vuex store instance.
+   * @param {Blob} payload Blob instance witch should be deleted.
+   */
+  [a.deleteBlob]: (store, payload) => {
+    store.commit(m.setLoadingStarted)
+    payload.delete()
+      .then(() => {
+        store.commit(m.removeSelectedBlob)
+        store.commit(m.removeBlob, payload.$id)
+        store.commit(m.setLoadingCompleted)
+
+        if (payload.isDir) {
+          // If blob was a folder, update tree component content as structure
+          // changes
+          store.dispatch(a.fetchTree)
+        }
+      })
   }
 }
 
@@ -166,6 +187,16 @@ const mutations = {
    */
   [m.setBlobs]: (state, payload) => {
     state.blobs = payload
+  },
+
+  /**
+   * Remove blob from store collection.
+   * @param {state} state State of the store.
+   * @param {String} payload Te id of the blob to be removed.
+   */
+  [m.removeBlob]: (state, payload) => {
+    const toUpdate = findBlobById(state, payload)
+    state.blobs.splice(state.blobs.indexOf(toUpdate), 1)
   }
 }
 

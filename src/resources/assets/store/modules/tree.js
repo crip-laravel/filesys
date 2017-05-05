@@ -10,7 +10,7 @@ let state = {
 let actions = {
   /**
    * Fetch tree items from the server and apply to the store state.
-   * @param {function} commit
+   * @param {function} commit Store commit action.
    */
   [a.fetchTree]: ({commit}) => {
     commit(m.setLoadingStarted)

@@ -38,12 +38,12 @@ const actions = {
 
   /**
    * Save blob on the server side.
-   * @param {store} store State of the store.
+   * @param {Store} store Vuex store instance.
    * @param {String} id Blob identifier value.
    * @param {String} name New name for blob.
    */
   [a.saveBlob]: (store, {id, name}) => {
-    let blob = findBlobById(store, id)
+    let blob = findBlobById(store.state, id)
     if (blob.name !== name) {
       store.commit(m.setLoadingStarted)
 
@@ -60,16 +60,16 @@ const actions = {
 
   /**
    * Fetch blob content from the server.
-   * @param {state} state State of the store.
+   * @param {Store} store Vuex store instance.
    */
-  [a.fetchContent]: (state) => {
-    state.commit(m.removeSelectedBlob)
-    state.commit(m.setLoadingStarted)
+  [a.fetchContent]: (store) => {
+    store.commit(m.removeSelectedBlob)
+    store.commit(m.setLoadingStarted)
 
-    api.content(state.getters[g.getPath])
+    api.content(store.getters[g.getPath])
       .then(blobs => {
-        state.commit(m.setBlobs, blobs)
-        state.commit(m.setLoadingCompleted)
+        store.commit(m.setBlobs, blobs)
+        store.commit(m.setLoadingCompleted)
       })
   }
 }
@@ -108,6 +108,9 @@ const mutations = {
    * @param {String} payload Blob identifier value.
    */
   [m.setSelectedBlob]: (state, payload) => {
+    // disable rename if we are selecting other blob
+    setBlobPropertyById(state, payload, '$rename', false, false)
+
     setBlobPropertyById(state, payload, '$selected', true, false)
   },
 
@@ -151,7 +154,7 @@ const mutations = {
   },
 
   /**
-   *
+   * Set blobs to the state.
    * @param {state} state State of the store.
    * @param {Array.<Blob>} payload Array of the blobs.
    */
@@ -193,9 +196,15 @@ const getters = {
 
   /**
    * Gets current state blobs.
-   * @param state
+   * @param {state} state State of the store.
    */
-  [g.getBlobs]: (state) => state.blobs
+  [g.getBlobs]: (state) => state.blobs,
+
+  /**
+   * Get selected blob instance from the store.
+   * @param {state} state State of the store.
+   */
+  [g.getSelectedBlob]: (state) => state.blobs.find(b => b.$selected)
 }
 
 /**

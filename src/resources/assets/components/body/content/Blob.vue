@@ -54,10 +54,14 @@
 
     methods: {
       /**
-       * Sets selected blob state for current blob.
+       * Sets selected blob state for current blob only in case if it is not
+       * selected already.
        */
       selectBlob () {
-        this.$store.commit(mutations.setSelectedBlob, this.blob.$id)
+        const selected = this.$store.getters[getters.getSelectedBlob]
+        if (!selected || selected.$id !== this.blob.$id) {
+          this.$store.commit(mutations.setSelectedBlob, this.blob.$id)
+        }
       },
 
       /**

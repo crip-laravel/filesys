@@ -9,8 +9,8 @@ const state = {
 
 const actions = {
   /**
-   *
-   * @param {state} store State of the store.
+   * Change path in sate and call action to fetch data from server.
+   * @param {Store} store Vuex store instance.
    * @param {String} payload New path value.
    */
   [a.changePath]: (store, payload) => {
@@ -18,7 +18,7 @@ const actions = {
 
     // Avoid any mutation if path already loaded or some loading is not
     // completed yet.
-    if (store.path === path || store.getters[g.isLoading]) return
+    if (store.state.path === path || store.getters[g.isLoading]) return
 
     store.commit(m.setPath, path)
 

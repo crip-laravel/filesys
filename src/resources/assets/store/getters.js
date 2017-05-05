@@ -1,14 +1,15 @@
 // blobs module getters list
+export const getBlobs = 'getBlobs'
 export const getCreateFolderBlobVisibility = 'getCreateFolderBlobVisibility'
+export const getDisplayType = 'getDisplayType'
 export const getIsAnyBlobInRenameMode = 'getIsAnyBlobInRenameMode'
 export const getIsAnyBlobInSelectedMode = 'getIsAnyBlobInSelectedMode'
-export const getDisplayType = 'getDisplayType'
-export const getBlobs = 'getBlobs'
+export const getSelectedBlob = 'getSelectedBlob'
 
 // breadcrumb module getters list
-export const isLoading = 'isLoading'
 export const getPath = 'getPath'
 export const getPathUp = 'getPathUp'
+export const isLoading = 'isLoading'
 
 // tree module getters list
 export const getTree = 'getTree'

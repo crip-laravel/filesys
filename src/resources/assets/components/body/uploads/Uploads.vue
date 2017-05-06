@@ -1,5 +1,5 @@
 <template>
-  <div id="uploads">
+  <div id="uploads" class="row clearfix">
     <div class="clearfix">
       <blob class="blob-container"
             :file="file"

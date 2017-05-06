@@ -1,7 +1,7 @@
 <template>
   <ul class="context-menu"
       tabindex="-1"
-      v-if="isVisible"
+      v-if="blob.$isContextVisible"
       :id="'blob-context-' + blob.$id"
       :style="{top: positionTop, left: positionLeft}">
 
@@ -15,7 +15,7 @@
       <a href class="content inte-item" @click.prevent="openBlob">
         Select
         <span v-if="blob.mime === 'img'">image</span>
-        <span v-else>file</span>
+        <span v-else>file</span> {{ blob.fullName }}
       </a>
     </li>
 
@@ -27,11 +27,11 @@
       </a>
     </li>
 
-    <li v-if="!blob.$isSystem">
+    <li>
       <span class="content">Modified: <strong>{{ blob.$date }}</strong></span>
     </li>
 
-    <li v-if="!blob.$isSystem">
+    <li>
       <span class="content">Size: <strong>{{ size }}</strong></span>
     </li>
   </ul>
@@ -46,21 +46,18 @@
     name: 'blob-context-menu',
 
     props: {
-      isVisible: {type: Boolean, required: true},
-      blob: {type: Blob, required: true},
-      top: {type: Number, required: true},
-      left: {type: Number, required: true}
+      blob: {type: Blob, required: true}
     },
 
     computed: {
       // context menu y position
       maxHeight () { return window.innerHeight - this.height - 25 },
-      largestHeight () { return this.top > this.maxHeight ? this.maxHeight : this.top },
+      largestHeight () { return this.blob.$y > this.maxHeight ? this.maxHeight : this.blob.$y },
       positionTop () { return `${this.largestHeight}px` },
 
       // context menu x position
       maxWidth () { return window.innerWidth - this.width - 25 },
-      largestWidth () { return this.left > this.maxWidth ? this.maxWidth : this.left },
+      largestWidth () { return this.blob.$x > this.maxWidth ? this.maxWidth : this.blob.$x },
       positionLeft () { return `${this.largestWidth}px` },
 
       isDir () { return this.blob.isDir },
@@ -142,14 +139,14 @@
        * Close menu and unbind event listener from dom.
        */
       hideMenu () {
-        this.$emit('close', this.blob.$id)
+        Vue.set(this.blob, '$isContextVisible', false)
         // unbind this listener if we close menu
         document.removeEventListener('click', this.onDocumentClick)
       }
     },
 
     watch: {
-      isVisible (newVal) {
+      'blob.$isContextVisible' (newVal) {
         if (newVal) {
           Vue.nextTick(() => {
             // Ret element sizes to calculate correct position only after element

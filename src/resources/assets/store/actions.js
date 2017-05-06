@@ -9,3 +9,8 @@ export const changePath = 'changePath'
 
 // tree module actions list
 export const fetchTree = 'fetchTree'
+
+// uploads module actions list
+export const addUploads = 'addUploads'
+export const uploadAllFiles = 'uploadAllFiles'
+export const uploadFile = 'uploadFile'

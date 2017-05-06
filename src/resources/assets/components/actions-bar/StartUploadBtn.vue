@@ -6,8 +6,8 @@
 
 <script>
   import btn from './Btn.vue'
-  import { uploadsCount } from '../../store/getters'
-  import { startUpload } from './../../store/actions'
+  import * as getters from '../../store/getters'
+  import * as actions from './../../store/actions'
 
   export default {
     name: 'start-upload_actions-bar-btn',
@@ -20,7 +20,7 @@
        * @returns {Number}
        */
       count () {
-        return this.$store.getters[uploadsCount]
+        return this.$store.getters[getters.getUploadsCount]
       },
 
       /**
@@ -38,7 +38,7 @@
        * Start upload files from the queue.
        */
       upload () {
-        this.$store.dispatch(startUpload)
+        this.$store.dispatch(actions.uploadAllFiles)
       }
     }
   }

@@ -43,9 +43,7 @@ export default {
         .then(
           ({data}) => resolve(new Blob(data)),
           ({status, data}) => {
-            if (status === 422) {
-              reject(data)
-            }
+            status === 422 ? reject(data) : reject('Could not upload file.')
           })
     })
   }

@@ -30,17 +30,17 @@
 </template>
 
 <script>
-  import * as getters from '../../../store/getters'
-  import blob from './Blob.vue'
-  import blobUp from './BlobUp.vue'
-  import blobNewFolder from './BlobNewFolder.vue'
-  import blobContextMenu from './ContextMenu.vue'
-  import settings from './../../../settings'
-  import uploads from './../uploads/Uploads.vue'
+  import * as getters from '../../store/getters'
+  import blob from './content/Blob.vue'
+  import blobUp from './content/BlobUp.vue'
+  import blobNewFolder from './content/BlobNewFolder.vue'
+  import blobContextMenu from './content/ContextMenu.vue'
+  import settings from '../../settings'
+  import uploads from './uploads/Uploads.vue'
   import Vue from 'vue'
 
   export default {
-    name: 'content-section',
+    name: 'body-blobs',
 
     computed: {
       blobs () {
@@ -131,7 +131,7 @@
 </script>
 
 <style lang="sass" type="text/scss">
-  @import "../../../sass/variables";
+  @import "../../sass/_variables";
 
   .grid .blob-container {
     float: left;

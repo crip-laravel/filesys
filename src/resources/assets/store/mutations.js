@@ -17,3 +17,9 @@ export const setPath = 'setPath'
 
 // tree module mutations list
 export const setTree = 'setTree'
+
+// uploads module mutations list
+export const removeUpload = 'removeUpload'
+export const setNewUpload = 'setNewUpload'
+export const setUploadFileError = 'setUploadFileError'
+export const setUploadFileLoading = 'setUploadFileLoading'

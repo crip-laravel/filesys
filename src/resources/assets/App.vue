@@ -4,8 +4,7 @@
     <!--<breadcrumb class="row"></breadcrumb>-->
     <div class="row">
       <tree class="col-sm-4 col-md-3"></tree>
-      <content-section class="col-sm-8 col-md-9 position-inherit">
-      </content-section>
+      <blobs class="col-sm-8 col-md-9 position-inherit"></blobs>
     </div>
   </div>
 </template>
@@ -14,7 +13,7 @@
   import actionsBar from './components/actions-bar/ActionsBar.vue'
   import breadcrumb from './components/breadcrumb-bar/Breadcrumb.vue'
   import tree from './components/body/tree/Tree.vue'
-  import contentSection from './components/body/content/Content.vue'
+  import blobs from './components/body/Blobs.vue'
 
   import { fetchTree, fetchContent } from './store/actions'
 
@@ -26,7 +25,7 @@
       this.$store.dispatch(fetchTree)
     },
 
-    components: {actionsBar, breadcrumb, tree, contentSection}
+    components: {actionsBar, breadcrumb, tree, blobs}
   }
 </script>
 

@@ -17,3 +17,4 @@ export const getTree = 'getTree'
 
 // uploads module getters list
 export const getUploads = 'getUploads'
+export const getUploadsCount = 'getUploadsCount'

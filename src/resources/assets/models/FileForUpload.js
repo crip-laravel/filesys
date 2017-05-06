@@ -12,6 +12,7 @@ export default class FileForUpload {
     this.reader = new FileReader()
     this.src = settings.icon('file')
     this.$error = ''
+    this.$loading = false
 
     this.reader.onload = (e) => {
       // Mutate content only for images, all other files should show default

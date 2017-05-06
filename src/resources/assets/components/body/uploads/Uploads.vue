@@ -1,11 +1,11 @@
 <template>
   <div id="uploads">
     <div class="clearfix">
-      <upload-file class="blob-container"
-                   :file="file"
-                   :key="key"
-                   v-for="(file, key) in uploads">
-      </upload-file>
+      <blob class="blob-container"
+            :file="file"
+            :key="key"
+            v-for="(file, key) in uploads">
+      </blob>
     </div>
     <hr v-if="count > 0">
   </div>
@@ -13,7 +13,7 @@
 
 <script>
   import * as getters from '../../../store/getters'
-  import uploadFile from './UploadFile.vue'
+  import blob from './UploadBlob.vue'
 
   export default {
     name: 'uploads',
@@ -36,6 +36,6 @@
       }
     },
 
-    components: {uploadFile}
+    components: {blob}
   }
 </script>

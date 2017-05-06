@@ -13,7 +13,7 @@
 
 <script>
   import btn from './Btn.vue'
-  import { filesForUploadAdded } from '../../store/actions'
+  import * as actions from '../../store/actions'
 
   export default {
     name: 'add-files_actions-bar-btn',
@@ -48,7 +48,7 @@
        * @param {FileList} files
        */
       addUploadFiles (files) {
-        this.$store.dispatch(filesForUploadAdded, files)
+        this.$store.dispatch(actions.addUploads, files)
       }
     }
   }

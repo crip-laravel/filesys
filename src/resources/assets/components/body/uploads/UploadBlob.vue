@@ -1,42 +1,54 @@
 <template>
-  <div class="file-upload blob" :class="{error: file.hasError}"
+  <div class="file-upload blob"
+       :class="{error: file.hasError}"
        :title="file.title">
+
     <div class="thumb no-margin">
       <img :src="file.src">
     </div>
-    <div class="actions clearfix">
-      <a href="#" class="inte-item pull-left"
-         :class="{disabled: file.$loading}"
-         @click.prevent="uploadFile(file)">Upload {{file.name}}</a>
 
-      <a href="#" class="inte-item pull-right"
+    <div class="actions clearfix">
+      <a href
+         v-if="!file.hasError"
+         class="inte-item pull-left"
          :class="{disabled: file.$loading}"
-         @click.prevent="removeUpload(file)">&times;</a>
+         @click.prevent="uploadFile">Upload {{ file.name }}</a>
+
+      <a href
+         class="inte-item pull-right"
+         :class="{disabled: file.$loading}"
+         @click.prevent="removeUpload">&times;</a>
     </div>
+
   </div>
 </template>
 
 <script>
-  import FileUpload from '../../../models/FileForUpload'
+  import FileForUpload from '../../../models/FileForUpload'
   import * as mutations from '../../../store/mutations'
   import * as actions from '../../../store/actions'
-  import { mapActions, mapMutations } from 'vuex'
 
   export default {
     name: 'file-upload',
 
     props: {
-      file: {type: FileUpload, required: true}
+      file: {type: FileForUpload, required: true}
     },
 
     methods: {
-      ...mapMutations([
-        mutations.removeUpload
-      ]),
+      /**
+       * Remove current file from the uploads queue.
+       */
+      removeUpload () {
+        this.$store.commit(mutations.removeUpload, this.file)
+      },
 
-      ...mapActions([
-        actions.uploadFile
-      ])
+      /**
+       * Upload current file to the server.
+       */
+      uploadFile () {
+        this.$store.dispatch(actions.uploadFile, this.file)
+      }
     }
   }
 </script>
@@ -49,7 +61,9 @@
     padding: 2px;
 
     &.error {
-      border: 1px solid $brand-danger;
+      border: 1px solid $alert-danger-border;
+      background-color: $alert-danger-bg;
+      color: $abbr-border-color;
     }
 
     .inte-item {

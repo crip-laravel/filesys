@@ -2,14 +2,15 @@
   <btn size="lg" icon="add-folder"
        @click="showCreateFolderBlob"
        :active="createFolderBlobIsVisible">
-    Create Folder
+    {{ content }}
   </btn>
 </template>
 
 <script>
+  import * as actions from './../../store/actions'
+  import * as getters from './../../store/getters'
+  import * as mutations from './../../store/mutations'
   import btn from './Btn.vue'
-  import { getCreateFolderBlobVisibility } from './../../store/getters'
-  import { setCreateFolderBlobVisibility } from './../../store/mutations'
 
   export default {
     name: 'create-folder_actions-bar-btn',
@@ -23,7 +24,16 @@
        * on the UI.
        */
       createFolderBlobIsVisible () {
-        return this.$store.getters[getCreateFolderBlobVisibility]
+        return this.$store.getters[getters.getCreateFolderBlobVisibility] &&
+          !this.$store.getters[getters.getIsAnyBlobInSelectedMode]
+      },
+
+      /**
+       * Content of the button in current state.
+       */
+      content () {
+        return this.createFolderBlobIsVisible
+          ? 'Save new folder' : 'Create Folder'
       }
     },
 
@@ -32,9 +42,15 @@
        * Sets crate folder blob visibility state to true.
        */
       showCreateFolderBlob () {
-        if (!this.createFolderBlobIsVisible) {
-          this.$store.commit(setCreateFolderBlobVisibility, true)
+        if (this.$store.getters[getters.getIsAnyBlobInSelectedMode]) {
+          this.$store.commit(mutations.removeSelectedBlob)
         }
+
+        if (!this.createFolderBlobIsVisible) {
+          return this.$store.commit(mutations.setCreateFolderBlobVisibility, true)
+        }
+
+        this.$store.dispatch(actions.saveBlob, this.$store.getters[getters.getNewFolder])
       }
     }
   }

@@ -6,9 +6,7 @@
 
 <script>
   import * as getters from '../../../store/getters'
-  import Blob from '../../../models/Blob'
   import blob from './Blob.vue'
-  import settings from './../../../settings'
 
   export default {
     name: 'blob-new-folder',
@@ -27,16 +25,7 @@
        * @return {Blob}
        */
       blob () {
-        return new Blob({
-          type: 'dir',
-          thumb: settings.dirIcon,
-          mediaType: settings.mediaTypes.dir,
-
-          $newName: 'new folder',
-          $rename: true,
-          $selected: true,
-          $temp: true
-        })
+        return this.$store.getters[getters.getNewFolder]
       }
     },
 

@@ -4,6 +4,7 @@ export const getCreateFolderBlobVisibility = 'getCreateFolderBlobVisibility'
 export const getDisplayType = 'getDisplayType'
 export const getIsAnyBlobInRenameMode = 'getIsAnyBlobInRenameMode'
 export const getIsAnyBlobInSelectedMode = 'getIsAnyBlobInSelectedMode'
+export const getNewFolder = 'getNewFolder'
 export const getSelectedBlob = 'getSelectedBlob'
 
 // breadcrumb module getters list

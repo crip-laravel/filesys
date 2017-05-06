@@ -26,7 +26,7 @@ export default {
    */
   create (blob, name) {
     return new Promise((resolve, reject) => {
-      vue.http.post(settings.foldersUrl, {folder: blob.full_name, name})
+      vue.http.post(settings.foldersUrl, {folder: blob.dir, name})
         .then(({data}) => { resolve(new Blob(data)) }, reject)
     })
   },
@@ -39,7 +39,7 @@ export default {
    */
   update (blob, name) {
     return new Promise((resolve, reject) => {
-      vue.http.patch(`${settings.foldersUrl}/${blob.fullName}`, {name})
+      vue.http.patch(`${settings.foldersUrl}/${blob.path}`, {name})
         .then(({data}) => { resolve(new Blob(data)) }, reject)
     })
   },
@@ -51,7 +51,7 @@ export default {
    */
   delete (blob) {
     return new Promise((resolve, reject) => {
-      vue.http.delete(`${settings.foldersUrl}/${blob.fullName}`)
+      vue.http.delete(`${settings.foldersUrl}/${blob.path}`)
         .then(({data}) => { resolve(!!data) }, reject)
     })
   }

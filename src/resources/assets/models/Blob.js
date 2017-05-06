@@ -26,8 +26,8 @@ export default class Blob {
     this.$id = data.path ? data.path.replaceAll('/', '-') : 'folder-up'
     this.$newName = data.name
     this.$temp = !!data.$temp
-    this.$rename = false
-    this.$selected = false
+    this.$rename = !!data.$rename
+    this.$selected = !!data.$selected
   }
 
   /**
@@ -44,13 +44,15 @@ export default class Blob {
 
   /**
    * Save changes of blob on the server side.
+   * @param {String} path Current state path.
    * @returns {Promise.<Blob>}
    */
-  save () {
+  save (path) {
     let action = 'update'
 
     if (this.$temp) {
       action = 'create'
+      this.path = this.dir = this.fullName = path
     }
 
     return new Promise((resolve, reject) => {

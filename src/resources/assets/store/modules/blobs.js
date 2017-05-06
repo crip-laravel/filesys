@@ -1,15 +1,26 @@
 import * as a from '../actions'
 import * as g from '../getters'
 import * as m from '../mutations'
+import api from '../../api/folder'
+import Blob from '../../models/Blob'
 import editors from '../../api/editors'
 import settings from '../../settings'
-import api from '../../api/folder'
 import Vue from 'vue'
 
 const state = {
   isCreateFolderBlobVisible: false,
   displayType: 'grid',
-  blobs: []
+  blobs: [],
+  newFolder: new Blob({
+    type: 'dir',
+    name: 'new folder',
+    thumb: settings.dirIcon,
+    mediaType: settings.mediaTypes.dir,
+
+    $rename: true,
+    $selected: true,
+    $temp: true
+  })
 }
 
 const actions = {
@@ -44,13 +55,14 @@ const actions = {
    */
   [a.saveBlob]: (store, blob) => {
     return new Promise((resolve, reject) => {
-      if (blob.name !== blob.$newName) {
+      if (blob.$temp || blob.name !== blob.$newName) {
         store.commit(m.setLoadingStarted)
 
-        return blob.save()
+        return blob.save(store.getters[g.getPath])
           .then(newBlob => {
             store.commit(m.setUpdatedBlob, {id: blob.$id, blob: newBlob})
             store.commit(m.setSelectedBlob, newBlob.$id)
+            store.commit(m.setCreateFolderBlobVisibility, false)
             store.commit(m.setLoadingCompleted)
 
             if (newBlob.isDir) { store.dispatch(a.fetchTree) }
@@ -167,7 +179,10 @@ const mutations = {
    */
   [m.setUpdatedBlob]: (state, {id, blob}) => {
     const toUpdate = findBlobById(state, id)
-    state.blobs.splice(state.blobs.indexOf(toUpdate), 1)
+    const index = state.blobs.indexOf(toUpdate)
+    if (~index) {
+      state.blobs.splice(index, 1)
+    }
     state.blobs.push(blob)
   },
 
@@ -207,7 +222,10 @@ const getters = {
    * @returns {Boolean} Returns <c>true</c> if create folder blob is in visible
    * state.
    */
-  [g.getCreateFolderBlobVisibility]: (state) => state.isCreateFolderBlobVisible,
+  [g.getCreateFolderBlobVisibility]: (state, getters) => {
+    return state.isCreateFolderBlobVisible &&
+      !getters[g.getIsAnyBlobInSelectedMode]
+  },
 
   /**
    * Gets rename mode from all blobs in store.
@@ -241,7 +259,13 @@ const getters = {
    * Get selected blob instance from the store.
    * @param {state} state State of the store.
    */
-  [g.getSelectedBlob]: (state) => state.blobs.find(b => b.$selected)
+  [g.getSelectedBlob]: (state) => state.blobs.find(b => b.$selected),
+
+  /**
+   * Get create folder blob instance.
+   * @param {state} state State of the store.
+   */
+  [g.getNewFolder]: (state) => state.newFolder
 }
 
 /**

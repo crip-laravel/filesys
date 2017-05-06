@@ -40,6 +40,7 @@
 <script>
   import * as actions from '../../../store/actions'
   import Blob from '../../../models/Blob'
+  import sizeCalc from '../../../api/size.calculator'
   import Vue from 'vue'
 
   export default {
@@ -50,44 +51,41 @@
     },
 
     computed: {
-      // context menu y position
-      maxHeight () { return window.innerHeight - this.height - 25 },
-      largestHeight () { return this.blob.$y > this.maxHeight ? this.maxHeight : this.blob.$y },
-      positionTop () { return `${this.largestHeight}px` },
-
-      // context menu x position
-      maxWidth () { return window.innerWidth - this.width - 25 },
-      largestWidth () { return this.blob.$x > this.maxWidth ? this.maxWidth : this.blob.$x },
-      positionLeft () { return `${this.largestWidth}px` },
-
-      isDir () { return this.blob.isDir },
-
-      size () {
-        if (this.blob.bytes === 1) {
-          return this.blob.bytes + ' byte'
-        }
-
-        if (this.blob.bytes === 0) {
-          return '0 bytes'
-        }
-
-        let fileSizes = [
-          {val: 1, postfix: ' bytes'},
-          {val: 1024, postfix: ' kB'},
-          {val: 1048576, postfix: ' MB'},
-          {val: 1073741824, postfix: ' GB'}
-        ]
-
-        let result = ''
-        fileSizes.forEach(size => {
-          if (this.blob.bytes >= size.val) {
-            result = (this.blob.bytes / size.val).toFixed(2) + size.postfix
-          }
-        })
-
-        return result
+      /**
+       * Context menu y position
+       */
+      positionTop () {
+        let maxHeight = window.innerHeight - this.height - 25
+        let largestHeight = this.blob.$y > maxHeight ? maxHeight : this.blob.$y
+        return `${largestHeight}px`
       },
 
+      /**
+       * Context menu x position
+       */
+      positionLeft () {
+        let maxWidth = window.innerWidth - this.width - 25
+        let largestWidth = this.blob.$x > maxWidth ? maxWidth : this.blob.$x
+        return `${largestWidth}px`
+      },
+
+      /**
+       * Is current blob of directory type.
+       */
+      isDir () {
+        return this.blob.isDir
+      },
+
+      /**
+       * Get readable size content.
+       */
+      size () {
+        return sizeCalc(this.blob.bytes)
+      },
+
+      /**
+       * Get image sizes if they persist.
+       */
       sizes () {
         let sizes = []
 

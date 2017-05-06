@@ -10,7 +10,7 @@
 
       <a href
          class="tree-link inte-item"
-         :class="{disabled: isLoading}"
+         :class="{disabled: isLoading, offset: !item.children.length}"
          @click.prevent="changePath">{{ item.name }}</a>
 
     </div>
@@ -52,7 +52,7 @@
        * @return {string}
        */
       stateSign () {
-        return this.isOpen ? '+' : '-'
+        return this.isOpen ? '-' : '+'
       }
     },
 
@@ -88,5 +88,9 @@
   .toggle {
     float: left;
     padding: 2px 10px;
+  }
+
+  .offset {
+    padding-left: 28px;
   }
 </style>

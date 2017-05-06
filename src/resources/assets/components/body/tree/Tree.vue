@@ -1,7 +1,7 @@
 <template>
   <div id="tree">
-    <tree-item :item="root"></tree-item>
-    <ul>
+    <tree-item :item="root" class="root"></tree-item>
+    <ul class="root-ul">
       <li v-for="item in tree">
         <tree-item :item="item"></tree-item>
       </li>
@@ -45,10 +45,19 @@
     overflow-x: auto;
     padding-top: 6px;
 
+    .root a {
+      padding-left: 0;
+    }
+
+    ul.root-ul {
+      margin: 0;
+    }
+
     ul {
       border-left: 1px dotted gray;
       list-style-type: none;
-      padding-left: 26px;
+      padding-left: 13px;
+      margin-left: 13px;
     }
 
     > ul {

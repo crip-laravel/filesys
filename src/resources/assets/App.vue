@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid">
     <actions-bar class="row"></actions-bar>
-    <!--<breadcrumb class="row"></breadcrumb>-->
+    <breadcrumb-bar class="row"></breadcrumb-bar>
     <div class="row">
       <tree class="col-sm-4 col-md-3"></tree>
       <blobs class="col-sm-8 col-md-9 position-inherit"></blobs>
@@ -11,7 +11,7 @@
 
 <script>
   import actionsBar from './components/actions-bar/ActionsBar.vue'
-  import breadcrumb from './components/breadcrumb-bar/Breadcrumb.vue'
+  import breadcrumbBar from './components/breadcrumb-bar/BreadcrumbBar.vue'
   import tree from './components/body/tree/Tree.vue'
   import blobs from './components/body/Blobs.vue'
 
@@ -20,12 +20,12 @@
   export default {
     name: 'app',
 
+    components: {actionsBar, breadcrumbBar, tree, blobs},
+
     mounted () {
       this.$store.dispatch(fetchContent)
       this.$store.dispatch(fetchTree)
-    },
-
-    components: {actionsBar, breadcrumb, tree, blobs}
+    }
   }
 </script>
 

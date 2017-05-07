@@ -5821,10 +5821,13 @@ button.close {
   /* .interaction-item */
   border: 1px solid transparent;
   color: #4d4d4d;
-  outline: none;
-  text-decoration: none;
   cursor: pointer;
-  padding: 2px; }
+  outline: none;
+  padding: 2px;
+  text-decoration: none; }
+  .inte-item.has-error {
+    background-color: #f2dede !important;
+    border: 1px solid #ebccd1 !important; }
   .inte-item.disabled, .inte-item.disabled:hover, .inte-item.disabled:focus {
     background-color: transparent;
     border: 1px solid transparent;

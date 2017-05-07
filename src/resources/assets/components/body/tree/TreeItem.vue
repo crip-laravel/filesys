@@ -10,7 +10,7 @@
 
       <a href
          class="tree-link inte-item"
-         :class="{disabled: isLoading, offset: !item.children.length}"
+         :class="classes"
          @click.prevent="changePath">{{ item.name }}</a>
 
     </div>
@@ -49,10 +49,40 @@
 
       /**
        * State sign indicating to open or close current item tree.
-       * @return {string}
+       * @return {String}
        */
       stateSign () {
         return this.isOpen ? '-' : '+'
+      },
+
+      /**
+       * Current state path.
+       * @return {String}
+       */
+      path () {
+        return this.$store.getters[getters.getPath]
+      },
+
+      /**
+       * Classes of link at current state.
+       * @return {String}
+       */
+      classes () {
+        return {
+          disabled: this.isLoading,
+          offset: !this.item.children.length,
+          active: this.item.path === this.path || this.isClosedAndChildActive
+        }
+      },
+
+      /**
+       * Determines is this item closed state and some of the children is active.
+       * @return {Boolean}
+       */
+      isClosedAndChildActive () {
+        if (!this.item.children.length || this.isOpen) { return false }
+
+        return this.isAnyActive(this.item.children)
       }
     },
 
@@ -75,6 +105,27 @@
        */
       toggle () {
         this.isOpen = !this.isOpen
+      },
+
+      /**
+       * Determine is any of children in state of active.
+       * @param {Array.<TreeItem>} children
+       * @returns {Boolean}
+       */
+      isAnyActive (children) {
+        let isActive = false
+
+        children.forEach(item => {
+          if (item.path === this.path) {
+            isActive = true
+          }
+
+          if (!isActive && item.children.length > 0 && this.isAnyActive(item.children)) {
+            isActive = true
+          }
+        })
+
+        return isActive
       }
     }
   }

@@ -1,7 +1,6 @@
 <?php namespace Crip\Filesys\Services;
 
 use Crip\Core\Contracts\ICripObject;
-use Crip\Core\Helpers\FileSystem;
 use Crip\Core\Helpers\Str;
 use Crip\Core\Support\PackageBase;
 use Crip\Filesys\App\File;

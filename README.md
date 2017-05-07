@@ -1,4 +1,4 @@
-# CRIP Filesystem manager (v.1.2.0)
+# CRIP Filesystem manager (v.1.2.1)
 
 This package easily integrates filesystem manager in to your website. You can 
 use it with TinyMCE editor or just stand alone popup for your input fields. CRIP
@@ -113,11 +113,8 @@ correctly allocate file location in server filesystem.
 ## Configuration
 
 `public_url` - Public url to assets folder. By default assets are published to 
-               `/vendor/crip/filesys` and this configuration default value is 
+               `/vendor/crip/cripfilesys` and this configuration default value is 
                set to this folder.
-
-`target_dir` - Filesystem folder, relative to application root, where files will
-               be located. By default value is set to `storage/uploads` folder.
 
 `thumbs` - Uploaded images will be sized to this configured Array. First 
            argument is `width` and second is `height`. Third argument describes
@@ -126,18 +123,23 @@ correctly allocate file location in server filesystem.
 - `width` - resize the image to a width and constrain aspect ratio (auto height);
 - `height` - resize the image to a height and constrain aspect ratio (auto width);
 
-`icons.path` - Public url to images folder. By default images are published to 
-               `/vendor/crip/filesys/images/` and this configuration default 
-               value is set to this folder.
+`icons.url` - Public url to images folder. By default images are published to 
+              `/vendor/crip/cripfilesys/images/` and this configuration default 
+              value is set to this folder.
 
 `icons.files` - Mapping array between file mime type name and icon image 
                 ([type].png).
 
-`mime.types` - mapping from file full mime type to type name (array).
+`mime.types` - Mapping from file full mime type to type name (array).
 
-`mime.media` - mapping between mime type name and media type (array).
+`mime.media` - Mapping between mime type name and media type (array).
 
-`actions` - controller actions to allocate file and directory actions.
+`mime.map` - Mapping between file extension and media type. Used in cases when 
+             storage may not get mime type (array).
+
+`block` - Blocked file extensions and mime types.
+
+`actions` - Controller actions to allocate file and directory actions.
 
 
 
@@ -146,9 +148,10 @@ correctly allocate file location in server filesystem.
 
 ### TinyMCE
 
-Download and set up TinyMCE editor. Copy `plugins` folder from published 
-resources `\public\vendor\crip\cripfilesys\tinymce\plugins` to installed TinyMCE 
-editor `plugins` directory. Configure TinyMCE to enable `filesys` plugin in it:
+Download and set up [TinyMCE editor](https://www.tinymce.com/). Copy `plugins`
+folder from published resources `\public\vendor\crip\cripfilesys\tinymce\plugins` 
+to installed TinyMCE editor `plugins` directory. Configure TinyMCE to enable 
+`cripfilesys` plugin in it:
 ```javascript
 if (tinymce) {
   tinymce.init({
@@ -172,7 +175,7 @@ if (tinymce) {
     external_filemanager_path: '/packages/filemanager',
     
     /* Enables select buttons for 'media' and 'image' plugins. */
-    external_plugins: {filemanager: '/vendor/crip/filesys/tinymce/plugin.js'}
+    external_plugins: {filemanager: '/vendor/crip/cripfilesys/tinymce/plugin.js'}
   })
 }
 ```
@@ -183,9 +186,9 @@ You can use `iframe`, `FancyBox` or `Lightbox` iframe to open the Fylesystem
 manager. To handle selected file, add GET parameter to the end of the path:
 `/packages/filemanager?target=callback`. You can filter visible files by they 
 type: `/packages/filemanager?target=callback&type=[type]`. Supported types are:
-- `document` - excel, word, pwp, html, txt, js;
+- `document` - excel, word, pwp, html, txt and js;
 - `image` - any file with mime type starting from `image/*`;
-- `media` - audio, video;
+- `media` - audio and video;
 - `file` - all files. This type is set by default;
 
 Types could be configured in package configuration file `mime.media` section.

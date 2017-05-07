@@ -1,7 +1,6 @@
 <?php namespace Crip\Filesys\App\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 /**
  * Class ManagerController

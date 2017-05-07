@@ -1,36 +1,44 @@
-import { fetchTree } from '../actions'
-import { treeFolders } from '../getters'
-import { setTreeFolders } from '../mutations'
-import treeApi from '../../api/tree'
+import * as a from '../actions'
+import * as g from '../getters'
+import * as m from '../mutations'
+import api from '../../api/tree'
 
-const state = {
-  folders: []
+let state = {
+  items: []
 }
 
-const actions = {
+let actions = {
   /**
-   * Fetch tree folders from server.
-   * @param commit
+   * Fetch tree items from the server and apply to the store state.
+   * @param {function} commit Store commit action.
    */
-  [fetchTree]: ({commit}) => {
-    treeApi.getAll()
-      .then(tree => commit(setTreeFolders, tree.items))
+  [a.fetchTree]: ({commit}) => {
+    commit(m.setLoadingStarted)
+    api.getAll()
+      .then(tree => {
+        commit(m.setTree, tree.items)
+        commit(m.setLoadingCompleted)
+      })
   }
 }
 
-const mutations = {
+let mutations = {
   /**
-   * Mutate folders with new items.
-   * @param state
-   * @param folders
+   * Set tree items to the store.
+   * @param {state} state State of the store.
+   * @param {Array} payload Collection of tree items.
    */
-  [setTreeFolders]: (state, folders) => {
-    state.folders = folders
+  [m.setTree]: (state, payload) => {
+    state.items = payload
   }
 }
 
-const getters = {
-  [treeFolders]: (state) => state.folders
+let getters = {
+  /**
+   * Get tree items collection.
+   * @param {state} state State of the store.
+   */
+  [g.getTree]: (state) => state.items
 }
 
 export default {state, actions, mutations, getters}

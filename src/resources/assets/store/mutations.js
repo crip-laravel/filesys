@@ -1,26 +1,25 @@
-// actionsjs mutations
-export const removeUpload = 'removeUpload'
-export const setFileUploadLoading = 'setFileUploadLoading'
-export const setNewUpload = 'setNewUpload'
-export const setUploadError = 'setUploadError'
-
-// blob.js mutations
-export const setBlobEditMode = 'setBlobEditMode'
-export const setCreateEnabled = 'setCreateEnabled'
-export const setCreateDisabled = 'setCreateDisabled'
-export const setUpdatedBlob = 'setUpdatedBlob'
-
-// content.js mutations
+// blobs module mutations list
 export const removeBlob = 'removeBlob'
 export const removeSelectedBlob = 'removeSelectedBlob'
 export const setBlobs = 'setBlobs'
-export const setGridView = 'setGridView'
-export const setListView = 'setListView'
+export const setCreateFolderBlobVisibility = 'setCreateFolderBlobVisibility'
+export const setDisplayType = 'setDisplayType'
 export const setNewBlob = 'setNewBlob'
+export const setRename = 'setRename'
+export const setRenameBlob = 'setRenameBlob'
 export const setSelectedBlob = 'setSelectedBlob'
+export const setUpdatedBlob = 'setUpdatedBlob'
 
-// path.js mutations
-export const setLoadingCompleted = 'setLoadingCompleted'
+// breadcrumb module mutations list
 export const setLoadingStarted = 'setLoadingStarted'
+export const setLoadingCompleted = 'setLoadingCompleted'
 export const setPath = 'setPath'
-export const setTreeFolders = 'setTreeFolders'
+
+// tree module mutations list
+export const setTree = 'setTree'
+
+// uploads module mutations list
+export const removeUpload = 'removeUpload'
+export const setNewUpload = 'setNewUpload'
+export const setUploadFileError = 'setUploadFileError'
+export const setUploadFileLoading = 'setUploadFileLoading'

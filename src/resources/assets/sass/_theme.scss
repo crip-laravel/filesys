@@ -7,10 +7,15 @@
 .inte-item { /* .interaction-item */
   border: 1px solid transparent;
   color: $text-color;
-  outline: none;
-  text-decoration: none;
   cursor: pointer;
+  outline: none;
   padding: 2px;
+  text-decoration: none;
+
+  &.has-error {
+    background-color: $alert-danger-bg !important;
+    border: 1px solid $alert-danger-border !important;
+  }
 
   &.disabled, &.disabled:hover, &.disabled:focus {
     background-color: transparent;

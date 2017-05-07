@@ -11,7 +11,7 @@ export default {
    */
   update (blob, name) {
     return new Promise((resolve, reject) => {
-      vue.http.patch(`${settings.filesUrl}/${blob.full_name}`, {name})
+      vue.http.patch(`${settings.filesUrl}/${blob.fullName}`, {name})
         .then(({data}) => { resolve(new Blob(data)) }, reject)
     })
   },
@@ -23,11 +23,16 @@ export default {
    */
   delete (blob) {
     return new Promise((resolve, reject) => {
-      vue.http.delete(`${settings.filesUrl}/${blob.dir}/${blob.full_name}`)
+      vue.http.delete(`${settings.filesUrl}/${blob.dir}/${blob.fullName}`)
         .then(({data}) => { resolve(!!data) }, reject)
     })
   },
-
+  /**
+   * Upload file to the server API.
+   * @param path
+   * @param file
+   * @return {Promise}
+   */
   upload (path, file) {
     let formData = new FormData()
     formData.append('file', file)
@@ -38,9 +43,7 @@ export default {
         .then(
           ({data}) => resolve(new Blob(data)),
           ({status, data}) => {
-            if (status === 422) {
-              reject(data)
-            }
+            status === 422 ? reject(data) : reject('Could not upload file.')
           })
     })
   }

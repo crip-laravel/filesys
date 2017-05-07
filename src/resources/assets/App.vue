@@ -1,30 +1,43 @@
 <template>
   <div class="container-fluid">
-    <actions class="row"></actions>
-    <breadcrumb class="row"></breadcrumb>
+    <actions-bar class="row"></actions-bar>
+    <breadcrumb-bar class="row"></breadcrumb-bar>
     <div class="row">
       <tree class="col-sm-4 col-md-3"></tree>
-      <blobs class="col-sm-8 col-md-9 position-inherit"></blobs>
+      <content-container class="col-sm-8 col-md-9 position-inherit">
+        <uploads></uploads>
+        <blobs></blobs>
+      </content-container>
     </div>
   </div>
 </template>
 
 <script>
-  import actions from './components/Actions.vue'
-  import breadcrumb from './components/Breadcrumb.vue'
-  import tree from './components/Tree.vue'
-  import blobs from './components/Blobs.vue'
+  import actionsBar from './components/actions-bar/ActionsBar.vue'
+  import blobs from './components/body/content/Blobs.vue'
+  import breadcrumbBar from './components/breadcrumb-bar/BreadcrumbBar.vue'
+  import contentContainer from './components/body/content/ContentContainer.vue'
+  import tree from './components/body/tree/Tree.vue'
+  import uploads from './components/body/uploads/Uploads.vue'
 
-  import { fetchContent } from './store/actions'
+  import { fetchTree, fetchContent } from './store/actions'
 
   export default {
     name: 'app',
 
-    mounted () {
-      this.$store.dispatch(fetchContent)
+    components: {
+      actionsBar,
+      breadcrumbBar,
+      tree,
+      contentContainer,
+      blobs,
+      uploads
     },
 
-    components: {actions, breadcrumb, tree, blobs}
+    mounted () {
+      this.$store.dispatch(fetchContent)
+      this.$store.dispatch(fetchTree)
+    }
   }
 </script>
 

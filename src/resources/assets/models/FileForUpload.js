@@ -1,7 +1,7 @@
 import settings from '../settings'
 import Vue from 'vue'
 
-export default class FileUpload {
+export default class FileForUpload {
   /**
    * Initialize new instance of file upload.
    * @param {File} file
@@ -11,8 +11,8 @@ export default class FileUpload {
     this.name = file.name
     this.reader = new FileReader()
     this.src = settings.icon('file')
-    this.$loading = false
     this.$error = ''
+    this.$loading = false
 
     this.reader.onload = (e) => {
       // Mutate content only for images, all other files should show default

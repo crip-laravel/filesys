@@ -1,21 +1,20 @@
-// actions.js getters
-export const isEditEnabled = 'isEditEnabled'
-export const uploads = 'uploads'
-export const uploadsCount = 'uploadsCount'
+// blobs module getters list
+export const getBlobs = 'getBlobs'
+export const getCreateFolderBlobVisibility = 'getCreateFolderBlobVisibility'
+export const getDisplayType = 'getDisplayType'
+export const getIsAnyBlobInRenameMode = 'getIsAnyBlobInRenameMode'
+export const getIsAnyBlobInSelectedMode = 'getIsAnyBlobInSelectedMode'
+export const getNewFolder = 'getNewFolder'
+export const getSelectedBlob = 'getSelectedBlob'
 
-// content.js getters
-export const blobs = 'blobs'
-export const creating = 'creating'
-export const displayType = 'displayType'
-export const isGridView = 'isGridView'
-export const isListView = 'isListView'
-export const selectedBlob = 'selectedBlob'
-
-// path.js getters
-export const breadcrumb = 'breadcrumb'
+// breadcrumb module getters list
+export const getPath = 'getPath'
+export const getPathUp = 'getPathUp'
 export const isLoading = 'isLoading'
-export const path = 'path'
-export const pathUp = 'pathUp'
 
-// tree.js getters
-export const treeFolders = 'treeFolders'
+// tree module getters list
+export const getTree = 'getTree'
+
+// uploads module getters list
+export const getUploads = 'getUploads'
+export const getUploadsCount = 'getUploadsCount'

@@ -2,56 +2,70 @@ import folderApi from '../api/folder'
 import fileApi from '../api/file'
 
 /**
- * @property {array} thumbs
- * @property {string} bytes
  * @property {string} bytes
  * @property {string} dir
  * @property {string} extension
- * @property {string} full_name
- * @property {string} mediatype
+ * @property {string} fullName
+ * @property {string} mediaType
  * @property {string} mime
- * @property {string} mimetype
+ * @property {string} mimeType
  * @property {string} name
- * @property {string} size
+ * @property {string} path
  * @property {string} thumb
+ * @property {array} thumbs
  * @property {string} type
- * @property {string} updated_at
+ * @property {string} updatedAt
  * @property {string} url
+ * @property {string} xs
  */
 export default class Blob {
   constructor (data) {
     Object.assign(this, data)
 
-    this.$date = data.updated_at ? data.updated_at.dateFromUnixTimestamp() : ''
-    this.$edit = false
+    this.$date = data.updatedAt ? data.updatedAt.dateFromUnixTimestamp() : ''
+    this.$id = data.path ? data.path.replaceAll('/', '-') : 'folder-up'
+    this.$newName = data.name
     this.$temp = !!data.$temp
-    this.$id = data.path ? data.path.replaceAll('/', '-') : 'up'
-    this.newName = data.name
+    this.$rename = !!data.$rename
+    this.$selected = !!data.$selected
+    this.$isContextVisible = false
   }
 
+  /**
+   * Is blob type of folder.
+   * @return {boolean}
+   */
   get isDir () { return this.type === 'dir' }
 
+  /**
+   * Get current blob API class.
+   * @return {folderApi|fileApi}
+   */
   get api () { return this.isDir ? folderApi : fileApi }
 
   /**
-   * Update name of current blob.
+   * Save changes of blob on the server side.
+   * @param {String} path Current state path.
    * @returns {Promise.<Blob>}
    */
-  save () {
+  save (path) {
     let action = 'update'
 
     if (this.$temp) {
       action = 'create'
+      this.path = this.dir = this.fullName = path
     }
 
     return new Promise((resolve, reject) => {
-      this.api[action](this, this.newName)
-        .then(blob => resolve(blob), reject)
+      this.api[action](this, this.$newName)
+        .then(
+          blob => resolve(blob),
+          err => reject(err.data))
     })
   }
 
   /**
-   * Delete current blob.
+   * Delete current blob on the server side.
    * @returns {Promise.<Boolean>}
    */
   delete () {

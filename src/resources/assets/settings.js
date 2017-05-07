@@ -15,8 +15,13 @@ export default {
   iconDir: settings.getAttribute('data-icon-dir'),
   params: JSON.parse(settings.getAttribute('data-params').replaceAll('\'', '"')),
 
+  /**
+   * Gets icon absolute URL depending on name.
+   * @param {string} name
+   * @returns {string|null}
+   */
   icon (name) {
-    return `${this.iconDir}${name}.png`
+    return name ? `${this.iconDir}${name}.png` : null
   },
 
   target () {

@@ -1,21 +1,16 @@
-// actions.js actions
-export const filesForUploadAdded = 'filesForUploadAdded'
-export const openCreateFolderDialog = 'openCreateFolderDialog'
-export const startUpload = 'startUpload'
-export const uploadFile = 'uploadFile'
-
-// blob.js actions
+// blobs module actions list
 export const deleteBlob = 'deleteBlob'
-export const openBlob = 'openBlob'
-export const saveBlob = 'saveBlob'
-export const startEditBlob = 'startEditBlob'
-
-// content.js actions
 export const fetchContent = 'fetchContent'
-export const refreshContent = 'refreshContent'
+export const openBlob = 'openBlob'
+export const saveBlob = 'renameBlob'
 
-// path.js actions
+// breadcrumb module actions list
 export const changePath = 'changePath'
 
-// tree.js actions
+// tree module actions list
 export const fetchTree = 'fetchTree'
+
+// uploads module actions list
+export const addUploads = 'addUploads'
+export const uploadAllFiles = 'uploadAllFiles'
+export const uploadFile = 'uploadFile'

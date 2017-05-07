@@ -28,6 +28,7 @@ export default class Blob {
     this.$temp = !!data.$temp
     this.$rename = !!data.$rename
     this.$selected = !!data.$selected
+    this.$isContextVisible = false
   }
 
   /**

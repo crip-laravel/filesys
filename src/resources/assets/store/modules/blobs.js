@@ -31,7 +31,7 @@ const actions = {
    * @param {String} customUrl Custom url to be used if we wan`t use custom size
    * of image.
    */
-  [a.openBlob]: ({dispatch}, {isDir, path, url}, customUrl = '') => {
+  [a.openBlob]: ({dispatch}, {blob: {isDir, path, url}, url: customUrl}) => {
     if (isDir) {
       return dispatch(a.changePath, path)
     }

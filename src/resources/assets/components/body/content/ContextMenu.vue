@@ -47,16 +47,52 @@
     name: 'blob-context-menu',
 
     props: {
-      blob: {type: Blob, required: true}
+      blob: {type: Blob, required: true},
+      event: {type: MouseEvent, required: false}
     },
 
     computed: {
       /**
+       * Get document height value.
+       */
+      htmlHeight () {
+        const body = document.body
+        const html = document.documentElement
+
+        return Math.max(
+          body.scrollHeight,
+          body.offsetHeight,
+          html.clientHeight,
+          html.scrollHeight,
+          html.offsetHeight)
+      },
+
+      /**
+       * Get event position coordinates.
+       */
+      eventPosition () {
+        let {x, y} = [0, 0]
+        if (this.event.pageX || this.event.pageY) {
+          x = this.event.pageX
+          y = this.event.pageY
+        } else if (this.event.clientX || this.event.clientY) {
+          x = this.event.clientX + document.body.scrollLeft +
+            document.documentElement.scrollLeft
+
+          y = this.event.clientY + document.body.scrollTop +
+            document.documentElement.scrollTop
+        }
+
+        return {x, y}
+      },
+
+      /**
        * Context menu y position
        */
       positionTop () {
-        let maxHeight = window.innerHeight - this.height - 25
-        let largestHeight = this.blob.$y > maxHeight ? maxHeight : this.blob.$y
+        let {y} = this.eventPosition
+        let maxHeight = this.htmlHeight - this.height - 25
+        let largestHeight = y > maxHeight ? maxHeight : y
         return `${largestHeight}px`
       },
 
@@ -64,8 +100,9 @@
        * Context menu x position
        */
       positionLeft () {
+        let {x} = this.eventPosition
         let maxWidth = window.innerWidth - this.width - 25
-        let largestWidth = this.blob.$x > maxWidth ? maxWidth : this.blob.$x
+        let largestWidth = x > maxWidth ? maxWidth : x
         return `${largestWidth}px`
       },
 
@@ -113,7 +150,7 @@
        * @param {String} url
        */
       openBlob (url) {
-        this.$store.dispatch(actions.openBlob, url)
+        this.$store.dispatch(actions.openBlob, {blob: this.blob, url})
         this.hideMenu()
       },
 

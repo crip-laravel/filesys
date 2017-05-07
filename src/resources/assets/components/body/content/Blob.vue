@@ -89,7 +89,7 @@
        * Selects current blob for external use (editor or listener).
        */
       openBlob () {
-        this.$store.dispatch(actions.openBlob, this.blob)
+        this.$store.dispatch(actions.openBlob, {blob: this.blob})
       },
 
       /**
@@ -122,9 +122,12 @@
     }
 
     .blob-description {
-      height: 28px;
+      height: 24px;
       margin: 0 4px;
+      overflow: hidden;
       text-align: center;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
 

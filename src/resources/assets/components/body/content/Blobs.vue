@@ -7,7 +7,7 @@
       <div class="context-wrapp"
            @contextmenu.prevent="openContext($event, blob)">
         <blob :blob="blob"></blob>
-        <blob-context-menu :blob="blob"></blob-context-menu>
+        <blob-context-menu :blob="blob" :event="event"></blob-context-menu>
       </div>
     </div>
   </div>
@@ -20,7 +20,6 @@
   import blobNewFolder from './BlobNewFolder.vue'
   import blobUp from './BlobUp.vue'
   import settings from '../../../settings'
-  import Vue from 'vue'
 
   export default {
     name: 'body-blobs',
@@ -74,6 +73,10 @@
       }
     },
 
+    data () {
+      return {event: new MouseEvent('click')}
+    },
+
     methods: {
       /**
        * Open context menu for a blob.
@@ -82,12 +85,11 @@
        */
       openContext (e, blob) {
         this.blobs.forEach(b => {
-          Vue.set(b, '$isContextVisible', false)
+          b.$isContextVisible = false
         })
 
-        Vue.set(blob, '$isContextVisible', true)
-        Vue.set(blob, '$x', e.x)
-        Vue.set(blob, '$y', e.y)
+        blob.$isContextVisible = true
+        this.event = e
       }
     }
   }

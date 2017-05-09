@@ -1,45 +1,36 @@
 <template>
-  <btn size="sm"
-       :active="isViewActive"
-       @click="setView">
-    <slot></slot>
-  </btn>
+  <el-select v-model="viewType" size="large">
+    <el-option
+            v-for="view in viewTypes"
+            :key="view.value"
+            :label="view.label"
+            :value="view.value">
+    </el-option>
+  </el-select>
 </template>
 
 <script>
   import * as g from '../../store/getters'
-  import btn from './Btn.vue'
   import { setDisplayType } from '../../store/mutations'
 
   export default {
-    name: 'change-view_actions-bar-btn',
+    name: 'change-view-btn',
 
-    components: {btn},
+    data () {
+      let viewType = this.$store.getters[g.getDisplayType]
 
-    props: {
-      /**
-       * Display type identifier.
-       */
-      view: {type: String, required: true}
-    },
-
-    computed: {
-      /**
-       * Determines is vuex store display type same as current button view type.
-       * @returns {Boolean}
-       */
-      isViewActive () {
-        return this.$store.getters[g.getDisplayType] === this.view
+      return {
+        viewType,
+        viewTypes: [
+          {value: 'grid', label: 'Grid view'},
+          {value: 'list', label: 'List view'}
+        ]
       }
     },
 
-    methods: {
-      /**
-       * Set current view as active one in vuex store.
-       * @returns {Boolean}
-       */
-      setView () {
-        return !this.isViewActive && this.$store.commit(setDisplayType, this.view)
+    watch: {
+      viewType (value) {
+        this.$store.commit(setDisplayType, value)
       }
     }
   }

@@ -1,15 +1,12 @@
 <template>
-  <ol class="breadcrumb">
-    <li v-for="item in items"
-        :class="{active: item.isActive()}">
-      <a v-if="!item.isActive()"
-         href
-         @click.prevent="changePath(item.path)">
-        {{ item.text }}
-      </a>
-      <span v-else="">{{ item.text }}</span>
-    </li>
-  </ol>
+  <el-breadcrumb separator="/">
+    <el-breadcrumb-item
+            v-for="item in items"
+            :key="item.path"
+            @click.prevent="changePath(item.path)">
+      {{ item.text }}
+    </el-breadcrumb-item>
+  </el-breadcrumb>
 </template>
 
 <script>
@@ -31,16 +28,14 @@
         // Home button at the beginning of the breadcrumb.
         let result = [{
           text: 'Home',
-          path: '',
-          isActive: () => fullPath === ''
+          path: ''
         }]
 
         parts.forEach((part, index) => {
           let path = parts.slice(0, index + 1).join('/')
           part !== '' && result.push({
             text: part,
-            path: path,
-            isActive: () => path === fullPath
+            path: path
           })
         })
 
@@ -61,8 +56,7 @@
 </script>
 
 <style>
-  .breadcrumb {
-    margin-bottom: 0;
-    background-color: transparent;
+  .el-breadcrumb {
+    padding: 11px 0;
   }
 </style>

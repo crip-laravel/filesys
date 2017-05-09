@@ -1,21 +1,24 @@
 <template>
-  <div id="breadcrumb">
-    <div class="col-xs-2 col-md-1" :class="{disabled: isUpDisabled}">
-      <a class="icon-wrapp" href @click.prevent="changePath(up)">
-        <img class="icon" :src="iconUp">
-      </a>
-    </div>
+  <el-row id="breadcrumb">
+    <el-col :xs="4" :md="2">
+      <el-button
+              type="primary"
+              icon="arrow-up"
+              :disabled="isUpDisabled"
+              @click.prevent="changePath(up)"></el-button>
+    </el-col>
 
-    <div class="col-xs-8 col-md-10">
+    <el-col :xs="16" :md="20">
       <breadcrumb></breadcrumb>
-    </div>
+    </el-col>
 
-    <div class="col-xs-2 col-md-1 text-right">
-      <a class="icon-wrapp" href @click.prevent="refreshContent">
-        <img class="icon" :src="iconRefresh">
-      </a>
-    </div>
-  </div>
+    <el-col :xs="4" :md="2" class="text-right">
+      <el-button
+              type="primary"
+              icon="loading"
+              @click.prevent="refreshContent"></el-button>
+    </el-col>
+  </el-row>
 </template>
 
 <script>
@@ -75,20 +78,7 @@
 </script>
 
 <style lang="sass" type="text/scss">
-  #breadcrumb {
-    min-height: 38px;
-
-    .icon {
-      max-height: 20px;
-    }
-
-    .disabled {
-      opacity: 0.5;
-    }
-
-    .icon-wrapp {
-      display: block;
-      padding: 8px 15px;
-    }
+  .text-right {
+    text-align: right;
   }
 </style>

@@ -1,9 +1,4 @@
 // Fonts
 @import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);
-@import "variables";
 
-// Bootstrap
-@import "~bootstrap-sass/assets/stylesheets/bootstrap";
-
-// Custom styling
-@import "theme";
+@import "~element-ui/lib/theme-default/index.css";

@@ -2,12 +2,14 @@ import TreeItem from './TreeItem'
 
 export default class Tree {
   constructor (data) {
-    this.items = []
+    this.path = ''
+    this.label = 'Home'
+    this.children = []
 
     if (!data || data.length < 1) { return }
 
     data.forEach(item => {
-      this.items.push(new TreeItem(item))
+      this.children.push(new TreeItem(item))
     })
   }
 }

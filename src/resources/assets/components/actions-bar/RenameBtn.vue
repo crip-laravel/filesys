@@ -1,23 +1,21 @@
 <template>
-  <btn size="lg"
-       icon="rename"
-       :active="isRenameBlobActive"
-       :disabled="isRenameBlobDisabled"
-       @click="enableBlobRename">
+  <el-button
+          size="large"
+          :icon="btnIcon"
+          :type="btnType"
+          :disabled="isRenameBlobDisabled"
+          @click="enableBlobRename">
     {{ content }}
-  </btn>
+  </el-button>
 </template>
 
 <script>
   import * as actions from '../../store/actions'
   import * as getters from '../../store/getters'
   import * as mutations from '../../store/mutations'
-  import btn from './Btn.vue'
 
   export default {
     name: 'rename_actions-bar-btn',
-
-    components: {btn},
 
     computed: {
       /**
@@ -54,6 +52,23 @@
        */
       isAnyBlobSelected () {
         return this.$store.getters[getters.getIsAnyBlobInSelectedMode]
+      },
+
+      /**
+       * Current state button type value.
+       * @returns {String} 'primary' if create folder is visible at this moment.
+       */
+      btnType () {
+        return this.isRenameBlobActive ? 'primary' : ''
+      },
+
+      /**
+       * Current state button icon name.
+       * @returns {String} 'circle-check' if create folder is visible and 'edit'
+       * otherwise.
+       */
+      btnIcon () {
+        return this.isRenameBlobActive ? 'circle-check' : 'edit'
       },
 
       /**

@@ -1,21 +1,19 @@
 <template>
-  <btn size="lg" icon="add-folder"
-       @click="showCreateFolderBlob"
-       :active="createFolderBlobIsVisible">
+  <el-button size="large"
+             :icon="btnIcon"
+             :type="btnType"
+             @click="showCreateFolderBlob">
     {{ content }}
-  </btn>
+  </el-button>
 </template>
 
 <script>
   import * as actions from './../../store/actions'
   import * as getters from './../../store/getters'
   import * as mutations from './../../store/mutations'
-  import btn from './Btn.vue'
 
   export default {
-    name: 'create-folder_actions-bar-btn',
-
-    components: {btn},
+    name: 'create-folder-btn',
 
     computed: {
       /**
@@ -26,6 +24,23 @@
       createFolderBlobIsVisible () {
         return this.$store.getters[getters.getCreateFolderBlobVisibility] &&
           !this.$store.getters[getters.getIsAnyBlobInSelectedMode]
+      },
+
+      /**
+       * Current state button type value.
+       * @returns {String} 'primary' if create folder is visible at this moment.
+       */
+      btnType () {
+        return this.createFolderBlobIsVisible ? 'primary' : ''
+      },
+
+      /**
+       * Current state button icon name.
+       * @returns {String} 'circle-check' if create folder is visible and 'plus'
+       * otherwise.
+       */
+      btnIcon () {
+        return this.createFolderBlobIsVisible ? 'circle-check' : 'plus'
       },
 
       /**

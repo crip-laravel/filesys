@@ -6,6 +6,6 @@
         "modules": "commonjs"
       }
     ],
-    "stage-2"
+    "vue-app"
   ]
 }

@@ -1,20 +1,19 @@
 <template>
-  <btn size="lg" icon="delete"
-       :disabled="isDeleteBlobDisabled"
-       @click="deleteBlob">
+  <el-button
+          size="large"
+          icon="delete"
+          :disabled="isDeleteBlobDisabled"
+          @click="deleteBlob">
     Delete
-  </btn>
+  </el-button>
 </template>
 
 <script>
   import * as actions from '../../store/actions'
   import * as getters from '../../store/getters'
-  import btn from './Btn.vue'
 
   export default {
-    name: 'delete_actions-bar-btn',
-
-    components: {btn},
+    name: 'delete-btn',
 
     computed: {
       /**

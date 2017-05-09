@@ -2,9 +2,10 @@ import * as a from '../actions'
 import * as g from '../getters'
 import * as m from '../mutations'
 import api from '../../api/tree'
+import Tree from '../../models/Tree'
 
 let state = {
-  items: []
+  items: [new Tree()]
 }
 
 let actions = {
@@ -16,7 +17,7 @@ let actions = {
     commit(m.setLoadingStarted)
     api.getAll()
       .then(tree => {
-        commit(m.setTree, tree.items)
+        commit(m.setTree, tree)
         commit(m.setLoadingCompleted)
       })
   }
@@ -26,10 +27,10 @@ let mutations = {
   /**
    * Set tree items to the store.
    * @param {state} state State of the store.
-   * @param {Array} payload Collection of tree items.
+   * @param {Tree} payload Collection of tree items.
    */
   [m.setTree]: (state, payload) => {
-    state.items = payload
+    state.items = [payload]
   }
 }
 

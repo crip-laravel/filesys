@@ -11,7 +11,7 @@
       <a href
          class="tree-link inte-item"
          :class="classes"
-         @click.prevent="changePath">{{ item.name }}</a>
+         @click.prevent="changePath">{{ item.label }}</a>
 
     </div>
 

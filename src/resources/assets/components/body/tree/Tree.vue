@@ -1,6 +1,5 @@
 <template>
   <div id="tree">
-    <tree-item :item="root" class="root"></tree-item>
     <ul class="root-ul">
       <li v-for="item in tree">
         <tree-item :item="item"></tree-item>
@@ -38,12 +37,13 @@
 </script>
 
 <style lang="sass" type="text/scss">
-  @import "../../../sass/variables";
-
   #tree {
-    border-top: 1px solid $menu-border-color;
     overflow-x: auto;
     padding-top: 6px;
+
+    .clearfix {
+      clear: both;
+    }
 
     .root a {
       padding-left: 5px;

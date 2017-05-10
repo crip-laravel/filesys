@@ -1,5 +1,5 @@
 import vue from 'vue'
-import Tree from '../models/Tree'
+import TreeItem from '../models/TreeItem'
 import settings from '../settings'
 
 export default {
@@ -10,7 +10,13 @@ export default {
   getAll () {
     return new Promise((resolve, reject) => {
       vue.http.get(`${settings.treeUrl}`)
-        .then(({data}) => { resolve(new Tree(data)) }, reject)
+        .then(({data: children}) => {
+          resolve(new TreeItem({
+            name: 'Home',
+            path: '',
+            children
+          }))
+        }, reject)
     })
   }
 }

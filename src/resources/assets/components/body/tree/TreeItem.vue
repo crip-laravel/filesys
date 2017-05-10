@@ -3,18 +3,18 @@
     <div class="clearfix">
 
       <el-button
-          class="toggle-btn"
-          type="text"
-          v-if="item.children.length"
-          :class="{disabled: isLoading}"
-          @click.prevent="toggle">
-        {{ stateSign }}
+              class="toggle-btn"
+              type="text"
+              v-if="item.children.length"
+              :icon="toggleIcon"
+              :class="{disabled: isLoading}"
+              @click.prevent="toggleItem">
       </el-button>
 
       <el-button
-          type="text"
-          :class="classes"
-          @click.prevent="changePath">
+              type="text"
+              :class="classes"
+              @click.prevent="changePath">
         {{ item.label }}
       </el-button>
 
@@ -53,11 +53,11 @@
       },
 
       /**
-       * State sign indicating to open or close current item tree.
+       * Get current tree item caret state.
        * @return {String}
        */
-      stateSign () {
-        return this.isOpen ? '-' : '+'
+      toggleIcon () {
+        return this.isOpen ? 'caret-bottom' : 'caret-right'
       },
 
       /**
@@ -108,7 +108,7 @@
       /**
        * Toggle current tree item open state.
        */
-      toggle () {
+      toggleItem () {
         this.isOpen = !this.isOpen
       },
 
@@ -137,7 +137,17 @@
 </script>
 
 <style lang="sass" type="text/scss" scoped>
-  .toggle-btn {
-    padding: 0 5px;
+  .el-button {
+    &.toggle-btn {
+      padding: 5px;
+    }
+
+    &.offset {
+      margin-left: 28px;
+    }
+
+    &.active {
+      color: black;
+    }
   }
 </style>

@@ -1,10 +1,6 @@
 <template>
   <div id="tree">
-    <ul class="root-ul">
-      <li v-for="item in tree">
-        <tree-item :item="item"></tree-item>
-      </li>
-    </ul>
+    <tree-item :item="tree"></tree-item>
   </div>
 </template>
 
@@ -39,30 +35,19 @@
 <style lang="sass" type="text/scss">
   #tree {
     overflow-x: auto;
-    padding-top: 6px;
 
     .clearfix {
       clear: both;
     }
 
-    .root a {
-      padding-left: 5px;
-    }
-
-    ul.root-ul {
+    ul {
+      list-style-type: none;
+      padding-left: 13px;
       margin: 0;
     }
 
-    ul {
-      border-left: 1px dotted gray;
-      list-style-type: none;
-      padding-left: 13px;
-      margin-left: 13px;
-    }
-
-    > ul {
-      border-left: none;
-      padding: 0;
+    .el-button+.el-button {
+      margin-left: 0;
     }
   }
 </style>

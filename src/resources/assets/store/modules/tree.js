@@ -2,10 +2,10 @@ import * as a from '../actions'
 import * as g from '../getters'
 import * as m from '../mutations'
 import api from '../../api/tree'
-import Tree from '../../models/Tree'
+import TreeItem from '../../models/TreeItem'
 
 let state = {
-  items: [new Tree()]
+  tree: new TreeItem({name: 'home', path: ''})
 }
 
 let actions = {
@@ -25,21 +25,21 @@ let actions = {
 
 let mutations = {
   /**
-   * Set tree items to the store.
+   * Set tree root item in the store.
    * @param {state} state State of the store.
    * @param {Tree} payload Collection of tree items.
    */
   [m.setTree]: (state, payload) => {
-    state.items = [payload]
+    state.tree = payload
   }
 }
 
 let getters = {
   /**
-   * Get tree items collection.
+   * Gets tree root item.
    * @param {state} state State of the store.
    */
-  [g.getTree]: (state) => state.items
+  [g.getTree]: (state) => state.tree
 }
 
 export default {state, actions, mutations, getters}

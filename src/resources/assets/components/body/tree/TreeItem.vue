@@ -3,11 +3,11 @@
     <div class="clearfix">
 
       <el-button
-              class="toggle-btn"
               type="text"
+              class="toggle-btn transformable"
+              icon="caret-right"
               v-if="item.children.length"
-              :icon="toggleIcon"
-              :class="{disabled: isLoading}"
+              :class="{disabled: isLoading, expanded: this.isSubmenuOpen}"
               @click.prevent="toggleItem">
       </el-button>
 
@@ -19,12 +19,13 @@
       </el-button>
 
     </div>
-
-    <ul v-if="item.children.length && isSubmenuOpen">
-      <li v-for="child in item.children">
-        <tree-item :item="child"></tree-item>
-      </li>
-    </ul>
+    <transition name="collapse">
+      <ul v-if="item.children.length && isSubmenuOpen" class="tree-submenu">
+        <li v-for="child in item.children">
+          <tree-item :item="child"></tree-item>
+        </li>
+      </ul>
+    </transition>
   </div>
 </template>
 
@@ -50,14 +51,6 @@
        */
       isLoading () {
         return this.$store.getters[getters.isLoading]
-      },
-
-      /**
-       * Get current tree item caret state.
-       * @return {String}
-       */
-      toggleIcon () {
-        return this.isSubmenuOpen ? 'caret-bottom' : 'caret-right'
       },
 
       /**
@@ -117,7 +110,7 @@
        * Toggle current tree item open state.
        */
       toggleItem () {
-        this.isOpen = !this.isOpen
+        this.isOpen = this.item.isOpen = !this.isSubmenuOpen
       },
 
       /**
@@ -146,6 +139,16 @@
 
 <style lang="sass" type="text/scss" scoped>
   .el-button {
+
+    &.transformable {
+      transform: rotate(0deg);
+      transition: transform .3s ease-in-out;
+
+      &.expanded {
+        transform: rotate(90deg);
+      }
+    }
+
     &.toggle-btn {
       padding: 5px;
     }
@@ -156,6 +159,17 @@
 
     &.active {
       color: #97a8be;
+    }
+  }
+
+  .tree-submenu {
+    &.collapse-enter-active, &.collapse-leave-active {
+      overflow: hidden;
+      transition: opacity .3s ease-in-out;
+    }
+
+    &.collapse-enter, &.collapse-leave-to {
+      opacity: 0;
     }
   }
 </style>

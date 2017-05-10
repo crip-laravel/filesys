@@ -2,16 +2,21 @@
   <div>
     <div class="clearfix">
 
-      <a href
-         class="toggle inte-item"
-         v-if="item.children.length"
-         :class="{disabled: isLoading}"
-         @click.prevent="toggle">{{ stateSign }}</a>
+      <el-button
+          class="toggle-btn"
+          type="text"
+          v-if="item.children.length"
+          :class="{disabled: isLoading}"
+          @click.prevent="toggle">
+        {{ stateSign }}
+      </el-button>
 
-      <a href
-         class="tree-link inte-item"
-         :class="classes"
-         @click.prevent="changePath">{{ item.label }}</a>
+      <el-button
+          type="text"
+          :class="classes"
+          @click.prevent="changePath">
+        {{ item.label }}
+      </el-button>
 
     </div>
 
@@ -131,17 +136,8 @@
   }
 </script>
 
-<style lang="sass" type="text/scss">
-  .tree-link {
-    display: block;
-  }
-
-  .toggle {
-    float: left;
-    padding: 2px 10px;
-  }
-
-  .offset {
-    padding-left: 28px;
+<style lang="sass" type="text/scss" scoped>
+  .toggle-btn {
+    padding: 0 5px;
   }
 </style>

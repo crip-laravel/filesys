@@ -20,7 +20,7 @@
 
     </div>
 
-    <ul v-if="item.children.length && isOpen">
+    <ul v-if="item.children.length && isSubmenuOpen">
       <li v-for="child in item.children">
         <tree-item :item="child"></tree-item>
       </li>
@@ -57,7 +57,7 @@
        * @return {String}
        */
       toggleIcon () {
-        return this.isOpen ? 'caret-bottom' : 'caret-right'
+        return this.isSubmenuOpen ? 'caret-bottom' : 'caret-right'
       },
 
       /**
@@ -85,9 +85,17 @@
        * @return {Boolean}
        */
       isClosedAndChildActive () {
-        if (!this.item.children.length || this.isOpen) { return false }
+        if (!this.item.children.length || this.isSubmenuOpen) { return false }
 
         return this.isAnyActive(this.item.children)
+      },
+
+      /**
+       * Determines is this item collapsed at this moment in a state.
+       * @return {Boolean}
+       */
+      isSubmenuOpen () {
+        return this.isOpen || this.item.isOpen
       }
     },
 
@@ -147,7 +155,7 @@
     }
 
     &.active {
-      color: black;
+      color: #97a8be;
     }
   }
 </style>

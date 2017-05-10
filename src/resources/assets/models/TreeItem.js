@@ -1,12 +1,13 @@
 export default class TreeItem {
-  constructor (data) {
-    this.path = data.path
-    this.label = data.name
+  constructor ({path, name, children, isOpen = false}) {
+    this.path = path
+    this.label = name
+    this.isOpen = isOpen
     this.children = []
 
-    if (!data.children || data.children.length < 1) { return }
+    if (!children || children.length < 1) { return }
 
-    data.children.forEach(item => {
+    children.forEach(item => {
       this.children.push(new TreeItem(item))
     })
   }

@@ -14,6 +14,7 @@ export default {
           resolve(new TreeItem({
             name: 'Home',
             path: '',
+            isOpen: true,
             children
           }))
         }, reject)

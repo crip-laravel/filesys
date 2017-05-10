@@ -1,10 +1,13 @@
 <template>
-  <el-breadcrumb separator="/">
+  <el-breadcrumb>
     <el-breadcrumb-item
             v-for="item in items"
-            :key="item.path"
-            @click.prevent="changePath(item.path)">
-      {{ item.text }}
+            :key="item.path">
+      <el-button
+              type="text"
+              @click.prevent="changePath(item.path)">
+        {{ item.text }}
+      </el-button>
     </el-breadcrumb-item>
   </el-breadcrumb>
 </template>
@@ -56,7 +59,8 @@
 </script>
 
 <style>
-  .el-breadcrumb {
-    padding: 11px 0;
+  .el-breadcrumb__item__inner .el-button {
+    color: inherit;
+    cursor: inherit;
   }
 </style>

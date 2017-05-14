@@ -3,23 +3,24 @@
     <div class="clearfix">
 
       <a href
-         class="toggle inte-item"
+         class="toggle inte-item transition-all"
          v-if="item.children.length"
          :class="{disabled: isLoading}"
          @click.prevent="toggle">{{ stateSign }}</a>
 
       <a href
-         class="tree-link inte-item"
+         class="tree-link inte-item transition-all"
          :class="classes"
          @click.prevent="changePath">{{ item.name }}</a>
 
     </div>
-
-    <ul v-if="item.children.length && isOpen">
-      <li v-for="child in item.children">
-        <tree-item :item="child"></tree-item>
-      </li>
-    </ul>
+    <transition name="fade-x-right">
+      <ul v-if="item.children.length && isOpen" class="fade-x-right">
+        <li v-for="child in item.children">
+          <tree-item :item="child"></tree-item>
+        </li>
+      </ul>
+    </transition>
   </div>
 </template>
 

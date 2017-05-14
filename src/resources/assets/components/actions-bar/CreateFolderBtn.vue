@@ -44,6 +44,7 @@
       showCreateFolderBlob () {
         if (this.$store.getters[getters.getIsAnyBlobInSelectedMode]) {
           this.$store.commit(mutations.removeSelectedBlob)
+          this.$store.commit(mutations.setCreateFolderBlobVisibility, false)
         }
 
         if (!this.createFolderBlobIsVisible) {

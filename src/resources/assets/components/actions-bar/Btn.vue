@@ -1,6 +1,6 @@
 <template>
   <div class="action-btn" :class="btnClass">
-    <a class="inte-item" @click="onBtnClick" :class="linkClass">
+    <a class="inte-item transition-all" @click="onBtnClick" :class="linkClass">
       <img class="action-icon hidden-xs" :src="iconUrl" v-if="hasIcon">
       <div class="action-text">
         <slot></slot>

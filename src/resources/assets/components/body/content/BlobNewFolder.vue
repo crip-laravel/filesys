@@ -1,7 +1,9 @@
 <template>
-  <div class="blob-container" v-if="isNewFolderEnabled">
-    <blob :blob="blob"></blob>
-  </div>
+  <transition name="fade-x-right">
+    <div class="blob-container fade-x-right" v-if="isNewFolderEnabled">
+      <blob :blob="blob"></blob>
+    </div>
+  </transition>
 </template>
 
 <script>

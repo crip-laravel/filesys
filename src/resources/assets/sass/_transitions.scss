@@ -1,0 +1,23 @@
+.fade-x, .fade-x-right, .fade-y, .transition-all {
+  transition: all .3s;
+}
+
+.fade-x-enter, .fade-x-right-leave-to {
+  opacity: 0;
+  transform: translateX(50px);
+}
+
+.fade-x-leave-to, .fade-x-right-enter {
+  opacity: 0;
+  transform: translateX(-50px);
+}
+
+.fade-y-enter {
+  opacity: 0;
+  transform: translateY(50px);
+}
+
+.fade-y-leave-to {
+  opacity: 0;
+  transform: translateY(-50px);
+}

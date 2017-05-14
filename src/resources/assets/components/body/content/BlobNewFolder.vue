@@ -11,7 +11,7 @@
   import blob from './Blob.vue'
 
   export default {
-    name: 'blob-new-folder',
+    name: 'new-folder-blob',
 
     computed: {
       /**

@@ -31,7 +31,7 @@ module.exports = (env) => {
   return {
     context: path.join(__dirname, 'src/resources/assets'),
     entry: {
-      'app': ['./app.js'],
+      'app': ['babel-polyfill', './app.js'],
       'tinymce/plugin': ['./tinymce/plugin.js'],
       'tinymce/plugin.min': ['./tinymce/plugin.js'],
       'tinymce/plugins/cripfilesys/plugin': ['./tinymce/plugins/cripfilesys/plugin.js'],

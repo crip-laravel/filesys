@@ -24,7 +24,7 @@
   import settings from '../../../settings'
 
   export default {
-    name: 'body-blobs',
+    name: 'blobs',
 
     components: {blob, blobUp, blobNewFolder, blobContextMenu},
 

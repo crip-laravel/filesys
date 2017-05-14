@@ -1,12 +1,12 @@
 <template>
   <div id="uploads" class="row clearfix">
-    <div class="clearfix">
-      <blob class="blob-container"
+    <transition-group name="fade-x" tag="div" class="clearfix">
+      <blob class="blob-container fade-x"
             :file="file"
             :key="key"
             v-for="(file, key) in uploads">
       </blob>
-    </div>
+    </transition-group>
     <hr v-if="count > 0">
   </div>
 </template>

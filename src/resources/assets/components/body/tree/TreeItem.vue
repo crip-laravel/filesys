@@ -17,7 +17,7 @@
     <transition name="fade-x-right">
       <ul v-if="item.children.length && isOpen" class="fade-x-right">
         <li v-for="child in item.children">
-          <tree-item :item="child"></tree-item>
+          <folder-tree-item :item="child"></folder-tree-item>
         </li>
       </ul>
     </transition>
@@ -30,7 +30,7 @@
   import * as getters from '../../../store/getters'
 
   export default {
-    name: 'tree-item',
+    name: 'folder-tree-item',
 
     props: {
       /**

@@ -1,7 +1,9 @@
 <template>
-  <div class="blob-container" v-if="isNotRootPath">
-    <blob :blob="blob"></blob>
-  </div>
+  <transition name="fade-x">
+    <div class="blob-container fade-x" v-if="isNotRootPath && isNotLoading">
+      <blob :blob="blob"></blob>
+    </div>
+  </transition>
 </template>
 
 <script>
@@ -20,6 +22,10 @@
        */
       isNotRootPath () {
         return this.$store.getters[getters.getPath] !== ''
+      },
+
+      isNotLoading () {
+        return !this.$store.getters[getters.isLoading]
       },
 
       /**

@@ -30,15 +30,15 @@
     text-decoration: none;
   }
 
-  &:hover {
-    border: 1px solid $hover-border-color;
-  }
-
   &:hover, &.active {
     background-color: $hover-bg;
     color: $text-color;
     outline: none;
     text-decoration: none;
+  }
+
+  &.active {
+    border: 1px solid $hover-border-color;
   }
 
   &:active, &.active:hover {

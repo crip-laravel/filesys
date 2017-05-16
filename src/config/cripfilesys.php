@@ -5,8 +5,33 @@ use Crip\Filesys\App\Controllers\FolderController;
 use Crip\Filesys\App\Controllers\TreeController;
 
 return [
+
+    /*
+    |---------------------------------------------------------------------------
+    | Public URL
+    |---------------------------------------------------------------------------
+    |
+    | This value is public URL to location of filesys assets. This value is used
+    | when backend is generating initial HTML and requesting assets for manager.
+    |
+    */
+
     'public_url' => '/vendor/crip/cripfilesys',
-    'target_dir' => 'storage/uploads',
+
+    /*
+    |---------------------------------------------------------------------------
+    | Thumb sizes
+    |---------------------------------------------------------------------------
+    |
+    | Here are each of the thumb size setup for your application.
+    | Uploaded images will be sized to this configured Array. First argument is
+    | width and second is height. Third argument describes crop type:
+    | - `resize` - crop image to width and height
+    | - `width`  - resize the image to a width and constrain height
+    | - `height` - resize the image to a height and constrain width
+    |
+    */
+
     'thumbs' => [
         'thumb' => [205, 100, 'resize',],
         'xs' => [24, 24, 'resize',],
@@ -14,6 +39,19 @@ return [
         'md' => [512, 1000, 'width',],
         'lg' => [1024, 2000, 'width',],
     ],
+
+    /*
+    |---------------------------------------------------------------------------
+    | Icons
+    |---------------------------------------------------------------------------
+    |
+    | Filesys manager UI icons are mapped to this configuration and developer
+    | can configure its own icons to fit required design in system. Each
+    | configured mime type should contain configuration in this section as icons
+    | are taken depending on it. Make sure that your images are in png format.
+    |
+    */
+
     'icons' => [
         'url' => '/vendor/crip/cripfilesys/images/',
         'files' => [
@@ -33,6 +71,21 @@ return [
             'zip' => 'archive.png',
         ]
     ],
+
+    /*
+    |---------------------------------------------------------------------------
+    | Mimes
+    |---------------------------------------------------------------------------
+    |
+    | Mime types are mapping from filesystem defined mimetype to filesys mime
+    | names to be able add custom icons for files and filter by media types.
+    | Some editors may predefine media type of files to show in editor and this
+    | is place to map mime types to some of media group. Some drivers (like FTP)
+    | does not provide filesystem mimetypes, in this cases we are using mime
+    | type guesser with file extension map configured in this section.
+    |
+    */
+
     'mime' => [
         'types' => [
             'js' => [
@@ -218,10 +271,32 @@ return [
             'jar' => 'application/java-archive',
         ]
     ],
+
+    /*
+    |---------------------------------------------------------------------------
+    | Blocked file extensions and mime types
+    |---------------------------------------------------------------------------
+    |
+    | Some files may not be allowed for end-user needs. In those cases this
+    | configuration may be used to avoid this type file upload to server.
+    |
+    */
+
     'block' => [
         'extensions' => ['php'],
         'mimetypes' => ["/^text\/php/"]
     ],
+
+    /*
+    |---------------------------------------------------------------------------
+    | Controller action
+    |---------------------------------------------------------------------------
+    |
+    | Developer may want to define its own methods for parts of application
+    | back-end.
+    |
+    */
+
     'actions' => [
         'folder' => FolderController::class,
         'file' => FileController::class,

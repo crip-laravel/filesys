@@ -42,11 +42,10 @@
 
   #tree {
     border-top: 1px solid $menu-border-color;
-    overflow-x: auto;
     padding-top: 6px;
 
     .root a {
-      padding-left: 0;
+      padding-left: 5px;
     }
 
     ul.root-ul {

@@ -9,13 +9,15 @@
 
     <div class="actions clearfix">
       <a href
+         title="Start upload this file"
+         class="inte-item pull-left transition-all"
          v-if="!file.hasError"
-         class="inte-item pull-left"
          :class="{disabled: file.$loading}"
          @click.prevent="uploadFile">Upload {{ file.name }}</a>
 
       <a href
-         class="inte-item pull-right"
+         title="Delete file from queue"
+         class="inte-item pull-right transition-all"
          :class="{disabled: file.$loading}"
          @click.prevent="removeUpload">&times;</a>
     </div>
@@ -29,7 +31,7 @@
   import * as actions from '../../../store/actions'
 
   export default {
-    name: 'file-upload',
+    name: 'uploads-blob',
 
     props: {
       file: {type: FileForUpload, required: true}

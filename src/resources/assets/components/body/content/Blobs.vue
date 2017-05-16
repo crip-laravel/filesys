@@ -3,13 +3,15 @@
     <blob-new-folder></blob-new-folder>
     <blob-up></blob-up>
 
-    <div v-for="blob in content" :key="blob.$id" class="blob-container">
-      <div class="context-wrapp"
-           @contextmenu.prevent="openContext($event, blob)">
-        <blob :blob="blob"></blob>
-        <blob-context-menu :blob="blob" :event="event"></blob-context-menu>
+    <transition-group name="fade-x" tag="div">
+      <div v-for="blob in content" :key="blob.$id" class="blob-container fade-x">
+        <div class="context-wrapp"
+             @contextmenu.prevent="openContext($event, blob)">
+          <blob :blob="blob"></blob>
+          <blob-context-menu :blob="blob" :event="event"></blob-context-menu>
+        </div>
       </div>
-    </div>
+    </transition-group>
   </div>
 </template>
 
@@ -22,7 +24,7 @@
   import settings from '../../../settings'
 
   export default {
-    name: 'body-blobs',
+    name: 'blobs',
 
     components: {blob, blobUp, blobNewFolder, blobContextMenu},
 

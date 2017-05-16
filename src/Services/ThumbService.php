@@ -1,7 +1,6 @@
 <?php namespace Crip\Filesys\Services;
 
 use Crip\Core\Support\PackageBase;
-use Illuminate\Contracts\Filesystem\Filesystem;
 use Intervention\Image\ImageManager;
 
 /**
@@ -103,7 +102,7 @@ class ThumbService
     {
         $this->sizes->keys()->each(function ($size) use ($pathToImage, $newName) {
             $existing = $this->createThumbPath($pathToImage, $size);
-            list($path, $oldName) = $this->getThumbPath($pathToImage, $size);
+            list($path) = $this->getThumbPath($pathToImage, $size);
 
             if ($this->storage->exists($existing)) {
                 $this->storage->move($existing, $path . '/' . $newName);

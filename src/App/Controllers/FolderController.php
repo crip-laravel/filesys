@@ -1,7 +1,5 @@
 <?php namespace Crip\Filesys\App\Controllers;
 
-use Crip\Filesys\App\Folder;
-use Crip\Filesys\Services\FilesysManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 

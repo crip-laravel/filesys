@@ -1,5 +1,5 @@
 <template>
-  <div class="blob inte-item"
+  <div class="blob inte-item transition-all"
        :class="classes"
        :title="title"
        @click.prevent="selectBlob">

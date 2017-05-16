@@ -3,23 +3,24 @@
     <div class="clearfix">
 
       <a href
-         class="toggle inte-item"
+         class="toggle inte-item transition-all"
          v-if="item.children.length"
          :class="{disabled: isLoading}"
          @click.prevent="toggle">{{ stateSign }}</a>
 
       <a href
-         class="tree-link inte-item"
-         :class="{disabled: isLoading, offset: !item.children.length}"
+         class="tree-link inte-item transition-all"
+         :class="classes"
          @click.prevent="changePath">{{ item.name }}</a>
 
     </div>
-
-    <ul v-if="item.children.length && isOpen">
-      <li v-for="child in item.children">
-        <tree-item :item="child"></tree-item>
-      </li>
-    </ul>
+    <transition name="fade-x-right">
+      <ul v-if="item.children.length && isOpen" class="fade-x-right">
+        <li v-for="child in item.children">
+          <folder-tree-item :item="child"></folder-tree-item>
+        </li>
+      </ul>
+    </transition>
   </div>
 </template>
 
@@ -29,7 +30,7 @@
   import * as getters from '../../../store/getters'
 
   export default {
-    name: 'tree-item',
+    name: 'folder-tree-item',
 
     props: {
       /**
@@ -49,10 +50,40 @@
 
       /**
        * State sign indicating to open or close current item tree.
-       * @return {string}
+       * @return {String}
        */
       stateSign () {
         return this.isOpen ? '-' : '+'
+      },
+
+      /**
+       * Current state path.
+       * @return {String}
+       */
+      path () {
+        return this.$store.getters[getters.getPath]
+      },
+
+      /**
+       * Classes of link at current state.
+       * @return {String}
+       */
+      classes () {
+        return {
+          disabled: this.isLoading,
+          offset: !this.item.children.length,
+          active: this.item.path === this.path || this.isClosedAndChildActive
+        }
+      },
+
+      /**
+       * Determines is this item closed state and some of the children is active.
+       * @return {Boolean}
+       */
+      isClosedAndChildActive () {
+        if (!this.item.children.length || this.isOpen) { return false }
+
+        return this.isAnyActive(this.item.children)
       }
     },
 
@@ -75,6 +106,27 @@
        */
       toggle () {
         this.isOpen = !this.isOpen
+      },
+
+      /**
+       * Determine is any of children in state of active.
+       * @param {Array.<TreeItem>} children
+       * @returns {Boolean}
+       */
+      isAnyActive (children) {
+        let isActive = false
+
+        children.forEach(item => {
+          if (item.path === this.path) {
+            isActive = true
+          }
+
+          if (!isActive && item.children.length > 0 && this.isAnyActive(item.children)) {
+            isActive = true
+          }
+        })
+
+        return isActive
       }
     }
   }

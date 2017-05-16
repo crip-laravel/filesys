@@ -1,7 +1,9 @@
 <template>
-  <div v-if="hasUploads">
-    <btn size="lg" icon="upload" @click="upload">Upload {{count}} files</btn>
-  </div>
+  <transition name="fade-y">
+    <div v-if="hasUploads" class="fade-y">
+      <btn size="lg" icon="upload" @click="upload">Upload {{count}} files</btn>
+    </div>
+  </transition>
 </template>
 
 <script>

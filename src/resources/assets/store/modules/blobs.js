@@ -6,6 +6,7 @@ import Blob from '../../models/Blob'
 import editors from '../../api/editors'
 import settings from '../../settings'
 import Vue from 'vue'
+import { findBlobById, setBlobPropertyById } from './helpers'
 
 const state = {
   isCreateFolderBlobVisible: false,
@@ -266,34 +267,6 @@ const getters = {
    * @param {state} state State of the store.
    */
   [g.getNewFolder]: (state) => state.newFolder
-}
-
-/**
- * TODO: this method should be mowed somewhere
- * Set blob property value by identifier and reset all other to default value.
- * @param {state} state State of the store.
- * @param {String} id Blob identifier value.
- * @param {String} property Property name.
- * @param {*} value Value of the property to be set.
- * @param {*} defaultVal Value of the property of all other blob.
- * @return {Boolean} Boolean indicating whenever value is set to the blob.
- */
-function setBlobPropertyById (state, id, property, value, defaultVal) {
-  state.blobs.forEach(blob => Vue.set(blob, property, defaultVal))
-
-  let blob = findBlobById(state, id)
-
-  return blob ? Vue.set(blob, property, value) || true : false
-}
-
-/**
- * Find blob by identifier in store.
- * @param {state} state State of the store.
- * @param {String} id Blob identifier value.
- * @return {Blob|undefined} Blob instance if it is found in store.
- */
-function findBlobById (state, id) {
-  return state.blobs.find(blob => blob.$id === id)
 }
 
 export default {state, actions, mutations, getters}

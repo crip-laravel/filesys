@@ -63,18 +63,48 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 16);
+/******/ 	return __webpack_require__(__webpack_require__.s = 102);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 12:
+/***/ 102:
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(60);
+
+
+/***/ }),
+
+/***/ 39:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _helpers = __webpack_require__(8);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var bodyElement = exports.bodyElement = function bodyElement() {
+  return document.getElementsByTagName('body')[0];
+};
+
+var width = exports.width = function width() {
+  return (window.innerWidth || document.documentElement.clientWidth || bodyElement().clientWidth) - 90;
+};
+var height = exports.height = function height() {
+  return (window.innerHeight || document.documentElement.clientHeight || bodyElement().clientHeight) - 90;
+};
+
+/***/ }),
+
+/***/ 60:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _helpers = __webpack_require__(39);
 
 tinymce.PluginManager.requireLangPack('cripfilesys', 'en_GB,lv,ru');
 
@@ -113,36 +143,6 @@ tinymce.PluginManager.add('cripfilesys', function (editor) {
     context: 'insert'
   });
 });
-
-/***/ }),
-
-/***/ 16:
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(12);
-
-
-/***/ }),
-
-/***/ 8:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var bodyElement = exports.bodyElement = function bodyElement() {
-  return document.getElementsByTagName('body')[0];
-};
-
-var width = exports.width = function width() {
-  return (window.innerWidth || document.documentElement.clientWidth || bodyElement().clientWidth) - 90;
-};
-var height = exports.height = function height() {
-  return (window.innerHeight || document.documentElement.clientHeight || bodyElement().clientHeight) - 90;
-};
 
 /***/ })
 

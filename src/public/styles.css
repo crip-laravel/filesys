@@ -5837,15 +5837,34 @@ button.close {
     border: 1px solid rgba(53, 152, 232, 0.7);
     outline: none;
     text-decoration: none; }
-  .inte-item:hover {
-    border: 1px solid rgba(53, 152, 232, 0.7); }
   .inte-item:hover, .inte-item.active {
     background-color: rgba(53, 152, 232, 0.2);
     color: #4d4d4d;
     outline: none;
     text-decoration: none; }
+  .inte-item.active {
+    border: 1px solid rgba(53, 152, 232, 0.7); }
   .inte-item:active, .inte-item.active:hover {
     background-color: rgba(53, 152, 232, 0.4);
     border: 1px solid #3598E8;
     outline: none;
     text-decoration: none; }
+
+.fade-x, .fade-x-right, .fade-y, .transition-all {
+  transition: all .3s; }
+
+.fade-x-enter, .fade-x-right-leave-to {
+  opacity: 0;
+  transform: translateX(50px); }
+
+.fade-x-leave-to, .fade-x-right-enter {
+  opacity: 0;
+  transform: translateX(-50px); }
+
+.fade-y-enter {
+  opacity: 0;
+  transform: translateY(50px); }
+
+.fade-y-leave-to {
+  opacity: 0;
+  transform: translateY(-50px); }

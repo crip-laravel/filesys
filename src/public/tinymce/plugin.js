@@ -63,18 +63,48 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 15);
+/******/ 	return __webpack_require__(__webpack_require__.s = 101);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 11:
+/***/ 101:
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(59);
+
+
+/***/ }),
+
+/***/ 39:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _helpers = __webpack_require__(8);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var bodyElement = exports.bodyElement = function bodyElement() {
+  return document.getElementsByTagName('body')[0];
+};
+
+var width = exports.width = function width() {
+  return (window.innerWidth || document.documentElement.clientWidth || bodyElement().clientWidth) - 90;
+};
+var height = exports.height = function height() {
+  return (window.innerHeight || document.documentElement.clientHeight || bodyElement().clientHeight) - 90;
+};
+
+/***/ }),
+
+/***/ 59:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _helpers = __webpack_require__(39);
 
 tinymce.PluginManager.add('filemanager', function (editor) {
   function CripFileBrowser(fieldName, url, type, win) {
@@ -103,36 +133,6 @@ tinymce.PluginManager.add('filemanager', function (editor) {
 
   return tinymce.activeEditor.settings.file_browser_callback = CripFileBrowser;
 });
-
-/***/ }),
-
-/***/ 15:
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(11);
-
-
-/***/ }),
-
-/***/ 8:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var bodyElement = exports.bodyElement = function bodyElement() {
-  return document.getElementsByTagName('body')[0];
-};
-
-var width = exports.width = function width() {
-  return (window.innerWidth || document.documentElement.clientWidth || bodyElement().clientWidth) - 90;
-};
-var height = exports.height = function height() {
-  return (window.innerHeight || document.documentElement.clientHeight || bodyElement().clientHeight) - 90;
-};
 
 /***/ })
 

@@ -32,7 +32,7 @@ const actions = {
    * @param {String} customUrl Custom url to be used if we wan`t use custom size
    * of image.
    */
-  [a.openBlob]: ({dispatch}, {blob: {isDir, path, url}, url: customUrl}) => {
+  [a.openBlob]: ({dispatch}, {blob: {isDir, path, url, fullName}, url: customUrl}) => {
     if (isDir) {
       return dispatch(a.changePath, path)
     }
@@ -43,9 +43,13 @@ const actions = {
       action = 'selectTinyMce'
     }
 
+    if (settings.target() === 'ckeditor') {
+      action = 'selectCKEditor'
+    }
+
     // TODO: add more editors for FileSysManager
 
-    return editors[action](customUrl || url)
+    return editors[action](customUrl || url, fullName)
   },
 
   /**

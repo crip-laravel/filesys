@@ -22,6 +22,33 @@ export default {
   },
 
   /**
+   * Select file for CKEditor.
+   * @param {String} url
+   * @param {String} altText
+   */
+  selectCKEditor (url, altText) {
+    if (!window.opener || !window.opener.CKEDITOR) {
+      throw new Error('CKEDITOR is selected as target, but `window.opener` does not contain it!')
+    }
+
+    const funcNum = settings.params.CKEditorFuncNum
+    window.opener.CKEDITOR.tools.callFunction(funcNum, url, function () {
+      // Get the reference to a dialog window.
+      let dialog = this.getDialog()
+      // Check if this is the Image Properties dialog window.
+      if (dialog.getName() === 'image') {
+        // Get the reference to a text field that stores the "alt" attribute.
+        let element = dialog.getContentElement('info', 'txtAlt')
+        // Assign the new value.
+        if (element) {
+          element.setValue(altText)
+        }
+      }
+    })
+    window.close()
+  },
+
+  /**
    * Select url for user callback.
    * @param {String} url
    */

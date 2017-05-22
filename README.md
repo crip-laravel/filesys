@@ -1,4 +1,4 @@
-# CRIP Filesystem manager (v.1.2.2)
+# CRIP Filesystem manager (v.1.2.3)
 
 This package easily integrates filesystem manager in to your website. You can 
 use it with TinyMCE editor or just stand alone popup for your input fields. CRIP
@@ -180,6 +180,22 @@ if (tinymce) {
 }
 ```
 
+
+### CKEditor
+
+Download and set up [CKEditor](http://ckeditor.com/) and configure it to enable 
+`cripfilesys` plugin in it:
+```javascript
+if (CKEDITOR) {
+  CKEDITOR.replace('ckeditor', {
+    filebrowserBrowseUrl: '/packages/filemanager?target=ckeditor&type=file',
+    filebrowserImageBrowseUrl: '/packages/filemanager?target=ckeditor&type=image',
+    filebrowserUploadUrl: '/packages/filemanager?target=ckeditor&type=file',
+    filebrowserImageUploadUrl: '/packages/filemanager?target=ckeditor&type=image'
+  })
+}
+```
+
 ### Stand-alone filesystem manager
 
 You can use `iframe`, `FancyBox` or `Lightbox` iframe to open the Fylesystem
@@ -210,6 +226,7 @@ selected file url and all GET parameters of opened window.
     <link href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.0.47/jquery.fancybox.css"
           rel="stylesheet" type="text/css">
     <script src="/tinymce/tinymce.min.js"></script>
+    <script src="/ckeditor/ckeditor.js"></script>
     <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.0.47/jquery.fancybox.js"></script>
     <script>
@@ -253,14 +270,27 @@ selected file url and all GET parameters of opened window.
           }
         })
       })
+      
+      CKEDITOR.replace('ckeditor', {
+        filebrowserBrowseUrl: '/packages/filemanager?target=ckeditor&type=file',
+        filebrowserImageBrowseUrl: '/packages/filemanager?target=ckeditor&type=image',
+        filebrowserUploadUrl: '/packages/filemanager?target=ckeditor&type=file',
+        filebrowserImageUploadUrl: '/packages/filemanager?target=ckeditor&type=image'
+      })
     </script>
 </head>
 <body>
   <form>
  
     <div class="form-group">
-      <textarea class="tinymce">Hello, From CRIP Filesystem!</textarea>
+      <textarea class="tinymce">Hello, World from TinyMCE !</textarea>
     </div>
+    
+
+    <div class="form-group">
+      <textarea id="ckeditor">Hello, World from CKEditor !</textarea>
+    </div>
+      
     <div class="form-group">
       <div class="input-group">
         <input type="text" id="input-id" class="form-control" placeholder="File...">

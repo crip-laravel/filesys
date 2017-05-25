@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack -w --devtool source-map --env.dev",
-    "build": "webpack --config webpack.config.js --env.minimize"
+    "build": "webpack --config webpack.config.js --env.minimize",
+    "output": "node copy-to-output.js"
   },
   "repository": {
     "type": "git",
@@ -62,4 +63,5 @@
     "vue-i18n": "^6.0.0-alpha.2",
     "vue-resource": "^1.2.0",
     "vuex": "^2.2.1"
-  }}
+  }
+}

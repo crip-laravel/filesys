@@ -1,4 +1,5 @@
 let settings = document.getElementById('settings')
+
 const mediaTypes = {
   file: 'file',
   dir: 'dir',
@@ -24,6 +25,10 @@ export default {
     return name ? `${this.iconDir}${name}.png` : null
   },
 
+  /**
+   * Gets current configuration target editor.
+   * @returns {string}
+   */
   target () {
     if (this.params && this.params.target) {
       return this.params.target.toLowerCase()
@@ -32,7 +37,16 @@ export default {
     return 'input'
   },
 
+  /**
+   * Available media types.
+   * @var {object}
+   */
   mediaTypes,
+
+  /**
+   * Get currently available media type.
+   * @returns {string}
+   */
   mediaType () {
     if (this.params && this.params.type && mediaTypes[this.params.type]) {
       return this.params.type
@@ -41,6 +55,10 @@ export default {
     return mediaTypes.file
   },
 
+  /**
+   * User defined callback name for file select.
+   * @returns {boolean}
+   */
   callback () {
     if (this.params && this.params.callback) {
       return this.params.callback

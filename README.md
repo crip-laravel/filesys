@@ -115,6 +115,13 @@ correctly allocate file location in server filesystem.
 `public_url` - Public url to assets folder. By default assets are published to 
                `/vendor/crip/cripfilesys` and this configuration default value is 
                set to this folder.
+   
+`public_storage` - This feature may increase application speed, but in this 
+                   case files will have public access for everyone, no matter
+                   what. If you choose enable it make sure 
+                   [symbolic link](https://laravel.com/docs/5.4/filesystem#the-public-disk)
+                   is created for your storage directory in case if you use 
+                   local/public storage configuration.
 
 `thumbs` - Uploaded images will be sized to this configured Array. First 
            argument is `width` and second is `height`. Third argument describes

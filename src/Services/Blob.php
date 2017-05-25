@@ -155,7 +155,7 @@ class Blob implements ICripObject
     {
         $path = $path ?: $this->path;
 
-        if ($this->package->config('public-storage', false)) {
+        if ($this->package->config('public_storage', false)) {
             // If file has public access enabled, we simply can try return storage
             // url to file.
             try {

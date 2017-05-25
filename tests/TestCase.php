@@ -5,6 +5,7 @@ use Illuminate\Http\UploadedFile;
 use League\Flysystem\Filesystem;
 use League\Flysystem\Vfs\VfsAdapter;
 use VirtualFileSystem\FileSystem as Vfs;
+use Illuminate\Support\Facades\Route;
 
 /**
  * Class TestCase
@@ -54,6 +55,13 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
 
         $app['filesystem']->extend('vfs', function () {
             return $this->filesystem;
+        });
+
+        Route::group(['prefix' => 'test'], function($router) {
+            $router->resource('api/crip-folders', \Crip\Filesys\App\Controllers\FolderController::class);
+            $router->resource('api/crip-files', \Crip\Filesys\App\Controllers\FileController::class);
+            $router->get('api/crip-tree', \Crip\Filesys\App\Controllers\TreeController::class);
+            $router->get('/', \Crip\Filesys\App\Controllers\ManagerController::class);
         });
     }
 

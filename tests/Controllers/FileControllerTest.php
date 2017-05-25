@@ -47,7 +47,7 @@ class FileControllerTest extends TestCase
         self::assertEquals('/vendor/crip/cripfilesys/images/txt.png', $info->thumb);
         self::assertEquals('file', $info->type);
         self::assertTrue(time() >= $info->updatedAt && time() - 10000 < $info->updatedAt, 'Date of update is recent.');
-        self::assertEquals('/storage/test-upload.txt', $info->url);
+        self::assertEquals('/test/api/crip-files/test-upload.txt', $info->url);
         self::assertEquals('/vendor/crip/cripfilesys/images/txt.png', $info->xs);
         self::assertEquals('test-upload.txt', $info->path);
     }
@@ -71,11 +71,11 @@ class FileControllerTest extends TestCase
         self::assertEquals('test-colors.png', $info->fullName);
         self::assertEquals('image', $info->mediaType);
         self::assertEquals('test-colors', $info->name);
-        self::assertEquals('/storage/thumb/test/dir/test-colors.png', $info->thumb);
+        self::assertEquals('/test/api/crip-files/thumb/test/dir/test-colors.png', $info->thumb);
         self::assertEquals('file', $info->type);
         self::assertTrue(time() >= $info->updatedAt && time() - 10000 < $info->updatedAt, 'Date of update is recent.');
-        self::assertEquals('/storage/test/dir/test-colors.png', $info->url);
-        self::assertEquals('/storage/xs/test/dir/test-colors.png', $info->xs);
+        self::assertEquals('/test/api/crip-files/test/dir/test-colors.png', $info->url);
+        self::assertEquals('/test/api/crip-files/xs/test/dir/test-colors.png', $info->xs);
         self::assertEquals('test/dir/test-colors.png', $info->path);
     }
 
@@ -139,11 +139,11 @@ class FileControllerTest extends TestCase
         self::assertEquals('other-name.png', $info->fullName);
         self::assertEquals('image', $info->mediaType);
         self::assertEquals('other-name', $info->name);
-        self::assertEquals('/storage/thumb/test/dir/other-name.png', $info->thumb);
+        self::assertEquals('/test/api/crip-files/thumb/test/dir/other-name.png', $info->thumb);
         self::assertEquals('file', $info->type);
         self::assertTrue(time() >= $info->updatedAt && time() - 10000 < $info->updatedAt, 'Date of update is recent.');
-        self::assertEquals('/storage/test/dir/other-name.png', $info->url);
-        self::assertEquals('/storage/xs/test/dir/other-name.png', $info->xs);
+        self::assertEquals('/test/api/crip-files/test/dir/other-name.png', $info->url);
+        self::assertEquals('/test/api/crip-files/xs/test/dir/other-name.png', $info->xs);
         self::assertEquals('test/dir/other-name.png', $info->path);
     }
 
@@ -170,18 +170,18 @@ class FileControllerTest extends TestCase
     private function assertThumbs($thumbs, $fileName = 'test-colors.png')
     {
         self::assertTrue(isset($thumbs['thumb']), 'Thumb with size "thumb" is not presented.');
-        self::assertEquals('/storage/thumb/test/dir/'. $fileName, $thumbs['thumb']->url);
+        self::assertEquals('/test/api/crip-files/thumb/test/dir/'. $fileName, $thumbs['thumb']->url);
 
         self::assertTrue(isset($thumbs['xs']), 'Thumb with size "xs" is not presented.');
-        self::assertEquals('/storage/xs/test/dir/'. $fileName, $thumbs['xs']->url);
+        self::assertEquals('/test/api/crip-files/xs/test/dir/'. $fileName, $thumbs['xs']->url);
 
         self::assertTrue(isset($thumbs['sm']), 'Thumb with size "sm" is not presented.');
-        self::assertEquals('/storage/sm/test/dir/'. $fileName, $thumbs['sm']->url);
+        self::assertEquals('/test/api/crip-files/sm/test/dir/'. $fileName, $thumbs['sm']->url);
 
         self::assertTrue(isset($thumbs['md']), 'Thumb with size "md" is not presented.');
-        self::assertEquals('/storage/md/test/dir/'. $fileName, $thumbs['md']->url);
+        self::assertEquals('/test/api/crip-files/md/test/dir/'. $fileName, $thumbs['md']->url);
 
         self::assertTrue(isset($thumbs['lg']), 'Thumb with size "lg" is not presented.');
-        self::assertEquals('/storage/lg/test/dir/'. $fileName, $thumbs['lg']->url);
+        self::assertEquals('/test/api/crip-files/lg/test/dir/'. $fileName, $thumbs['lg']->url);
     }
 }

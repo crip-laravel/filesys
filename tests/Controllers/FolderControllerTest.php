@@ -40,7 +40,7 @@ class FolderControllerTest extends TestCase
         self::assertEquals('/vendor/crip/cripfilesys/images/dir.png', $info['thumb']);
         self::assertEquals('dir', $info['type']);
         self::assertTrue(isset($info['updatedAt']), 'updatedAt property dose not exists.');
-        self::assertEquals('/storage/dir-1', $info['url']);
+        self::assertEquals('/test/api/crip-folders/dir-1', $info['url']);
         self::assertEquals('/vendor/crip/cripfilesys/images/dir.png', $info['xs']);
         self::assertEquals('dir-1', $info['path']);
     }
@@ -61,8 +61,8 @@ class FolderControllerTest extends TestCase
         $dir = collect($content)->where('type', 'dir')->first();
         $file = collect($content)->where('type', 'file')->first();
 
-        self::assertEquals('/storage/dir/dir', $dir->url);
-        self::assertEquals('/storage/dir/test-upload.txt', $file->url);
+        self::assertEquals('/test/api/crip-folders/dir/dir', $dir->url);
+        self::assertEquals('/test/api/crip-files/dir/test-upload.txt', $file->url);
     }
 
     /**
@@ -84,7 +84,7 @@ class FolderControllerTest extends TestCase
         self::assertEquals('/vendor/crip/cripfilesys/images/dir.png', $info['thumb']);
         self::assertEquals('dir', $info['type']);
         self::assertTrue(isset($info['updatedAt']), 'updatedAt property dose not exists.');
-        self::assertEquals('/storage/new', $info['url']);
+        self::assertEquals('/test/api/crip-folders/new', $info['url']);
         self::assertEquals('/vendor/crip/cripfilesys/images/dir.png', $info['xs']);
         self::assertEquals('new', $info['path']);
 
@@ -98,9 +98,9 @@ class FolderControllerTest extends TestCase
         $dir = collect($content)->where('type', 'dir')->first();
         $file = collect($content)->where('type', 'file')->first();
 
-        self::assertEquals('/storage/new/dir', $dir->url);
-        self::assertEquals('/storage/new/test-colors.png', $file->url);
-        self::assertEquals('/storage/thumb/new/test-colors.png', $file->thumbs->thumb->url);
+        self::assertEquals('/test/api/crip-folders/new/dir', $dir->url);
+        self::assertEquals('/test/api/crip-files/new/test-colors.png', $file->url);
+        self::assertEquals('/test/api/crip-files/thumb/new/test-colors.png', $file->thumbs->thumb->url);
     }
 
     /**

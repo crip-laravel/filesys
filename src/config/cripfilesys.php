@@ -20,6 +20,22 @@ return [
 
     /*
     |---------------------------------------------------------------------------
+    | Use public storage url.
+    |---------------------------------------------------------------------------
+    |
+    | This value is indicates usage of storage public access generator. This
+    | feature may increase application speed, but in this case files will have
+    | public access for everyone, no matter what. If you choose enable it make
+    | sure https://laravel.com/docs/5.4/filesystem#the-public-disk symbolic link
+    | is created for your storage directory in case if you use local/public
+    | storage configuration.
+    |
+    */
+
+    'public-storage' => false,
+
+    /*
+    |---------------------------------------------------------------------------
     | Thumb sizes
     |---------------------------------------------------------------------------
     |

@@ -34,7 +34,6 @@ class Blob implements ICripObject
     /**
      * Blob constructor.
      * @param PackageBase $package
-     * @param string $path
      */
     public function __construct(PackageBase $package)
     {
@@ -62,9 +61,11 @@ class Blob implements ICripObject
     public function fullDetails($metadata = null)
     {
         $this->metadata = $metadata ?: (new BlobMetadata())->init($this->path);
+
         if (!$this->metadata->exists()) {
             throw new \Exception('File not found');
         }
+
         $result = $this->metadata->isFile() ?
             new File($this) :
             new Folder($this);
@@ -154,13 +155,15 @@ class Blob implements ICripObject
     {
         $path = $path ?: $this->path;
 
-        // If file has public access enabled, we simply can try return storage
-        // url to file.
-        try {
-            return '/' . trim($this->storage->url($path), '\\/');
-        } catch (\Exception $ex) {
-            // Some drivers does not support url method (like ftp), so we
-            // simply continue and generate crip url to our controller.
+        if ($this->package->config('public-storage', false)) {
+            // If file has public access enabled, we simply can try return storage
+            // url to file.
+            try {
+                return '/' . trim($this->storage->url($path), '\\/');
+            } catch (\Exception $ex) {
+                // Some drivers does not support url method (like ftp), so we
+                // simply continue and generate crip url to our controller.
+            }
         }
 
         $service = new UrlService($this->package);

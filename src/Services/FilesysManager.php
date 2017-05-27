@@ -162,6 +162,7 @@ class FilesysManager implements ICripObject
     public function folderContent()
     {
         $result = [];
+
         $list = collect($this->storage->getDriver()->listContents($this->blob->path))
             ->pluck('path');
 
@@ -195,34 +196,9 @@ class FilesysManager implements ICripObject
      */
     public function folderTree()
     {
-        $exclude = (new ThumbService($this->package))->getSizes()->keys()->all();
-        $dirs = collect($this->storage->allDirectories(''));
+        $treeService = new TreeService($this->package);
 
-        $results = [];
-
-        $dirs->filter(function ($dir) use ($exclude) {
-            $parts = explode('/', Str::normalizePath($dir));
-            return !in_array($parts[0], $exclude);
-        })->each(function ($dir) use (&$results) {
-            $parts = explode('/', Str::normalizePath($dir));
-            $curr = &$results;
-            foreach ($parts as $name) {
-                if (!collect($curr)->contains('name', $name)) {
-                    $curr[] = [
-                        'path' => $dir,
-                        'name' => $name,
-                        'children' => []
-                    ];
-                } else {
-                    foreach ($curr as $key => $item) {
-                        if ($item['name'] === $name)
-                            $curr = &$curr[$key]['children'];
-                    }
-                }
-            }
-        });
-
-        return $results;
+        return $treeService->content();
     }
 
     /**

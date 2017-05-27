@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta id="settings"
         data-sizes="{!! str_replace('"', '\'', json_encode(config('cripfilesys.thumbs'))) !!}"
+        data-authorization="{!! str_replace('"', '\'', json_encode(config('cripfilesys.authorization'))) !!}"
+        data-user-folder="{!! str_replace('"', '\'', json_encode(config('cripfilesys.user_folder'))) !!}"
         data-params="{!! str_replace('"', '\'', json_encode($input)) !!}"
         data-icon-dir="{{ $iconDir }}"
         data-dir-icon-url="{{ $dirIconUrl }}"

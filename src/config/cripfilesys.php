@@ -36,6 +36,43 @@ return [
 
     /*
     |---------------------------------------------------------------------------
+    | Use custom subfolder for user.
+    |---------------------------------------------------------------------------
+    |
+    | This value is indicates value of the subfolder of currently configured
+    | storage. This may be useful in case if you want each user or user group to
+    | have their own folder - by default single folder is shared for everyone.
+    | This can be done creating middleware for routes and defining value on
+    | application start-up state. For more details take a look on a sample of
+    | README.md file.
+    |
+    */
+
+    'user_folder' => '',
+
+    /*
+    |---------------------------------------------------------------------------
+    | Authorization configuration.
+    |---------------------------------------------------------------------------
+    |
+    | This value may be useful if your application is SPA and you do not use
+    | Laravel sessions to identify users. For packages as JWT you need pass
+    | token in a request or may be used Bearer authorization of API. For web
+    | routes you may pass 'token' property with value and then all API calls
+    | will contain Bearer authorization replacing placeholder with passed token
+    | value in a first request of UI part of filesys manager.
+    |
+    */
+    'authorization' => [
+        'web' => 'token',
+        'api' => [
+            'key' => 'Authorization',
+            'value' => 'Bearer {token}'
+        ]
+    ],
+
+    /*
+    |---------------------------------------------------------------------------
     | Thumb sizes
     |---------------------------------------------------------------------------
     |

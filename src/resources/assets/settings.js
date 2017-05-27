@@ -1,5 +1,20 @@
 let settings = document.getElementById('settings')
 
+/**
+ * Get setting configuration from app headers.
+ * @param {string} key Settings attribute key.
+ * @param {boolean} [asJson] Parse value as json object.
+ * @returns {string}
+ */
+const getSettings = function (key, asJson = false) {
+  let strValue = settings.getAttribute(`data-${key}`)
+  if (asJson) {
+    return JSON.parse(strValue.replaceAll('\'', '"'))
+  }
+
+  return strValue
+}
+
 const mediaTypes = {
   file: 'file',
   dir: 'dir',
@@ -9,12 +24,14 @@ const mediaTypes = {
 }
 
 export default {
-  filesUrl: settings.getAttribute('data-files-url'),
-  foldersUrl: settings.getAttribute('data-folders-url'),
-  treeUrl: settings.getAttribute('data-tree-url'),
-  dirIcon: settings.getAttribute('data-dir-icon-url'),
-  iconDir: settings.getAttribute('data-icon-dir'),
-  params: JSON.parse(settings.getAttribute('data-params').replaceAll('\'', '"')),
+  authorization: getSettings('authorization', true),
+  dirIcon: getSettings('dir-icon-url'),
+  filesUrl: getSettings('files-url'),
+  foldersUrl: getSettings('folders-url'),
+  iconDir: getSettings('icon-dir'),
+  params: getSettings('params', true),
+  treeUrl: getSettings('tree-url'),
+  userFolder: getSettings('user-folder'),
 
   /**
    * Gets icon absolute URL depending on name.

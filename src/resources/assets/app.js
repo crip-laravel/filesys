@@ -9,9 +9,14 @@ import settings from './settings'
 Vue.use(VueResource)
 
 Vue.http.interceptors.push((request, next) => {
-  Object.keys(settings.params).forEach(key => {
-    request.headers.set(key, settings.params[key])
-  })
+  let token = settings.params[settings.authorization.web]
+  if (token !== undefined) {
+    request.headers.set(settings.authorization.web, token)
+    request.headers.set(
+      settings.authorization.api.key,
+      settings.authorization.api.value.supplant(settings.params)
+    )
+  }
   next()
 })
 

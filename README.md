@@ -113,8 +113,8 @@ correctly allocate file location in server filesystem.
 ## Configuration
 
 `public_url` - Public url to assets folder. By default assets are published to 
-               `/vendor/crip/cripfilesys` and this configuration default value is 
-               set to this folder.
+               `/vendor/crip/cripfilesys` and this configuration default value 
+               is set to this folder.
    
 `public_storage` - This feature may increase application speed, but in this 
                    case files will have public access for everyone, no matter
@@ -122,6 +122,21 @@ correctly allocate file location in server filesystem.
                    [symbolic link](https://laravel.com/docs/5.4/filesystem#the-public-disk)
                    is created for your storage directory in case if you use 
                    local/public storage configuration.
+                   
+`user_folder` - This value is indicates value of the subfolder of currently
+                configured storage. This may be useful in case if you want each
+                user or user group to have their own folder - by default single
+                folder is shared for everyone. This can be done creating 
+                middleware for routes and defining value on application 
+                start-up. Take a look for [sample below](#User-folder-configuration-sample).
+                
+`authorization` - This value may be useful if your application is SPA and you do
+                  not use Laravel sessions to identify users. For packages as 
+                  JWT you need pass token in a request or may be used Bearer 
+                  authorization for API. For web routes you may pass 'token' 
+                  property with value and then all API calls will contain Bearer
+                  authorization replacing placeholder with passed token
+                  value in a first request of UI part of filesys manager.
 
 `thumbs` - Uploaded images will be sized to this configured Array. First 
            argument is `width` and second is `height`. Third argument describes
@@ -312,4 +327,75 @@ selected file url and all GET parameters of opened window.
   </form>
 </body>
 </html>
+```
+
+## User folder configuration sample
+
+###### Create new Middleware 
+`app/Http/Middleware/RegisterUserStorageFolder.php`:
+
+```php
+<?php namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
+
+/**
+ * Class RegisterUserStorageFolder
+ * @package App\Http\Middleware
+ */
+class RegisterUserStorageFolder
+{
+    /**
+     * Handle an incoming request.
+     * @param  \Illuminate\Http\Request $request
+     * @param  \Closure $next
+     * @param  string|null $guard
+     * @return mixed
+     */
+    public function handle($request, Closure $next, $guard = null)
+    {
+        if (!Auth::guard($guard)->check()) {
+            return redirect('/login');
+        }
+
+        if (!Auth::user()->isAdmin()) {
+            // For users who is not in group of administrators set their own
+            // folder for manager and make impossible to see/change files of
+            // other users.
+            Config::set('cripfilesys.user_folder', Auth::user()->slug());
+        }
+
+        return $next($request);
+    }
+}
+```
+
+> In this sample I use user methods `isAdmin` and `slug` where one is returning
+  boolean indicating that user belongs to administrators group of my application
+  and other one gets unique slug of user name.
+
+###### Register new Middleware 
+`app/Http/Kernel.php`:
+
+```php
+    /**
+     * The application's route middleware.
+     * These middleware may be assigned to groups or used individually.
+     * @var array
+     */
+    protected $routeMiddleware = [
+        ...
+        'user.storage' => \App\Http\Middleware\RegisterUserStorageFolder::class,
+    ];
+```
+
+###### Then protect your routes
+`routes/package.php`:
+
+```php
+Route::group(['prefix' => 'filemanager', 'middleware' => ['auth', 'user.storage']], function () {
+    ...
+});
 ```

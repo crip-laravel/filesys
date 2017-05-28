@@ -1,13 +1,12 @@
 {
   "name": "crip-laravel_filesys",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": "Laravel - Filesystem manager extension",
   "main": "src/resources/assets/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack -w --devtool source-map --env.dev",
-    "build": "webpack --config webpack.config.js --env.minimize",
-    "output": "node copy-to-output.js"
+    "prod": "webpack --config webpack.config.js --env.minimize"
   },
   "repository": {
     "type": "git",
@@ -53,8 +52,7 @@
     "vue-focus": "^2.1.0",
     "vue-loader": "^11.1.3",
     "vue-template-compiler": "^2.2.1",
-    "webpack": "^2.2.1",
-    "webpack-shell-plugin": "^0.5.0"
+    "webpack": "^2.2.1"
   },
   "dependencies": {
     "babel-polyfill": "^6.23.0",

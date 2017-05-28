@@ -7,3 +7,4 @@ src/public/app.js.map
 src/public/styles.css.map
 src/public/tinymce/plugin.js.map
 src/public/tinymce/plugins/cripfilesys/plugin.js.map
+npm-debug.log

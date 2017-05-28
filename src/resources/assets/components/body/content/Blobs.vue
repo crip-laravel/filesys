@@ -21,7 +21,6 @@
   import blobContextMenu from './ContextMenu.vue'
   import blobNewFolder from './BlobNewFolder.vue'
   import blobUp from './BlobUp.vue'
-  import settings from '../../../settings'
 
   export default {
     name: 'blobs',
@@ -37,26 +36,10 @@
       },
 
       /**
-       * Filter blobs against current media type configuration.
-       */
-      filteredBlobs () {
-        let filtered = this.blobs
-
-        if (settings.mediaType() !== settings.mediaTypes.file) {
-          const consistent = [settings.mediaTypes.dir, settings.mediaType()]
-          filtered = this.blobs.filter((blob) => {
-            return ~consistent.indexOf(blob.mediaType)
-          })
-        }
-
-        return filtered
-      },
-
-      /**
        * Compute actual content of blobs.
        */
       content () {
-        return this.filteredBlobs.sort((a, b) => {
+        return this.blobs.sort((a, b) => {
           if ((a.isDir && b.isDir) || (!a.isDir && !b.isDir)) {
             if (a.name < b.name) return -1
             if (a.name > b.name) return 1

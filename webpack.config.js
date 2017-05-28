@@ -1,15 +1,13 @@
 const webpack = require('webpack')
 const path = require('path')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const WebpackShellPlugin = require('webpack-shell-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin
 
 let plugins = [
   new CopyWebpackPlugin([
     {from: 'tinymce/plugins/cripfilesys/langs/**/*'}
-  ]),
-  new WebpackShellPlugin({onBuildEnd: ['node copy-to-output.js']})
+  ])
 ]
 
 module.exports = (env) => {
@@ -27,6 +25,11 @@ module.exports = (env) => {
       compress: {warnings: false}
     }))
   }
+  let outputPath = path.join(__dirname, './src/public')
+
+  if (env.dev) {
+    outputPath = path.join(__dirname, './../../public/vendor/crip/cripfilesys')
+  }
 
   return {
     context: path.join(__dirname, 'src/resources/assets'),
@@ -38,7 +41,7 @@ module.exports = (env) => {
       'tinymce/plugins/cripfilesys/plugin.min': ['./tinymce/plugins/cripfilesys/plugin.js']
     },
     output: {
-      path: path.join(__dirname, './src/public'),
+      path: outputPath,
       filename: '[name].js'
     },
     module: {

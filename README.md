@@ -1,4 +1,4 @@
-# CRIP Filesystem manager (v.1.2.6)
+# CRIP Filesystem manager (v.1.2.7)
 
 This package easily integrates filesystem manager in to your website. You can 
 use it with TinyMCE editor or just stand alone popup for your input fields. CRIP

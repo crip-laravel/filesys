@@ -6,6 +6,7 @@ export const getIsAnyBlobInRenameMode = 'getIsAnyBlobInRenameMode'
 export const getIsAnyBlobInSelectedMode = 'getIsAnyBlobInSelectedMode'
 export const getNewFolder = 'getNewFolder'
 export const getSelectedBlob = 'getSelectedBlob'
+export const getDisplayFilter = 'getDisplayFilter'
 
 // breadcrumb module getters list
 export const getPath = 'getPath'

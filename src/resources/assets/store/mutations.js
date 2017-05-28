@@ -9,6 +9,7 @@ export const setRename = 'setRename'
 export const setRenameBlob = 'setRenameBlob'
 export const setSelectedBlob = 'setSelectedBlob'
 export const setUpdatedBlob = 'setUpdatedBlob'
+export const setDisplayFilter = 'setDisplayFilter'
 
 // breadcrumb module mutations list
 export const setLoadingStarted = 'setLoadingStarted'

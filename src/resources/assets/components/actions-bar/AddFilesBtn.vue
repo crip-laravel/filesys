@@ -16,6 +16,7 @@
   import * as actions from '../../store/actions'
   import btn from './Btn.vue'
   import settings from '../../settings'
+  import * as getters from '../../store/getters'
 
   export default {
     name: 'add-files_actions-bar-btn',
@@ -23,8 +24,12 @@
     components: {btn},
 
     computed: {
+      /**
+       * Computes file select filter depending upon current display filter.
+       * @returns {string}
+       */
       accept () {
-        switch (settings.mediaType()) {
+        switch (this.$store.getters[getters.getDisplayFilter]) {
           case settings.mediaTypes.image:
             return 'image/*'
           case settings.mediaTypes.media:

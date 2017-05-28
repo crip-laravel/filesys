@@ -76,6 +76,17 @@
     &.action-btn-sm a {
       height: auto;
       margin-bottom: 2px;
+
+      .action-icon {
+        display: inline-block;
+        margin: 0 auto;
+        max-height: 20px;
+        max-width: 20px;
+      }
+
+      .action-text {
+        display: inline-block;
+      }
     }
 
     a {

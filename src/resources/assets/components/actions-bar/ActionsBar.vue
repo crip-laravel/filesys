@@ -13,6 +13,13 @@
         </div>
       </div>
       <div class="group">
+        <div class="col">
+          <change-filter-btn filter="image" title="View only images">Images</change-filter-btn>
+          <change-filter-btn filter="media" title="View only media files">Media</change-filter-btn>
+          <change-filter-btn filter="document" title="View only documents">Docs</change-filter-btn>
+        </div>
+      </div>
+      <div class="group">
         <rename-btn class="col"></rename-btn>
         <delete-btn class="col"></delete-btn>
       </div>
@@ -21,25 +28,27 @@
 </template>
 
 <script>
-  import btn from './Btn.vue'
   import addFilesBtn from './AddFilesBtn.vue'
-  import startUploadBtn from './StartUploadBtn.vue'
-  import createFolderBtn from './CreateFolderBtn.vue'
-  import renameBtn from './RenameBtn.vue'
-  import deleteBtn from './DeleteBtn.vue'
+  import btn from './Btn.vue'
+  import changeFilterBtn from './ChangeFilterBtn.vue'
   import changeViewBtn from './ChangeViewBtn.vue'
+  import createFolderBtn from './CreateFolderBtn.vue'
+  import deleteBtn from './DeleteBtn.vue'
+  import renameBtn from './RenameBtn.vue'
+  import startUploadBtn from './StartUploadBtn.vue'
 
   export default {
     name: 'actions-bar',
 
     components: {
-      btn,
       addFilesBtn,
-      startUploadBtn,
+      btn,
+      changeFilterBtn,
+      changeViewBtn,
       createFolderBtn,
-      renameBtn,
       deleteBtn,
-      changeViewBtn
+      renameBtn,
+      startUploadBtn
     }
   }
 </script>

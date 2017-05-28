@@ -11,6 +11,7 @@ import { findBlobById, setBlobPropertyById } from './helpers'
 const state = {
   isCreateFolderBlobVisible: false,
   displayType: 'grid',
+  displayFilter: settings.mediaTypes.file,
   blobs: [],
   newFolder: new Blob({
     type: 'dir',
@@ -212,11 +213,20 @@ const mutations = {
   /**
    * Remove blob from store collection.
    * @param {state} state State of the store.
-   * @param {String} payload Te id of the blob to be removed.
+   * @param {String} payload The id of the blob to be removed.
    */
   [m.removeBlob]: (state, payload) => {
     const toUpdate = findBlobById(state, payload)
     state.blobs.splice(state.blobs.indexOf(toUpdate), 1)
+  },
+
+  /**
+   * Set display filter in the store.
+   * @param {state} state State of the store.
+   * @param {String} payload The identifier of the filter.
+   */
+  [m.setDisplayFilter]: (state, payload) => {
+    Vue.set(state, 'displayFilter', payload)
   }
 }
 
@@ -258,7 +268,20 @@ const getters = {
    * Gets current state blobs.
    * @param {state} state State of the store.
    */
-  [g.getBlobs]: (state) => state.blobs,
+  [g.getBlobs]: (state) => {
+    let filtered = state.blobs
+
+    if (settings.mediaType() !== settings.mediaTypes.file || state.displayFilter !== settings.mediaTypes.file) {
+      const additionalFilter = settings.mediaType() === settings.mediaTypes.file
+        ? state.displayFilter : settings.mediaType()
+      const consistent = [settings.mediaTypes.dir, additionalFilter]
+      filtered = state.blobs.filter((blob) => {
+        return ~consistent.indexOf(blob.mediaType)
+      })
+    }
+
+    return filtered
+  },
 
   /**
    * Get selected blob instance from the store.
@@ -270,7 +293,19 @@ const getters = {
    * Get create folder blob instance.
    * @param {state} state State of the store.
    */
-  [g.getNewFolder]: (state) => state.newFolder
+  [g.getNewFolder]: (state) => state.newFolder,
+
+  /**
+   * Get current display filter
+   * @param state
+   */
+  [g.getDisplayFilter]: (state) => {
+    if (settings.mediaType() !== settings.mediaTypes.file) {
+      return settings.mediaType()
+    }
+
+    return state.displayFilter
+  }
 }
 
 export default {state, actions, mutations, getters}

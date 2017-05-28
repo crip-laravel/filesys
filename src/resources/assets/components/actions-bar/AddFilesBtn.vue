@@ -7,18 +7,35 @@
            type="file"
            name="upload-files"
            multiple="multiple"
+           :accept="accept"
            @change="filesAdded"/>
   </div>
 </template>
 
 <script>
-  import btn from './Btn.vue'
   import * as actions from '../../store/actions'
+  import btn from './Btn.vue'
+  import settings from '../../settings'
 
   export default {
     name: 'add-files_actions-bar-btn',
 
     components: {btn},
+
+    computed: {
+      accept () {
+        switch (settings.mediaType()) {
+          case settings.mediaTypes.image:
+            return 'image/*'
+          case settings.mediaTypes.media:
+            return 'audio/*,video/*'
+          case settings.mediaTypes.document:
+            return 'application/*,text/*'
+          default:
+            return '*'
+        }
+      }
+    },
 
     methods: {
       /**

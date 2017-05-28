@@ -48,6 +48,12 @@ class Blob implements ICripObject
      */
     public function setPath($path = '')
     {
+        $userFolder = Str::normalizePath(config('cripfilesys.user_folder'));
+
+        if ($userFolder !== '' && !starts_with($path, $userFolder)) {
+            $path = $userFolder . '/' . $path;
+        }
+
         $this->path = Str::normalizePath($path);
 
         return $this;

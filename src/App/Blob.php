@@ -1,6 +1,7 @@
 <?php namespace Crip\Filesys\App;
 
 use Crip\Core\Contracts\ICripObject;
+use Crip\Core\Helpers\Str;
 use Crip\Filesys\Services\Blob as ServiceBlob;
 use Illuminate\Contracts\Support\Arrayable;
 
@@ -45,7 +46,7 @@ class Blob implements ICripObject, Arrayable
     public function init(ServiceBlob $blob)
     {
         $this->bytes = $blob->metadata->getSize();
-        $this->dir = $blob->metadata->getDir();
+        $this->dir = $blob->metadata->getDir(true);
         $this->fullName = $blob->metadata->getFullName();
         $this->mediaType = $blob->getMediaType();
         $this->name = $blob->metadata->getName();
@@ -54,6 +55,6 @@ class Blob implements ICripObject, Arrayable
         $this->updatedAt = $blob->metadata->getLastModified();
         $this->url = $blob->getUrl();
         $this->xs = $blob->getXsThumbUrl();
-        $this->path = $blob->metadata->getPath();
+        $this->path = $blob->metadata->getPath(true);
     }
 }

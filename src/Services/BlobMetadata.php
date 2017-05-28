@@ -2,6 +2,7 @@
 
 use Crip\Core\Contracts\ICripObject;
 use Crip\Core\Helpers\FileSystem;
+use Crip\Core\Helpers\Str;
 
 /**
  * Class BlobMetadata
@@ -117,10 +118,15 @@ class BlobMetadata implements ICripObject
     }
 
     /**
+     * @param bool $removeUserPath
      * @return string
      */
-    public function getPath()
+    public function getPath(bool $removeUserPath = false): string
     {
+        if ($removeUserPath) {
+            return $this->normalizePath($this->path);
+        }
+
         return $this->path;
     }
 
@@ -141,10 +147,15 @@ class BlobMetadata implements ICripObject
     }
 
     /**
+     * @param bool $removeUserPath
      * @return string
      */
-    public function getDir()
+    public function getDir(bool $removeUserPath = false): string
     {
+        if ($removeUserPath) {
+            return $this->normalizePath($this->dir);
+        }
+
         return $this->dir;
     }
 
@@ -219,5 +230,20 @@ class BlobMetadata implements ICripObject
         }
 
         return 'dir';
+    }
+
+    /**
+     * @param string $path
+     * @return string
+     */
+    private function normalizePath(string $path): string
+    {
+        $userFolder = Str::normalizePath(config('cripfilesys.user_folder'));
+
+        if ($userFolder !== '') {
+            $path = str_replace_first($userFolder, '', $path);
+        }
+
+        return Str::normalizePath($path);
     }
 }

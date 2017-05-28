@@ -1,5 +1,6 @@
 <?php namespace Crip\Filesys\App\Controllers;
 
+use Crip\Core\Helpers\Str;
 use Illuminate\Http\Request;
 
 /**
@@ -15,14 +16,37 @@ class ManagerController extends BaseController
      */
     public function __invoke(Request $request)
     {
-        $input = $request->all();
-        $filesUrl = action('\\' . $this->package->config('actions.file') . '@show', '');
-        $foldersUrl = action('\\' . $this->package->config('actions.folder') . '@show', '');
-        $treeUrl = action('\\' . $this->package->config('actions.tree'));
         $iconDir = $this->package->config('icons.url');
+
+        $userFolder = Str::normalizePath($this->package->config('user_folder'));
+
+        $foldersUrl = action('\\' . $this->package->config('actions.folder') . '@show', '');
+        $filesUrl = action('\\' . $this->package->config('actions.file') . '@show', '');
+        $treeUrl = action('\\' . $this->package->config('actions.tree'));
         $dirIconUrl = $iconDir . $this->package->config('icons.files.dir');
 
+        $requestInput = $request->all();
+        $input = $this->stringify($requestInput);
+
+        $authConfig = $this->package->config('authorization');
+        $authorization = $this->stringify($authConfig);
+
+        $thumbConfig = $this->package->config('thumbs');
+        $thumbs = $this->stringify($thumbConfig);
+
         return $this->package->view('master',
-            compact('input', 'filesUrl', 'foldersUrl', 'treeUrl', 'dirIconUrl', 'iconDir'));
+            compact('input', 'filesUrl', 'foldersUrl', 'treeUrl', 'dirIconUrl',
+                'iconDir', 'userFolder', 'authorization', 'thumbs'));
+    }
+
+    /**
+     * Stringify PHP array to json string and make it usable inside attribute
+     * tags.
+     * @param array $data
+     * @return string
+     */
+    private function stringify(array $data): string
+    {
+        return str_replace('"', '\'', json_encode($data));
     }
 }

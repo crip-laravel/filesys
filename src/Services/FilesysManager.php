@@ -162,8 +162,9 @@ class FilesysManager implements ICripObject
     public function folderContent()
     {
         $result = [];
+        $path = $this->ensureUserPath($this->blob->path);
 
-        $list = collect($this->storage->getDriver()->listContents($this->blob->path))
+        $list = collect($this->storage->getDriver()->listContents($path))
             ->pluck('path');
 
         $exclude = (new ThumbService($this->package))->getSizes()->all();
@@ -352,5 +353,24 @@ class FilesysManager implements ICripObject
         $this->storage->move($meta->getPath(), $newPath);
 
         return $this->fullDetails(true);
+    }
+
+    /**
+     * Ensure that path contains prefix of user path;
+     * @param string $path
+     * @return string
+     */
+    private function ensureUserPath(string $path): string
+    {
+        $userFolder = Str::normalizePath($this->package->config('user_folder'));
+        if ($userFolder === '') {
+            return $path;
+        }
+
+        if (starts_with($path, $userFolder)) {
+            return $path;
+        }
+
+        return $userFolder . '/' . $path;
     }
 }

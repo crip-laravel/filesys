@@ -5,10 +5,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta id="settings"
-        data-sizes="{!! str_replace('"', '\'', json_encode(config('cripfilesys.thumbs'))) !!}"
-        data-authorization="{!! str_replace('"', '\'', json_encode(config('cripfilesys.authorization'))) !!}"
-        data-params="{!! str_replace('"', '\'', json_encode($input)) !!}"
-        data-user-folder="{!! config('cripfilesys.user_folder') !!}"
+        data-sizes="{!! $thumbs !!}"
+        data-authorization="{!! $authorization !!}"
+        data-params="{!! $input !!}"
+        data-user-folder="{!! $userFolder !!}"
         data-icon-dir="{{ $iconDir }}"
         data-dir-icon-url="{{ $dirIconUrl }}"
         data-tree-url="{{ $treeUrl }}"

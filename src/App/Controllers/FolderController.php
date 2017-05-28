@@ -64,7 +64,7 @@ class FolderController extends BaseController
      * @param string $folder
      * @return JsonResponse
      */
-    public function update(Request $request, string $folder)
+    public function update(Request $request, string $folder = '')
     {
         if (empty($request->name)) {
             return $this->json('Name property is required.', 422);

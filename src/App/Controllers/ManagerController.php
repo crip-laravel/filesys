@@ -18,8 +18,6 @@ class ManagerController extends BaseController
     {
         $iconDir = $this->package->config('icons.url');
 
-        $userFolder = Str::normalizePath($this->package->config('user_folder'));
-
         $foldersUrl = action('\\' . $this->package->config('actions.folder') . '@show', '');
         $filesUrl = action('\\' . $this->package->config('actions.file') . '@show', '');
         $treeUrl = action('\\' . $this->package->config('actions.tree'));
@@ -36,7 +34,7 @@ class ManagerController extends BaseController
 
         return $this->package->view('master',
             compact('input', 'filesUrl', 'foldersUrl', 'treeUrl', 'dirIconUrl',
-                'iconDir', 'userFolder', 'authorization', 'thumbs'));
+                'iconDir', 'authorization', 'thumbs'));
     }
 
     /**

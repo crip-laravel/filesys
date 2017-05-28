@@ -31,7 +31,6 @@ export default {
   iconDir: getSettings('icon-dir'),
   params: getSettings('params', true),
   treeUrl: getSettings('tree-url'),
-  userFolder: getSettings('user-folder'),
 
   /**
    * Gets icon absolute URL depending on name.

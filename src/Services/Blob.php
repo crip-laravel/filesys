@@ -51,6 +51,7 @@ class Blob implements ICripObject
         $userFolder = Str::normalizePath(config('cripfilesys.user_folder'));
 
         if ($userFolder !== '' && !starts_with($path, $userFolder)) {
+            $path = empty($path) ? '' : $path;
             $path = $this->prefixPath($path, $userFolder);
         }
 
@@ -256,7 +257,7 @@ class Blob implements ICripObject
      * @param string $userFolder
      * @return string
      */
-    private function prefixPath(string $path, string $userFolder)
+    private function prefixPath(string $path, string $userFolder): string
     {
         $thumbService = new ThumbService($this->package);
         $thumbSize = '';

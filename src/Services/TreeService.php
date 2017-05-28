@@ -84,7 +84,11 @@ class TreeService
      */
     private function dirToPath(string $dir): string
     {
-        return str_replace_first($this->root, '', $dir);
+        if ($this->root !== '') {
+            return str_replace_first($this->root, '', $dir);
+        }
+
+        return $dir;
     }
 
     /**

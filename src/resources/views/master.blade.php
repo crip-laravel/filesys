@@ -8,7 +8,6 @@
         data-sizes="{!! $thumbs !!}"
         data-authorization="{!! $authorization !!}"
         data-params="{!! $input !!}"
-        data-user-folder="{!! $userFolder !!}"
         data-icon-dir="{{ $iconDir }}"
         data-dir-icon-url="{{ $dirIconUrl }}"
         data-tree-url="{{ $treeUrl }}"

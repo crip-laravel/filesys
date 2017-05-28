@@ -57,7 +57,7 @@ return [
     |
     | This value may be useful if your application is SPA and you do not use
     | Laravel sessions to identify users. For packages as JWT you need pass
-    | token in a request or may be used Bearer authorization of API. For web
+    | token in a request or may be used Bearer authorization for API. For web
     | routes you may pass 'token' property with value and then all API calls
     | will contain Bearer authorization replacing placeholder with passed token
     | value in a first request of UI part of filesys manager.

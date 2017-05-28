@@ -128,7 +128,7 @@ correctly allocate file location in server filesystem.
                 user or user group to have their own folder - by default single
                 folder is shared for everyone. This can be done creating 
                 middleware for routes and defining value on application 
-                start-up. Take a look for [sample below](#User-folder-configuration-sample).
+                start-up. Take a look for [sample below](#user-folder-configuration-sample).
                 
 `authorization` - This value may be useful if your application is SPA and you do
                   not use Laravel sessions to identify users. For packages as 

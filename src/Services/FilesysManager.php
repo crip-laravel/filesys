@@ -50,6 +50,12 @@ class FilesysManager implements ICripObject
     public function resetPath($path = '')
     {
         $this->blob = (new Blob($this->package))->setPath($path);
+
+        // Ensure that user folder exists on first load
+        $userFolder = Str::normalizePath(config('cripfilesys.user_folder'));
+        if ($this->blob->path == $userFolder) {
+            $this->makeDirectory();
+        }
     }
 
     /**

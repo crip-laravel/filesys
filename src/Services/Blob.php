@@ -51,7 +51,7 @@ class Blob implements ICripObject
         $userFolder = Str::normalizePath(config('cripfilesys.user_folder'));
 
         if ($userFolder !== '' && !starts_with($path, $userFolder)) {
-            $path = $userFolder . '/' . $path;
+            $path = $this->prefixPath($path, $userFolder);
         }
 
         $this->path = Str::normalizePath($path);
@@ -249,5 +249,43 @@ class Blob implements ICripObject
                 ];
             });
         }
+    }
+
+    /**
+     * @param string $path
+     * @param string $userFolder
+     * @return string
+     */
+    private function prefixPath(string $path, string $userFolder)
+    {
+        $thumbService = new ThumbService($this->package);
+        $thumbSize = '';
+
+        $isThumb = $thumbService->getSizes()
+            ->keys()
+            ->filter(function ($size) use ($path, &$thumbSize) {
+                $isUsed = starts_with($path, $size);
+
+                if ($isUsed) {
+                    $thumbSize = $size;
+                }
+
+                return $isUsed;
+            })
+            ->count();
+
+        if ($isThumb) {
+            $relative = str_replace_first($thumbSize, '', $path);
+
+            if (!starts_with(Str::normalizePath($relative), $userFolder)) {
+                $relative = $userFolder . '/' . $relative;
+            }
+
+            $newPath = $thumbSize . '/' . $relative;
+
+            return Str::normalizePath($newPath);
+        }
+
+        return $userFolder . '/' . $path;
     }
 }

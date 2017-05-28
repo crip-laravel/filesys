@@ -41,6 +41,7 @@ class FileController extends BaseController
     public function show($file)
     {
         $this->manager->resetPath($file);
+
         if ($this->manager->isFile()) {
             return new Response($this->manager->fileContent(), 200, [
                 'Content-Type' => $this->manager->fileMimeType(),

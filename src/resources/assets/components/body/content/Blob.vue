@@ -27,6 +27,7 @@
   import * as getters from '../../../store/getters'
   import * as mutations from '../../../store/mutations'
   import Blob from '../../../models/Blob'
+  import settings from '../../../settings'
   import { focus } from 'vue-focus'
 
   export default {
@@ -50,6 +51,14 @@
           'disabled': this.$store.getters[getters.isLoading],
           'has-error': this.errorMessage !== ''
         }
+      },
+
+      /**
+       * Determines is set strict image size for selecting image.
+       * @returns {Boolean}
+       */
+      isStrictOutputSize () {
+        return !!settings.imageSize()
       },
 
       /**
@@ -89,7 +98,14 @@
        * Selects current blob for external use (editor or listener).
        */
       openBlob () {
-        this.$store.dispatch(actions.openBlob, {blob: this.blob})
+        let file = {blob: this.blob}
+
+        // Allow user set default size by parameters in request.
+        if (this.isStrictOutputSize && !this.blob.isDir) {
+          file.url = this.blob.thumbs[settings.imageSize()].url
+        }
+
+        this.$store.dispatch(actions.openBlob, file)
       },
 
       /**

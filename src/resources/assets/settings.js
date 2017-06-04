@@ -81,5 +81,17 @@ export default {
     }
 
     return false
+  },
+
+  /**
+   * Get scoped image size or false if it is not set.
+   * @return {Boolean|String}
+   */
+  imageSize () {
+    if (this.mediaType() === mediaTypes.image && this.params && this.params.select) {
+      return this.params.select
+    }
+
+    return false
   }
 }

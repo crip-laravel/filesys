@@ -40,6 +40,7 @@
 <script>
   import * as actions from '../../../store/actions'
   import Blob from '../../../models/Blob'
+  import settings from '../../../settings'
   import sizeCalc from '../../../api/size.calculator'
   import Vue from 'vue'
 
@@ -121,9 +122,24 @@
       },
 
       /**
+       * Determines is set strict image size for selecting image.
+       * @returns {Boolean}
+       */
+      isStrictOutputSize () {
+        return !!settings.imageSize()
+      },
+
+      /**
        * Get image sizes if they persist.
        */
       sizes () {
+        // If we are limiting user for some of image size, we should not allow
+        // him select any other size image.
+        if (this.isStrictOutputSize) {
+          return []
+        }
+
+        // Otherwise allow to select any of the configured size.
         let sizes = []
 
         if (this.blob.thumbs) {
@@ -150,6 +166,10 @@
        * @param {String} url
        */
       openBlob (url) {
+        if (this.isStrictOutputSize && !url) {
+          url = this.blob.thumbs[settings.imageSize()].url
+        }
+
         this.$store.dispatch(actions.openBlob, {blob: this.blob, url})
         this.hideMenu()
       },

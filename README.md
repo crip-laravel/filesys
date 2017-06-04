@@ -1,4 +1,4 @@
-# CRIP Filesystem manager (v.1.2.8)
+# CRIP Filesystem manager (v.1.2.9)
 
 This package easily integrates filesystem manager in to your website. You can 
 use it with TinyMCE editor or just stand alone popup for your input fields. CRIP
@@ -211,9 +211,7 @@ Download and set up [CKEditor](http://ckeditor.com/) and configure it to enable
 if (CKEDITOR) {
   CKEDITOR.replace('ckeditor', {
     filebrowserBrowseUrl: '/packages/filemanager?target=ckeditor&type=file',
-    filebrowserImageBrowseUrl: '/packages/filemanager?target=ckeditor&type=image',
-    filebrowserUploadUrl: '/packages/filemanager?target=ckeditor&type=file',
-    filebrowserImageUploadUrl: '/packages/filemanager?target=ckeditor&type=image'
+    filebrowserImageBrowseUrl: '/packages/filemanager?target=ckeditor&type=image'
   })
 }
 ```
@@ -225,7 +223,9 @@ manager. To handle selected file, add GET parameter to the end of the path:
 `/packages/filemanager?target=callback`. You can filter visible files by they 
 type: `/packages/filemanager?target=callback&type=[type]`. Supported types are:
 - `document` - excel, word, pwp, html, txt and js;
-- `image` - any file with mime type starting from `image/*`;
+- `image` - any file with mime type starting from `image/*`. Additionally you
+            can specify default size of selected image by adding `select` 
+            property in a request with value of configured thumb size;
 - `media` - audio and video;
 - `file` - all files. This type is set by default;
 

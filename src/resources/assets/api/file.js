@@ -11,7 +11,7 @@ export default {
    */
   update (blob, name) {
     return new Promise((resolve, reject) => {
-      vue.http.patch(`${settings.filesUrl}/${blob.fullName}`, {name})
+      vue.http.patch(`${settings.filesUrl}/${blob.path}`, {name})
         .then(({data}) => { resolve(new Blob(data)) }, reject)
     })
   },
@@ -23,7 +23,7 @@ export default {
    */
   delete (blob) {
     return new Promise((resolve, reject) => {
-      vue.http.delete(`${settings.filesUrl}/${blob.dir}/${blob.fullName}`)
+      vue.http.delete(`${settings.filesUrl}/${blob.path}`)
         .then(({data}) => { resolve(!!data) }, reject)
     })
   },

@@ -6,7 +6,7 @@
       :style="{top: positionTop, left: positionLeft}">
 
     <li v-if="isDir">
-      <a href class="content inte-item" @click.prevent="openBlob">
+      <a href class="content inte-item" @click.prevent="openBlob()">
         Open folder <i>{{ blob.fullName }}</i>
       </a>
     </li>

@@ -41,6 +41,11 @@ class BlobMetadata implements ICripObject
             $this->lastModified = $this->storage->lastModified($path);
 
             $metadata = $this->storage->getMetaData($path);
+
+            if (!is_array($metadata)){
+                return $this;
+            }
+
             $this->path = $metadata['path'];
 
             $this->size = array_key_exists('size', $metadata) ?

@@ -42,7 +42,7 @@ class BlobMetadata implements ICripObject
 
             $metadata = $this->storage->getMetaData($path);
 
-            if (!is_array($metadata)){
+            if (!is_array($metadata)) {
                 return $this;
             }
 

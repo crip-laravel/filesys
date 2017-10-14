@@ -1,3 +1,3 @@
 tinymce.addI18n('de', {
-  'Example plugin': 'Datei hinzufügen'
+  'Insert file': 'Datei hinzufügen'
 })

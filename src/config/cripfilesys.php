@@ -20,6 +20,19 @@ return [
 
     /*
     |---------------------------------------------------------------------------
+    | Resource URL
+    |---------------------------------------------------------------------------
+    |
+    | This value is resource URL of view. If for some reason you want to
+    | use your custom blade file, you can specify it here. Otherwise leave
+    | it null.
+    |
+    */
+
+    'resource_url' => null,
+
+    /*
+    |---------------------------------------------------------------------------
     | Use public storage url.
     |---------------------------------------------------------------------------
     |

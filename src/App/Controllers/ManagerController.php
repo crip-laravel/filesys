@@ -32,6 +32,14 @@ class ManagerController extends BaseController
         $thumbConfig = $this->package->config('thumbs');
         $thumbs = $this->stringify($thumbConfig);
 
+        if (!is_null($this->package->config('resource_url', null))) {
+            $view = $this->package->config('resource_url', null);
+
+            return view($view,
+                compact('input', 'filesUrl', 'foldersUrl', 'treeUrl', 'dirIconUrl',
+                    'iconDir', 'authorization', 'thumbs'));
+        }
+
         return $this->package->view('master',
             compact('input', 'filesUrl', 'foldersUrl', 'treeUrl', 'dirIconUrl',
                 'iconDir', 'authorization', 'thumbs'));

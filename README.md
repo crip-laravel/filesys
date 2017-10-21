@@ -1,4 +1,4 @@
-# CRIP Filesystem manager (v.1.2.9)
+# CRIP Filesystem manager (v.1.2.13)
 
 This package easily integrates filesystem manager in to your website. You can 
 use it with TinyMCE editor or just stand alone popup for your input fields. CRIP
@@ -23,8 +23,9 @@ Require package with composer:
 composer require crip-laravel/filesys
 ```
 
-After package is downloaded, add `ServiceProvider` to the providers array in 
-configuration file of your Laravel application `config/app.php`:
+If you are on lower Laravel version that 5.5 (or choose not to use package auto
+discovery) add this to `ServiceProvider` in configuration file of your Laravel
+application `config/app.php`:
 
 ```php
 'providers' = [
@@ -39,6 +40,10 @@ command:
 ```cmd
 php artisan vendor:publish --provider="Crip\Filesys\CripFilesysServiceProvider"
 ```
+
+> This allows you to override package resource files by updating them directly
+> from your application: views - `/resources/views/vendor/cripfilesys` and assets
+> in a `/public/vendor/crip/cripfilesys` folder.
 
 Additionally you can override package configuration file publishing it to your 
 application config folder:

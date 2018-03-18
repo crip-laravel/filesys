@@ -128,6 +128,9 @@ correctly allocate file location in server filesystem.
                    is created for your storage directory in case if you use 
                    local/public storage configuration.
                    
+`absolute_url` - Make urls to a files absolute. Useful when file manager is
+                 located under different domain.
+                   
 `user_folder` - This value is indicates value of the subfolder of currently
                 configured storage. This may be useful in case if you want each
                 user or user group to have their own folder - by default single

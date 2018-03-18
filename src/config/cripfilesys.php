@@ -39,7 +39,7 @@ return [
     | Use absolute url for file
     |---------------------------------------------------------------------------
     |
-    | This value is make absolute url when you select files.
+    | This value makes absolute url for files.
     |
     */
     'absolute_url' => false,

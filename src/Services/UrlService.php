@@ -49,6 +49,6 @@ class UrlService
         $ctrl = '\\' . $this->package->config('actions.' . $for) . '@show';
         $url = '/' . Str::normalizePath(action($ctrl, '', false) . '/' . $path);
 
-        return $url;
+        return $this->package->config('absolute_url', false) ? url($url) : $url;
     }
 }

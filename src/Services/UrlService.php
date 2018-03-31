@@ -47,8 +47,14 @@ class UrlService
     {
         $path = trim($path, '\\/');
         $ctrl = '\\' . $this->package->config('actions.' . $for) . '@show';
-        $url = '/' . Str::normalizePath(action($ctrl, '', false) . '/' . $path);
 
-        return $this->package->config('absolute_url', false) ? url($url) : $url;
+        if ($this->package->config('absolute_url', false)) {
+            return action($ctrl, $path);
+        }
+
+        $relative = action($ctrl, '', false);
+        $url = '/' . Str::normalizePath($relative . '/' . $path);
+
+        return $url;
     }
 }

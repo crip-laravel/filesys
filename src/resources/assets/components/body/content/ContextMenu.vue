@@ -6,7 +6,7 @@
       :style="{top: positionTop, left: positionLeft}">
 
     <li v-if="isDir">
-      <a href class="content inte-item" @click.prevent="openBlob()">
+      <a href class="content inte-item" @click.prevent="openBlob">
         Open folder <i>{{ blob.fullName }}</i>
       </a>
     </li>
@@ -166,8 +166,12 @@
        * @param {String} url
        */
       openBlob (url) {
-        if (this.isStrictOutputSize && !url) {
+        if (this.isStrictOutputSize && (!url || typeof url !== 'string')) {
           url = this.blob.thumbs[settings.imageSize()].url
+        }
+
+        if (typeof url !== 'string') {
+          url = this.blob.url
         }
 
         this.$store.dispatch(actions.openBlob, {blob: this.blob, url})

@@ -147,6 +147,7 @@ class Blob implements ICripObject
     /**
      * Get 'xs' size thumbnail url.
      * @return string
+     * @throws \Exception
      */
     public function getXsThumbUrl()
     {
@@ -166,7 +167,14 @@ class Blob implements ICripObject
             // If file has public access enabled, we simply can try return storage
             // url to file.
             try {
-                return '/' . trim($this->storage->url($path), '\\/');
+                $useAbsolute = $this->package->config('absolute_url', false);
+                $absolute = $this->storage->url($path);
+
+                if ($useAbsolute) return $absolute;
+
+                $relative = parse_url($absolute, PHP_URL_PATH);
+
+                return '/' . trim($relative, '\\/');
             } catch (\Exception $ex) {
                 // Some drivers does not support url method (like ftp), so we
                 // simply continue and generate crip url to our controller.

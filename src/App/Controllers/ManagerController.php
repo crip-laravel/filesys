@@ -23,7 +23,13 @@ class ManagerController extends BaseController
         $treeUrl = action('\\' . $this->package->config('actions.tree'));
         $dirIconUrl = $iconDir . $this->package->config('icons.files.dir');
 
+        $foldersUrl = parse_url($foldersUrl, PHP_URL_PATH);
+        $filesUrl = parse_url($filesUrl, PHP_URL_PATH);
+        $treeUrl = parse_url($treeUrl, PHP_URL_PATH);
+
         $requestInput = $request->all();
+        $token = \Request::header('Authorization');
+        $requestInput['Authorization'] = $token;
         $input = $this->stringify($requestInput);
 
         $authConfig = $this->package->config('authorization');
